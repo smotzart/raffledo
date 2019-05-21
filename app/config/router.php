@@ -40,6 +40,7 @@ $router->add("/win/{id:[0-9]+}", [
   'action'     => 'show'
 ]);
 
+/*
 $router->add('/:module',
   array(
     'module' => 1,
@@ -47,7 +48,6 @@ $router->add('/:module',
     'action' => 'index',
   )
 );
-
 $router->add('/:module/:controller',
   array(
     'module' => 1,
@@ -71,7 +71,7 @@ $router->add('/:module/:controller/:action/:params',
     'action' => 3,
     'params' => 4
   )
-);
+);*/
 
 $router->removeExtraSlashes(true);
 
