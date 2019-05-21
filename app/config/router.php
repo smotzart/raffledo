@@ -5,15 +5,8 @@ $router = $di->getRouter();
 $router->setDefaultModule('frontend');
 
 
-$router->add('/:module',
-  array(
-    'module' => 1,
-    'controller' => 'index',
-    'action' => 'index',
-  )
-);
 
-$router->add('/backend',
+$router->add('/admin',
   array(
     'module' => 'backend',
     'controller' => 'games',
@@ -21,28 +14,28 @@ $router->add('/backend',
   )
 );
 
-$router->add('/:module/:controller',
+$router->add('/admin/:controller',
   array(
-    'module' => 1,
-    'controller' => 2,
+    'module' => 'backend',
+    'controller' => 1,
     'action' => 'index',
   )
 );
 
-$router->add('/:module/:controller/:action',
+$router->add('/admin/:controller/:action',
   array(
-    'module' => 1,
-    'controller' => 2,
-    'action' => 3,
+    'module' => 'backend',
+    'controller' => 1,
+    'action' => 2,
   )
 );
 
-$router->add('/:module/:controller/:action/:params',
+$router->add('/admin/:controller/:action/:params',
   array(
-    'module' => 1,
-    'controller' => 2,
-    'action' => 3,
-    'params' => 4
+    'module' => 'backend',
+    'controller' => 1,
+    'action' => 2,
+    'params' => 3
   )
 );
 
