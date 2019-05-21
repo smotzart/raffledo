@@ -71,8 +71,8 @@ $router->add('/:module/:controller/:action/:params',
     'action' => 3,
     'params' => 4
   )
-);*/
-
+);
+*/
 $router->removeExtraSlashes(true);
 
 // Define your routes here

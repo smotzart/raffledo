@@ -1,2 +1,4 @@
-/app/config/config.php
-
+app/config/config.php
+cache
+.htaccess
+public/.htaccess
