@@ -10,6 +10,8 @@ use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Validation\Validator\PresenceOf;
+use Multiple\Frontend\Models\Companies;
+use Multiple\Frontend\Models\Tags;
 
 
 class Time extends Date
@@ -37,7 +39,7 @@ class GamesForm extends Form
     $this->add($url);
 
     // Company
-    $companies = \Companies::find();
+    $companies = Companies::find();
     $this->add(new Select('companies_id', $companies, [
       'using' => [
         'id',
@@ -99,7 +101,7 @@ class GamesForm extends Form
     $this->add($type_5);
  
     // Tags
-    $tags = \Tags::find();
+    $tags = Tags::find();
     $tags_select = new Select('tags_id[]', $tags, [
       'using' => [
         'id',
