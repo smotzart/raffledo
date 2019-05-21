@@ -82,8 +82,6 @@ $router->add("/win/{id:[0-9]+}", [
   'action'     => 'show'
 ]);
 
-
-
 $router->removeExtraSlashes(true);
 
 // Define your routes here
