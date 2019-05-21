@@ -1,4 +1,4 @@
-<?= $logged_in ?><?php if (($this->length($games)) > 0) { ?>
+<?php if (($this->length($games)) > 0) { ?>
   <?php foreach ($games as $game) { ?>
     <div class="box">
       <div class="box-body">

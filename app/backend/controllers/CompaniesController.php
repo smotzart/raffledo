@@ -3,6 +3,7 @@
 namespace Multiple\Backend\Controllers;
 
 use Raffledo\Forms\CompaniesForm;
+use Multiple\Frontend\Models\Companies;
 
 class CompaniesController extends ControllerBase
 {

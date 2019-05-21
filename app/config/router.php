@@ -4,6 +4,48 @@ $router = $di->getRouter();
 
 $router->setDefaultModule('frontend');
 
+
+$router->add('/:module',
+  array(
+    'module' => 1,
+    'controller' => 'index',
+    'action' => 'index',
+  )
+);
+
+$router->add('/backend',
+  array(
+    'module' => 'backend',
+    'controller' => 'games',
+    'action' => 'index',
+  )
+);
+
+$router->add('/:module/:controller',
+  array(
+    'module' => 1,
+    'controller' => 2,
+    'action' => 'index',
+  )
+);
+
+$router->add('/:module/:controller/:action',
+  array(
+    'module' => 1,
+    'controller' => 2,
+    'action' => 3,
+  )
+);
+
+$router->add('/:module/:controller/:action/:params',
+  array(
+    'module' => 1,
+    'controller' => 2,
+    'action' => 3,
+    'params' => 4
+  )
+);
+
 $router->add("/login", [
   'module'     => 'frontend',
   'controller' => 'session',
@@ -40,38 +82,7 @@ $router->add("/win/{id:[0-9]+}", [
   'action'     => 'show'
 ]);
 
-/*
-$router->add('/:module',
-  array(
-    'module' => 1,
-    'controller' => 'index',
-    'action' => 'index',
-  )
-);
-$router->add('/:module/:controller',
-  array(
-    'module' => 1,
-    'controller' => 2,
-    'action' => 'index',
-  )
-);
 
-$router->add('/:module/:controller/:action',
-  array(
-    'module' => 1,
-    'controller' => 2,
-    'action' => 3,
-  )
-);
-
-$router->add('/:module/:controller/:action/:params',
-  array(
-    'module' => 1,
-    'controller' => 2,
-    'action' => 3,
-    'params' => 4
-  )
-);*/
 
 $router->removeExtraSlashes(true);
 
