@@ -24,7 +24,7 @@
             <div class="col-3">{{ item.name }}</div>
             <div class="col-3">{{ item.tag }}</div>
             <div class="col-6">
-              {{link_to(item.host, '<i class="fa fa-external-link-square"></i>', 'class': 'mr-2 float-left')}}
+              <a href="{{ url(item.host) }}" class="mr-2 float-left" target="_blank"><i class="fa fa-external-link-square"></i></a>
               <div class="text-truncate">{{ item.host }}</div>
             </div>          
           </div>
