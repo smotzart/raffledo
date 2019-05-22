@@ -31,10 +31,19 @@ class GamesController extends ControllerBase
     
     if ($this->dispatcher->getParam('tag')) {
       $tag = Tags::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('tag')]]);
+      if (!$tag) {
+        $this->flashSession->error("Tag was not found");
+        return $this->response->redirect('gewinnspiele');
+      }
       $search_name = $tag->name;
       $this->view->search_description = $tag->description;
     } elseif ($this->dispatcher->getParam('company')) {
-      $search_name = Companies::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('company')]])->name;
+      $company = Companies::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('company')]]);
+      if (!$company) {
+        $this->flashSession->error("Company was not found");
+        return $this->response->redirect('gewinnspiele');        
+      }
+      $search_name = $company->name;
     } else {
       $search_name = '';
     }
@@ -45,9 +54,11 @@ class GamesController extends ControllerBase
   public function indexAction()
   {
     if ($this->dispatcher->getParam('tag')) {
-      $games = Tags::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('tag')]])->games;
+      $tag = Tags::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('tag')]]);
+      $games = $tag ? $tag->games : Games::find();
     } elseif ($this->dispatcher->getParam('company')) {
-      $games = Companies::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('company')]])->games;
+      $company = Companies::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('company')]]);
+      $games = $company ? $company->games : Games::find();
     } else {
       $games = Games::find();
     }
