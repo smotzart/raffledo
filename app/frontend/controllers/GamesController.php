@@ -15,8 +15,16 @@ class GamesController extends ControllerBase
 
   public function initialize()
   {
-    $this->view->companies_footer = Companies::find(['limit' => 8, 'footer=1']);    
-    $this->view->tags_footer      = Tags::find(['limit' => 4, 'footer=1']); 
+    $this->view->companies_footer = $this->modelsManager->createBuilder()
+      ->from(['companies' => 'Raffledo\Models\Companies'])
+      ->leftJoin('Raffledo\Models\Games', 'games.companies_id = companies.id', 'games')
+      ->where('companies.footer = 1')
+      ->having('count(games.id) > 0')
+      ->groupBy('companies.id')
+      ->limit(8)
+      ->getQuery()->execute();
+
+    $this->view->tags_footer= Tags::find(['limit' => 4, 'footer=1']); 
 
     $this->view->setTemplateBefore('list');
     $this->view->logged_in = is_array($this->auth->getIdentity()); 
