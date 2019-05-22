@@ -129,7 +129,7 @@ class Games extends Model
     /**
      * Sets the timestamp before update the confirmation
      */
-    public function beforeUpdate('Y-m-d H:i:s')
+    public function beforeUpdate()
     {       
         if (!$this->deadline_date) {
             $this->deadline_date = date('Y-m-d H:i:s');    
