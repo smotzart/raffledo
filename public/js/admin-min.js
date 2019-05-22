@@ -1,2 +1,2 @@
-$(function(){return $("#removeTag").on("show.bs.modal",function(a){var t,n,e,d;return e=(t=$(a.relatedTarget)).data("tagid"),d=t.data("tagname"),(n=$(this)).find("#modal-tag-name").text(d),n.find("#tagId").val(e)})});
+$(function(){return $('[data-toggle="tooltip"]').tooltip(),$("#removeTag").on("show.bs.modal",function(t){var a,o,e,n;return e=(a=$(t.relatedTarget)).data("tagid"),n=a.data("tagname"),(o=$(this)).find("#modal-tag-name").text(n),o.find("#tagId").val(e)})});
 //# sourceMappingURL=admin-min.js.map

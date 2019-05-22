@@ -1,4 +1,5 @@
 $(function() {
+  $('[data-toggle="tooltip"]').tooltip();
   return $('#removeTag').on('show.bs.modal', function(event) {
     var button, modal, tagId, tagName;
     button = $(event.relatedTarget);

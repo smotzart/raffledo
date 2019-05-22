@@ -24,11 +24,11 @@
             <div class="col-4">{{ item.title }}</div>
             <div class="col-4">{{ item.company.name }}</div>
             <div class="col-4">
-              {% if (item.type_register == 1) %}<i class="fa fa-sign-in mr-1"></i>{% endif %}              
-              {% if (item.type_sms == 1) %}<i class="fa fa-comment mr-1"></i>{% endif %}
-              {% if (item.type_buy == 1) %}<i class="fa fa-phone mr-1"></i>{% endif %}
-              {% if (item.type_internet == 1) %}<i class="fa fa-shopping-basket mr-1"></i>{% endif %}
-              {% if (item.type_submission == 1) %}<i class="fa fa-gamepad"></i>{% endif %}
+              {% if (item.type_register == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Registrierung erforderlich" class="fi flaticon-user"></i>{% endif %}
+              {% if (item.type_sms == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="SMS/Anruf erforderlich" class="fi flaticon-tablet"></i>{% endif %}
+              {% if (item.type_buy == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="fi flaticon-shield"></i>{% endif %}
+              {% if (item.type_internet == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Online-Spiel" class="fi flaticon-gamepad"></i>{% endif %}
+              {% if (item.type_submission == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Kreativ-Einsendung erforderlich" class="fi flaticon-idea"></i>{% endif %}
             </div>          
           </div>
         </div>
