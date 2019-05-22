@@ -112,6 +112,33 @@ class Games extends Model
      */
     public $updated_at;
 
+
+    /**
+     * Before create the game assign a password
+     */
+    public function beforeCreate()
+    {
+        if (!$this->deadline_date) {
+            $this->deadline_date = date();    
+        }
+        if (!$this->enter_date) {
+            $this->enter_date = date();
+        }
+    }
+
+    /**
+     * Sets the timestamp before update the confirmation
+     */
+    public function beforeUpdate()
+    {       
+        if (!$this->deadline_date) {
+            $this->deadline_date = date();    
+        }
+        if (!$this->enter_date) {
+            $this->enter_date = date();
+        } 
+    }
+
     /**
      * Initialize method for model.
      */
