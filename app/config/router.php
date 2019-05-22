@@ -81,13 +81,13 @@ $router->add("/gewinnspiele/:action", [
   'action'     => 1
 ]);
 
-$router->add("/{tag:[a-z0-9]+}-gewinnspiel", [
+$router->add("/{tag:[a-zA-Z0-9]+}-gewinnspiel", [
   'module'     => 'frontend',
   'controller' => 'games',
   'action'     => 'index',
 ]);
 
-$router->add("/{company:[a-z0-9]+}-gewinnspiele", [
+$router->add("/{company:[a-zA-Z0-9]+}-gewinnspiele", [
   'module'     => 'frontend',
   'controller' => 'games',
   'action'     => 'index',
