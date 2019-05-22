@@ -6,6 +6,7 @@ use Raffledo\Forms\GamesForm;
 use Raffledo\Models\Games;
 use Raffledo\Models\Tags;
 use Raffledo\Models\SavedGames;
+use Raffledo\Models\HiddenGames;
 use Raffledo\Models\Companies;
 use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Paginator\Adapter\Model as Paginator;
@@ -53,20 +54,97 @@ class GamesController extends ControllerBase
 
   public function indexAction()
   {
+    $numberPage = 1;
+    $user = $this->auth->getUser();
+
+    if ($user) {
+      $numberPage = $this->request->getQuery("page", "int");
+
+      if ($this->request->isPost()) {
+        $user = $this->auth->getUser();
+        $game = $this->request->getPost('actionId', 'int');
+        $type = $this->request->getPost('actionType', 'striptags');
+
+        if ($type == 'save') {
+          $proc_game = SavedGames::findFirst(['games_id = ' . $game . ' AND users_id = ' . $user->id]);
+          if ($proc_game) {
+            $proc_game->delete();
+          } else {
+            $new = new SavedGames(['games_id' => $game, 'users_id' => $user->id]);
+            $new->save();
+          }          
+        }
+
+        if ($type == 'hide') {
+          $proc_game = HiddenGames::findFirst(['games_id = ' . $game . ' AND users_id = ' . $user->id]);
+          if ($proc_game) {
+            $proc_game->delete();
+          } else {
+            $new = new HiddenGames(['games_id' => $game, 'users_id' => $user->id]);
+            $new->save();
+          }          
+        }  
+        return $this->response->redirect($_SERVER['HTTP_REFERER']);
+      }
+    }
+
+    
+
     if ($this->dispatcher->getParam('tag')) {
+
       $tag = Tags::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('tag')]]);
-      $games = $tag ? $tag->games : Games::find();
+      if (!$tag) {
+        return $this->flashSession->error("Can't find choosen tag");
+      }
+      //$games = $tag ? $tag->games : Games::find();
+      $games = $this->modelsManager->createBuilder()
+        ->from(['games' => 'Raffledo\Models\Games'])
+        ->leftJoin('Raffledo\Models\GamesTags', 'gt.games_id = games.id', 'gt')
+        ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
+        ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
+        ->where('gt.tags_id = '.$tag->id.' AND saved.id IS NULL AND hidden.id IS NULL')
+        ->getQuery()
+        ->execute();      
+
     } elseif ($this->dispatcher->getParam('company')) {
+
       $company = Companies::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('company')]]);
-      $games = $company ? $company->games : Games::find();
+      if (!$company) {
+        return $this->flashSession->error("Can't find choosen company");
+      }
+      //$games = $company ? $company->games : Games::find();
+      $games = $this->modelsManager->createBuilder()
+        ->from(['games' => 'Raffledo\Models\Games'])
+        ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
+        ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
+        ->where('games.companies_id = '.$company->id.' AND saved.id IS NULL AND hidden.id IS NULL')
+        ->getQuery()
+        ->execute();
+
     } else {
-      $games = Games::find();
+
+      if ($user) {
+        $games = $this->modelsManager->createBuilder()
+          ->from(['games' => 'Raffledo\Models\Games'])
+          ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
+          ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
+          ->where('saved.id IS NULL AND hidden.id IS NULL')
+          ->getQuery()
+          ->execute();
+      } else {
+        $games = $this->modelsManager->createBuilder()
+          ->from(['games' => 'Raffledo\Models\Games'])
+          ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
+          ->where('hidden.id IS NULL')
+          ->limit(5)
+          ->getQuery()
+          ->execute();
+      }
+
     }
     
-    $numberPage = 1;
-    if (is_array($this->auth->getIdentity())) {
-      $numberPage = $this->request->getQuery("page", "int");
-    }
+    
+   
 
     $paginator = new Paginator([
       "data"  => $games,
@@ -74,40 +152,6 @@ class GamesController extends ControllerBase
       "page"  => $numberPage
     ]);
 
-    $this->view->page = $paginator->getPaginate();
-
-  }
-
-  public function searchAction()
-  {
-    $numberPage = 1;
-    if ($this->request->isPost()) {
-      $query = Criteria::fromInput($this->di, 'Raffledo\Models\Games', $this->request->getPost());
-      $this->persistent->searchParams = $query->getParams();
-    } elseif (is_array($this->auth->getIdentity())) {
-      $numberPage = $this->request->getQuery("page", "int");
-    }
-
-    $parameters = [];
-    if ($this->persistent->searchParams) {
-      $parameters = $this->persistent->searchParams;
-    }
-
-    $games = Games::find($parameters);
-    if (count($games) == 0) {
-      $this->flash->notice("The search did not find any games");
-      return $this->dispatcher->forward([
-        "action" => "index"
-      ]);
-    }
-
-    $paginator = new Paginator([
-      "data" => $games,
-      "limit" => 2,
-      "page" => $numberPage
-    ]);
-
-    $this->view->numberPage = $numberPage;
     $this->view->page = $paginator->getPaginate();
 
   }
@@ -127,12 +171,18 @@ class GamesController extends ControllerBase
       ]);
     }
 
-    $games = SavedGames::findByUsersId($this->auth->getUser()->id);
+    $user = $this->auth->getUser();
+
+    $games = $this->modelsManager->createBuilder()
+      ->from(['games' => 'Raffledo\Models\Games'])
+      ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
+      ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
+      ->where('saved.users_id = '.$user->id.' AND hidden.id IS NULL')
+      ->getQuery()
+      ->execute();
 
     $numberPage = 1;
-    if (is_array($this->auth->getIdentity())) {
-      $numberPage = $this->request->getQuery("page", "int");
-    }
+    $numberPage = $this->request->getQuery("page", "int");
 
     $paginator = new Paginator([
       "data"  => $games,
@@ -142,6 +192,52 @@ class GamesController extends ControllerBase
 
     $this->view->page = $paginator->getPaginate();
 
+  }
+
+  public function controlAction()
+  {
+    $user = $this->auth->getUser();
+
+    if ($user) {
+
+      if ($this->request->isPost()) {
+        $game = $this->request->getPost('actionId', 'int');
+        $type = $this->request->getPost('actionType', 'striptags');
+
+        if ($type == 'save') {
+          $proc_game = SavedGames::findFirst(['games_id = ' . $game . ' AND users_id = ' . $user->id]);
+          if ($proc_game) {
+            $proc_game->delete();
+          } else {
+            $new = new SavedGames(['games_id' => $game, 'users_id' => $user->id]);
+            if (!$new->save()) {
+              $this->flashSession->error("Can't save game to favoriten list");
+            }
+          }          
+        }
+
+        if ($type == 'hide') {
+          $proc_game = HiddenGames::findFirst(['games_id = ' . $game . ' AND users_id = ' . $user->id]);
+          if ($proc_game) {
+            $proc_game->delete();
+          } else {
+            $new = new HiddenGames(['games_id' => $game, 'users_id' => $user->id]);
+            if (!$new->save()) {              
+              $this->flashSession->error("Can't hide game");
+            }
+          }          
+        } 
+        $url = explode('?', $this->request->getHTTPReferer());
+        return $this->response->redirect($url[0]);        
+      }
+
+    } else {
+      $this->flashSession->error("Only register user can do this action");
+    }
+
+    $this->view->disable();
+
+    return false;
   }
 
 }

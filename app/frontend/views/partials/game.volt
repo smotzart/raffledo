@@ -2,7 +2,7 @@
   <div class="box-body">
     <div class="row no-gutters align-items-center">
       <div class="col-10 col-xl-8 box-title">
-        {{ game.title }}
+        {{ game.id }} / {{ game.title }}
       </div>
       <div class="d-none d-xl-block col-12 col-md-3">
         <span class="box-label">Gewinnspiel-Typ</span>
@@ -61,8 +61,16 @@
   <div class="box-footer d-flex flex-column align-items-md-center flex-md-row">
     <div class="box-btn order-md-1 ml-md-auto">
       {% if logged_in %}
-        <a href="" class="btn btn-theme mr-2">Merken</a>
-        <a href="" class="btn btn-outline-mute mr-2">Ausblenden</a>
+        <form method="post" action="games/control" accept-charset="utf-8" class="mr-2">
+          <input type="hidden" name="actionType" value="save" />
+          <input type="hidden" name="actionId" value="{{ game.id }}" />
+          <button type="submit" class="btn btn-theme">Merken</button>
+        </form>
+        <form method="post" action="games/control" accept-charset="utf-8" class="mr-2">
+          <input type="hidden" name="actionType" value="hide" />
+          <input type="hidden" name="actionId" value="{{ game.id }}" />
+          <button type="submit" class="btn btn-outline-mute">Ausblenden</button>
+        </form>
       {% endif %}
       <a href="/win/{{ game.id }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-warning">Zum Gewinnspiel</a>
     </div>

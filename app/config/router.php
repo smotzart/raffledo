@@ -69,18 +69,6 @@ $router->add("/gewinnspiele", [
   'action'     => 'index'
 ]);
 
-$router->add("/favoriten", [
-  'module'     => 'frontend',
-  'controller' => 'games',
-  'action'     => 'favorite'
-]);
-
-$router->add("/gewinnspiele/:action", [
-  'module'     => 'frontend',
-  'controller' => 'games',
-  'action'     => 1
-]);
-
 $router->add("/{tag:[a-zA-Z0-9]+}-gewinnspiel", [
   'module'     => 'frontend',
   'controller' => 'games',
@@ -91,6 +79,18 @@ $router->add("/{company:[a-zA-Z0-9]+}-gewinnspiele", [
   'module'     => 'frontend',
   'controller' => 'games',
   'action'     => 'index',
+]);
+
+$router->add("/favoriten", [
+  'module'     => 'frontend',
+  'controller' => 'games',
+  'action'     => 'favorite'
+]);
+
+$router->add("/gewinnspiele/:action", [
+  'module'     => 'frontend',
+  'controller' => 'games',
+  'action'     => 1
 ]);
 
 $router->add("/win/{id:[0-9]+}", [

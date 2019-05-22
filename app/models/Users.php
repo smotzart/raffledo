@@ -120,6 +120,17 @@ class Users extends \Phalcon\Mvc\Model
                 ]
             ]
         );
+
+        $this->hasManyToMany(
+            'id',
+            __NAMESPACE__ . '\SavedGames',
+            'users_id', 'games_id',
+            __NAMESPACE__ . '\Games',
+            'id',
+            [
+                'alias' => 'favgames'
+            ]
+        );
     }
 
     /**

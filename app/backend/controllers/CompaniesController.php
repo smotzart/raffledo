@@ -80,7 +80,7 @@ class CompaniesController extends ControllerBase
           if (!$company->save()) {
             $this->flash->error($company->getMessages());
           } else {
-            $this->flashSession->success("Company was updated successfully");
+            $this->flash->success("Company was updated successfully");
             return $this->response->redirect('companies');
           }
         }

@@ -30,6 +30,8 @@
     {{ form.render('footer', ['class': 'form-check-input']) }}
     {{ form.label('footer', ['class': 'form-check-label']) }}
   </div>
+
+
   <div class="form-group">
     {{ link_to('companies/delete/' ~ company.id, '<i class="fa fa-trash-o mr-2"></i>Delete', 'class': 'btn btn-outline-danger') }}
     <button type="submit" class="btn btn-success"><i class="fa fa-save mr-2"></i>Save</button>

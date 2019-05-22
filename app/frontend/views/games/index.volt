@@ -1,5 +1,7 @@
 {% for game in page.items %}
+
   {{ partial('partials/game', ['game': game, 'logged_in': logged_in]) }}
+
   {% if loop.last and logged_in %}
     <div class="d-flex align-items-center justify-content-end">
       {% if page.total_pages > 1 %}
