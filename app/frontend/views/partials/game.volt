@@ -21,9 +21,16 @@
               <i class="fas fa-ellipsis-v"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="#">Gewinnspiel ausblenden</a>
-              <a class="dropdown-item" href="#">Anbieter ausblenden</a>
-              <a class="dropdown-item" href="#">Gewinnspiel melden</a>
+              <form action="games/control" method="post" accept-charset="utf-8">
+                <input type="hidden" name="actionType" value="hideCompany" />
+                <input type="hidden" name="actionId" value="{{ game.id }}" />
+                <button type="submit" class="dropdown-item border-0">Anbieter ausblenden</button>
+              </form>
+              <form action="games/control" method="post" accept-charset="utf-8">
+                <input type="hidden" name="actionType" value="hideTags" />
+                <input type="hidden" name="actionId" value="{{ game.id }}" />
+                <button type="submit" class="dropdown-item">Tags/Preise ausschließen</button>
+              </form>              
             </div>
           </div>
         {% endif %}

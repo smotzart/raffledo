@@ -12,7 +12,6 @@
             {'title': 'Games', 'controller': 'games', 'icon': '<i class="fa fa-gamepad mr-2 text-primary"></i>'},
             {'title': 'Tags', 'controller': 'tags', 'icon': '<i class="fa fa-hashtag mr-2 text-warning"></i>'},
             {'title': 'Companies', 'controller': 'companies', 'icon': '<i class="fa fa-group mr-2 text-success"></i>'},
-            {'title': 'Reports', 'controller': 'reports', 'icon': '<i class="fa fa-exclamation-triangle mr-2 text-danger"></i>'}
           ] -%}
 
           {%- for item in menus %}

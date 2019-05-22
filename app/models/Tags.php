@@ -69,6 +69,7 @@ class Tags extends Model
                 ]
             ]
         );
+
         $this->hasManyToMany(
             'id',
             __NAMESPACE__ . '\GamesTags',
@@ -79,6 +80,18 @@ class Tags extends Model
                 'alias' => 'games'
             ]
         );
+        
+        $this->hasManyToMany(
+            'id',
+            __NAMESPACE__ . '\GamesTags',
+            'tags_id', 'games_id',
+            __NAMESPACE__ . '\Games',
+            'id',
+            [
+                'alias' => 'games'
+            ]
+        );
+
         $this->addBehavior(
             new Timestampable(
                 [

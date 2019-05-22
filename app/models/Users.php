@@ -111,6 +111,30 @@ class Users extends \Phalcon\Mvc\Model
 
         $this->hasMany(
             'id',
+            __NAMESPACE__ . '\HiddenCompanies',
+            'users_id',
+            [
+                'alias' => 'hiddenCompany',
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
+            ]
+        );
+
+        $this->hasMany(
+            'id',
+            __NAMESPACE__ . '\HiddenTags',
+            'users_id',
+            [
+                'alias' => 'hiddenTags',
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
+            ]
+        );
+
+        $this->hasMany(
+            'id',
             __NAMESPACE__ . '\SuccessLogins',
             'users_id',
             [

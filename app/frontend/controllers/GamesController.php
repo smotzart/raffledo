@@ -7,6 +7,8 @@ use Raffledo\Models\Games;
 use Raffledo\Models\Tags;
 use Raffledo\Models\SavedGames;
 use Raffledo\Models\HiddenGames;
+use Raffledo\Models\HiddenCompanies;
+use Raffledo\Models\HiddenTags;
 use Raffledo\Models\Companies;
 use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Paginator\Adapter\Model as Paginator;
@@ -19,7 +21,11 @@ class GamesController extends ControllerBase
     $this->view->companies_footer = $this->modelsManager->createBuilder()
       ->from(['companies' => 'Raffledo\Models\Companies'])
       ->leftJoin('Raffledo\Models\Games', 'games.companies_id = companies.id', 'games')
-      ->where('companies.footer = 1')
+      ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
+      ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
+      ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
+
+      ->where('companies.footer = 1 AND saved.id IS NULL AND hidden.id IS NULL AND hc.id IS NULL')
       ->having('count(games.id) > 0')
       ->groupBy('companies.id')
       ->limit(8)
@@ -102,7 +108,8 @@ class GamesController extends ControllerBase
         ->leftJoin('Raffledo\Models\GamesTags', 'gt.games_id = games.id', 'gt')
         ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
         ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-        ->where('gt.tags_id = '.$tag->id.' AND saved.id IS NULL AND hidden.id IS NULL')
+        ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
+        ->where('gt.tags_id = '.$tag->id.' AND saved.id IS NULL AND hidden.id IS NULL AND hc.id IS NULL')
         ->getQuery()
         ->execute();      
 
@@ -117,7 +124,8 @@ class GamesController extends ControllerBase
         ->from(['games' => 'Raffledo\Models\Games'])
         ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
         ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-        ->where('games.companies_id = '.$company->id.' AND saved.id IS NULL AND hidden.id IS NULL')
+        ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
+        ->where('games.companies_id = '.$company->id.' AND saved.id IS NULL AND hidden.id IS NULL AND hc.id IS NULL')
         ->getQuery()
         ->execute();
 
@@ -128,14 +136,16 @@ class GamesController extends ControllerBase
           ->from(['games' => 'Raffledo\Models\Games'])
           ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
           ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-          ->where('saved.id IS NULL AND hidden.id IS NULL')
+          ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
+          ->where('saved.id IS NULL AND hidden.id IS NULL AND hc.id IS NULL')
           ->getQuery()
           ->execute();
       } else {
         $games = $this->modelsManager->createBuilder()
           ->from(['games' => 'Raffledo\Models\Games'])
           ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-          ->where('hidden.id IS NULL')
+          ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
+          ->where('hidden.id IS NULL AND hc.id IS NULL')
           ->limit(5)
           ->getQuery()
           ->execute();
@@ -177,7 +187,8 @@ class GamesController extends ControllerBase
       ->from(['games' => 'Raffledo\Models\Games'])
       ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
       ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-      ->where('saved.users_id = '.$user->id.' AND hidden.id IS NULL')
+      ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
+      ->where('saved.users_id = '.$user->id.' AND hidden.id IS NULL AND hc.id IS NULL')
       ->getQuery()
       ->execute();
 
@@ -201,15 +212,15 @@ class GamesController extends ControllerBase
     if ($user) {
 
       if ($this->request->isPost()) {
-        $game = $this->request->getPost('actionId', 'int');
+        $game = Games::findFirst($this->request->getPost('actionId', 'int'));
         $type = $this->request->getPost('actionType', 'striptags');
 
         if ($type == 'save') {
-          $proc_game = SavedGames::findFirst(['games_id = ' . $game . ' AND users_id = ' . $user->id]);
+          $proc_game = SavedGames::findFirst(['games_id = ' . $game->id . ' AND users_id = ' . $user->id]);
           if ($proc_game) {
             $proc_game->delete();
           } else {
-            $new = new SavedGames(['games_id' => $game, 'users_id' => $user->id]);
+            $new = new SavedGames(['games_id' => $game->id, 'users_id' => $user->id]);
             if (!$new->save()) {
               $this->flashSession->error("Can't save game to favoriten list");
             }
@@ -217,16 +228,46 @@ class GamesController extends ControllerBase
         }
 
         if ($type == 'hide') {
-          $proc_game = HiddenGames::findFirst(['games_id = ' . $game . ' AND users_id = ' . $user->id]);
+          $proc_game = HiddenGames::findFirst(['games_id = ' . $game->id . ' AND users_id = ' . $user->id]);
           if ($proc_game) {
             $proc_game->delete();
           } else {
-            $new = new HiddenGames(['games_id' => $game, 'users_id' => $user->id]);
+            $new = new HiddenGames(['games_id' => $game->id, 'users_id' => $user->id]);
             if (!$new->save()) {              
               $this->flashSession->error("Can't hide game");
             }
           }          
         } 
+
+        if ($type == 'hideCompany') {
+          $entry = HiddenCompanies::findFirst(['companies_id = ' . $game->companies_id . ' AND users_id = ' . $user->id]);
+          if ($entry) {
+            $this->flashSession->error("This company is allredy hidden for you");
+          } else {
+            $new = new HiddenCompanies(['companies_id' => $game->companies_id, 'users_id' => $user->id]);
+            if (!$new->save()) {              
+              $this->flashSession->error("Can't hide company");
+            }     
+          }
+        } 
+
+        if ($type == 'hideTags') {
+          $proc_tags = $game->tags;
+
+          foreach ($proc_tags as $proc_tag) {
+            $entry = HiddenTags::findFirst(['tags_id = ' . $proc_tag->id . ' AND users_id = ' . $user->id]);
+            if ($entry) {
+              $this->flashSession->error("This tag is allredy hidden for you");
+            } else {
+              $new = new HiddenTags(['tags_id' => $proc_tag->id, 'users_id' => $user->id]);
+              if (!$new->save()) {              
+                $this->flashSession->error("Can't hide tag");
+              }     
+            }
+          }         
+          
+        } 
+        
         $url = explode('?', $this->request->getHTTPReferer());
         return $this->response->redirect($url[0]);        
       }
