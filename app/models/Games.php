@@ -119,23 +119,23 @@ class Games extends Model
     public function beforeCreate()
     {
         if (!$this->deadline_date) {
-            $this->deadline_date = date();    
+            $this->deadline_date = date('Y-m-d H:i:s');    
         }
         if (!$this->enter_date) {
-            $this->enter_date = date();
+            $this->enter_date = date('Y-m-d H:i:s');
         }
     }
 
     /**
      * Sets the timestamp before update the confirmation
      */
-    public function beforeUpdate()
+    public function beforeUpdate('Y-m-d H:i:s')
     {       
         if (!$this->deadline_date) {
-            $this->deadline_date = date();    
+            $this->deadline_date = date('Y-m-d H:i:s');    
         }
         if (!$this->enter_date) {
-            $this->enter_date = date();
+            $this->enter_date = date('Y-m-d H:i:s');
         } 
     }
 
