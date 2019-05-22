@@ -91,8 +91,12 @@ class TagsController extends ControllerBase
 
     }
 
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
+      if ($this->request->isPost()) {
+        $id = $this->request->getPost('tagId', 'int');
+      }
+
       $tag = Tags::findFirstById($id);
 
       if (!$tag) {
@@ -103,7 +107,9 @@ class TagsController extends ControllerBase
       }
 
       if (!$tag->delete()) {
-        $this->flashSession->error($tag->getMessages());
+        foreach ($tag->getMessages() as $message) {
+          $this->flashSession->error($message);
+        } 
       } else {
         $this->flashSession->success("Tag was deleted");
       }

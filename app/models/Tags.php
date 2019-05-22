@@ -62,7 +62,12 @@ class Tags extends Model
         $this->hasMany(
             'id',
             __NAMESPACE__ . '\GamesTags',
-            'tags_id'
+            'tags_id',
+            [
+                'foreignKey' => [
+                    'message' => 'Tag cannot be deleted because it\'s used on Games'
+                ]
+            ]
         );
         $this->hasManyToMany(
             'id',
