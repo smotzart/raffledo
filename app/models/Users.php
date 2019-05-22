@@ -1,8 +1,11 @@
 <?php
 
+namespace Raffledo\Models;
+
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\Email as EmailValidator;
 use Phalcon\Validation\Validator\Uniqueness;
+use Phalcon\Mvc\Model\Relation;
 
 class Users extends \Phalcon\Mvc\Model
 {
@@ -17,13 +20,7 @@ class Users extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $name;
-
-    /**
-     *
-     * @var string
-     */
-    public $email;
+    public $username;
 
     /**
      *
@@ -63,18 +60,8 @@ class Users extends \Phalcon\Mvc\Model
     {
         $validator = new Validation();
 
-        $validator->add(
-            'email',
-            new EmailValidator(
-                [
-                    'model'   => $this,
-                    'message' => 'Please enter a correct email address',
-                ]
-            )
-        );
-
-        $validator->add('email', new Uniqueness([
-            "message" => "The email is already registered"
+        $validator->add('username', new Uniqueness([
+            "message" => "The username is already registered"
         ]));
 
         return $this->validate($validator);
@@ -90,7 +77,7 @@ class Users extends \Phalcon\Mvc\Model
 
         $this->belongsTo(
             'profiles_id',
-            'Profiles',
+            __NAMESPACE__ . '\Profiles',
             'id',
             [
                 'alias' => 'profile',
@@ -98,13 +85,41 @@ class Users extends \Phalcon\Mvc\Model
             ]
         );
 
-
-        $this->hasMany('id', 'SuccessLogins', 'users_id', [
-            'alias' => 'successLogins',
-            'foreignKey' => [
-                'message' => 'User cannot be deleted because he/she has activity in the system'
+        $this->hasMany(
+            'id',
+            __NAMESPACE__ . '\SavedGames',
+            'users_id',
+            [
+                'alias' => 'savedGames',
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
             ]
-        ]);
+        );
+
+        $this->hasMany(
+            'id',
+            __NAMESPACE__ . '\HiddenGames',
+            'users_id',
+            [
+                'alias' => 'hiddenGames',
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
+            ]
+        );
+
+        $this->hasMany(
+            'id',
+            __NAMESPACE__ . '\SuccessLogins',
+            'users_id',
+            [
+                'alias' => 'successLogins',
+                'foreignKey' => [
+                    'message' => 'User cannot be deleted because he/she has activity in the system'
+                ]
+            ]
+        );
     }
 
     /**

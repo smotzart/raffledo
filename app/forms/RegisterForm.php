@@ -8,7 +8,6 @@ use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Validation\Validator\PresenceOf;
-use Phalcon\Validation\Validator\Email;
 use Phalcon\Validation\Validator\Identical;
 use Phalcon\Validation\Validator\StringLength;
 use Phalcon\Validation\Validator\Confirmation;
@@ -18,38 +17,21 @@ class RegisterForm extends Form
 
   public function initialize($entity = null, $options = null)
   {
-    $name = new Text('name', [      
+    $username = new Text('username', [      
       'placeholder' => 'Benutzername'
     ]);
 
-    $name->addValidators([
+    $username->addValidators([
       new PresenceOf([
         'message' => 'The benutzername is required'
       ])
     ]);
-    $this->add($name);
-
-    // Email
-    $email = new Text('email', [
-      'placeholder' => 'E-Mail'
-    ]);
-
-    $email->addValidators([
-      new PresenceOf([
-        'message' => 'The e-mail is required'
-      ]),
-      new Email([
-        'message' => 'The e-mail is not valid'
-      ])
-    ]);
-
-    $this->add($email);
+    $this->add($username);
 
     // Password
     $password = new Password('password', [
       'placeholder' => 'Passwort'
     ]);
-
 
     $password->addValidators([
       new PresenceOf([

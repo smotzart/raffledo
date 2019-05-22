@@ -3,7 +3,7 @@
 namespace Multiple\Backend\Controllers;
 
 use Raffledo\Forms\CompaniesForm;
-use Multiple\Frontend\Models\Companies;
+use Raffledo\Models\Companies;
 
 class CompaniesController extends ControllerBase
 {
@@ -31,17 +31,17 @@ class CompaniesController extends ControllerBase
         } else {
           $company = new Companies([
             'name' => $this->request->getPost('name', 'striptags'),
+            'tag' => $this->request->getPost('tag', 'striptags'),
             'host' => $this->request->getPost('host', 'striptags'),
             'footer' => $this->request->getPost('footer') ? 1 : 0
           ]);
 
           if (!$company->save()) {
-            $this->flashSession->error($company->getMessages());
+            $this->flash->error($company->getMessages());
           } else {
             $this->flashSession->success("Company was created successfully");
+            return $this->response->redirect('companies');
           }
-
-          return $this->response->redirect('companies');
         }
       }
 
@@ -72,17 +72,17 @@ class CompaniesController extends ControllerBase
         } else {
           $company->assign([
             'name' => $this->request->getPost('name', 'striptags'),
+            'tag' => $this->request->getPost('tag', 'striptags'),
             'host' => $this->request->getPost('host', 'striptags'),
             'footer' => $this->request->getPost('footer') ? 1 : 0
           ]);
 
           if (!$company->save()) {
-            $this->flashSession->error($company->getMessages());
+            $this->flash->error($company->getMessages());
           } else {
             $this->flashSession->success("Company was updated successfully");
+            return $this->response->redirect('companies');
           }
-
-          return $this->response->redirect('companies');
         }
       }
 

@@ -8,7 +8,6 @@ use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Validation\Validator\PresenceOf;
-use Phalcon\Validation\Validator\Email;
 use Phalcon\Validation\Validator\Identical;
 
 class LoginForm extends Form
@@ -16,20 +15,17 @@ class LoginForm extends Form
 
   public function initialize($entity = null, $options = null)
   {
-    // Email
-    $email = new Text('email', [
-      'placeholder' => 'E-Mail'
+    // Username
+    $username = new Text('username', [
+      'placeholder' => 'Benutzername'
     ]);
 
-    $email->addValidators([
+    $username->addValidators([
       new PresenceOf([
-        'message' => 'The e-mail is required'
-      ]),
-      new Email([
-        'message' => 'The e-mail is not valid'
+        'message' => 'The benutzername is required'
       ])
     ]);
-    $this->add($email);
+    $this->add($username);
 
     // Password
     $password = new Password('password', [
@@ -43,7 +39,7 @@ class LoginForm extends Form
 
     $password->clear();
     $this->add($password);
-
+/*
     // Remember
     $remember = new Check('remember', [
       'value' => 'yes'
@@ -51,7 +47,7 @@ class LoginForm extends Form
 
     $remember->setLabel('Remember me');
 
-    $this->add($remember);
+    $this->add($remember);*/
 
     // CSRF
     $csrf = new Hidden('csrf');

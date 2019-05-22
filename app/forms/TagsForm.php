@@ -25,15 +25,15 @@ class TagsForm extends Form
     $this->add($tag);
 
     // Title
-    $title = new Text('title', [
-      'placeholder' => 'Title'
+    $name = new Text('name', [
+      'placeholder' => 'Name'
     ]);
-    $title->addValidators([
+    $name->addValidators([
       new PresenceOf([
-        'message' => 'The title is required'
+        'message' => 'The name is required'
       ])
     ]);
-    $this->add($title);
+    $this->add($name);
 
     // Description
     $description = new TextArea('description', [

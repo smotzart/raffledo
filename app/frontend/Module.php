@@ -22,7 +22,6 @@ class Module implements ModuleDefinitionInterface
     $loader->registerNamespaces(
       [
         'Multiple\Frontend\Controllers' => APP_PATH . '/frontend/controllers/',
-        'Multiple\Frontend\Models'      => APP_PATH . '/frontend/models/',
       ]
     );
 

@@ -17,7 +17,5 @@ class ControllerBase extends Controller
   public function beforeExecuteRoute(Dispatcher $dispatcher)
   {
     $controllerName = $dispatcher->getControllerName();
-
   }
-
 }

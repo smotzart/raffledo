@@ -1,9 +1,8 @@
 <?php
 
-namespace Multiple\Frontend\Models;
-use Phalcon\Mvc\Model\Behavior\Timestampable;
+namespace Raffledo\Models;
 
-class GamesTags extends \Phalcon\Mvc\Model
+class SavedGames extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -22,13 +21,7 @@ class GamesTags extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $tags_id;
-
-    /**
-     *
-     * @var string
-     */
-    public $created_at;
+    public $users_id;
 
     /**
      * Initialize method for model.
@@ -36,29 +29,21 @@ class GamesTags extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("phalcon");
-        $this->setSource("games_tags");
+        $this->setSource("saved_games");
 
         $this->belongsTo(
             'games_id',
             __NAMESPACE__ . '\Games',
-            'id'
+            'id',
+            [
+                'alias' => 'games'
+            ]
         );
 
         $this->belongsTo(
-            'tags_id',
-            __NAMESPACE__ . '\Tags',
+            'users_id',
+            __NAMESPACE__ . '\Users',
             'id'
-        );
-
-        $this->addBehavior(
-            new Timestampable(
-                [
-                    'beforeCreate' => [
-                        'field'  => 'created_at',
-                        'format' => 'Y-m-d H:i:s',
-                    ]
-                ]
-            )
         );
     }
 
@@ -69,14 +54,14 @@ class GamesTags extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'games_tags';
+        return 'saved_games';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return GamesTags[]|GamesTags|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return SavedGames[]|SavedGames|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -87,7 +72,7 @@ class GamesTags extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return GamesTags|\Phalcon\Mvc\Model\ResultInterface
+     * @return SavedGames|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {

@@ -25,19 +25,18 @@ class SessionController extends ControllerBase
           return $this->auth->loginWithRememberMe();
         }
       } else {
-
         if ($form->isValid($this->request->getPost()) == false) {
           foreach ($form->getMessages() as $message) {
             $this->flashSession->error($message);
           }
         } else {
           $this->auth->check([
-            'email' => $this->request->getPost('email'),
+            'username' => $this->request->getPost('username'),
             'password' => $this->request->getPost('password'),
-            'remember' => $this->request->getPost('remember')
+            'remember' => 'yes'
           ]);
 
-          return $this->response->redirect('games');
+          return $this->response->redirect('gewinnspiele');
         }
       }
     } catch (AuthException $e) {
@@ -50,7 +49,7 @@ class SessionController extends ControllerBase
   public function logoutAction()
   {
     $this->auth->remove();
-    return $this->response->redirect('index');
+    return $this->response->redirect('/');
   }
 }
 

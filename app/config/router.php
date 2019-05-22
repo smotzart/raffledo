@@ -57,16 +57,40 @@ $router->add("/datenschutz", [
   'action'     => 'index',
 ]);
 
+$router->add("/impressum", [
+  'module'     => 'frontend',
+  'controller' => 'impressum',
+  'action'     => 'index',
+]);
+
 $router->add("/gewinnspiele", [
+  'module'     => 'frontend',
+  'controller' => 'games',
+  'action'     => 'index'
+]);
+
+$router->add("/favoriten", [
+  'module'     => 'frontend',
+  'controller' => 'games',
+  'action'     => 'favorite'
+]);
+
+$router->add("/gewinnspiele/:action", [
+  'module'     => 'frontend',
+  'controller' => 'games',
+  'action'     => 1
+]);
+
+$router->add("/{tag:[a-z]+}-gewinnspiel", [
   'module'     => 'frontend',
   'controller' => 'games',
   'action'     => 'index',
 ]);
 
-$router->add("/{search:[a-z]+}-gewinnspiele", [
+$router->add("/{company:[a-z]+}-gewinnspiele", [
   'module'     => 'frontend',
   'controller' => 'games',
-  'action'     => 'search',
+  'action'     => 'index',
 ]);
 
 $router->add("/win/{id:[0-9]+}", [

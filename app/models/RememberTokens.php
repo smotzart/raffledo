@@ -1,9 +1,8 @@
 <?php
 
-namespace Multiple\Frontend\Models;
-use Phalcon\Mvc\Model\Relation;
+namespace Raffledo\Models;
 
-class Profiles extends \Phalcon\Mvc\Model
+class RememberTokens extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -14,9 +13,37 @@ class Profiles extends \Phalcon\Mvc\Model
 
     /**
      *
+     * @var integer
+     */
+    public $users_id;
+
+    /**
+     *
      * @var string
      */
-    public $name;
+    public $token;
+
+    /**
+     *
+     * @var string
+     */
+    public $userAgent;
+
+    /**
+     *
+     * @var integer
+     */
+    public $created_at;
+
+    /**
+     * Before create the user assign a password
+     */
+    public function beforeValidationOnCreate()
+    {
+        // Timestamp the confirmaton
+        $this->created_at = time();
+    }
+
 
     /**
      * Initialize method for model.
@@ -24,28 +51,13 @@ class Profiles extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("phalcon");
-        $this->setSource("profiles");
-        $this->hasMany(
-            'id',
+        $this->setSource("remember_tokens");
+        $this->belongsTo(
+            'users_id',
             __NAMESPACE__ . '\Users',
-            'profiles_id',
-            [
-                'alias' => 'users',
-                'foreignKey' => [
-                    'message' => 'Profile cannot be deleted because it\'s used on Users'
-                ]
-            ]
-        );
-
-        $this->hasMany(
             'id',
-            __NAMESPACE__ . '\Permissions',
-            'profiles_id',
             [
-                'alias' => 'permissions',
-                'foreignKey' => [
-                    'action' => Relation::ACTION_CASCADE
-                ]
+                'alias' => 'user'
             ]
         );
     }
@@ -57,14 +69,14 @@ class Profiles extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profiles';
+        return 'remember_tokens';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profiles[]|Profiles|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return RememberTokens[]|RememberTokens|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -75,7 +87,7 @@ class Profiles extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profiles|\Phalcon\Mvc\Model\ResultInterface
+     * @return RememberTokens|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {

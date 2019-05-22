@@ -3,9 +3,10 @@ namespace Raffledo\Auth;
 
 use Phalcon\Mvc\User\Component;
 
-use Multiple\Frontend\Models\Users;
-use Multiple\Frontend\Models\SuccessLogins;
-use Multiple\Frontend\Models\FailedLogins;
+use Raffledo\Models\Users;
+use Raffledo\Models\SuccessLogins;
+use Raffledo\Models\FailedLogins;
+use Raffledo\Models\RememberTokens;
 
 /**
  * Raffledo\Auth\Auth
@@ -24,20 +25,18 @@ class Auth extends Component
     {
 
         // Check if the user exist
-        $user = Users::findFirstByEmail($credentials['email']);
+        $user = Users::findFirstByUsername($credentials['username']);
+
         if ($user == false) {
             $this->registerUserThrottling(0);
-            throw new Exception('Wrong email/password combination');
+            throw new Exception('Wrong username/password combination');
         }
 
         // Check the password
         if (!$this->security->checkHash($credentials['password'], $user->password)) {
             $this->registerUserThrottling($user->id);
-            throw new Exception('Wrong email/password combination');
+            throw new Exception('Wrong username/password combination');
         }
-
-        // Check if the user was flagged
-        $this->checkUserFlags($user);
 
         // Register the successful login
         $this->saveSuccessLogin($user);
@@ -49,7 +48,7 @@ class Auth extends Component
 
         $this->session->set('auth-identity', [
             'id' => $user->id,
-            'name' => $user->name,
+            'username' => $user->username,
             'profile' => $user->profile->name
         ]);
     }
@@ -117,7 +116,7 @@ class Auth extends Component
     public function createRememberEnvironment(Users $user)
     {
         $userAgent = $this->request->getUserAgent();
-        $token = md5($user->email . $user->password . $userAgent);
+        $token = md5($user->username . $user->password . $userAgent);
 
         $remember = new RememberTokens();
         $remember->users_id = $user->id;
@@ -155,7 +154,7 @@ class Auth extends Component
         if ($user) {
 
             $userAgent = $this->request->getUserAgent();
-            $token = md5($user->email . $user->password . $userAgent);
+            $token = md5($user->username . $user->password . $userAgent);
 
             if ($cookieToken == $token) {
 
@@ -169,22 +168,19 @@ class Auth extends Component
                 if ($remember) {
 
                     // Check if the cookie has not expired
-                    if ((time() - (86400 * 8)) < $remember->createdAt) {
-
-                        // Check if the user was flagged
-                        $this->checkUserFlags($user);
+                    if ((time() - (86400 * 8)) < $remember->created_at) {
 
                         // Register identity
                         $this->session->set('auth-identity', [
                             'id' => $user->id,
-                            'name' => $user->name,
+                            'username' => $user->username,
                             'profile' => $user->profile->name
                         ]);
 
                         // Register the successful login
                         $this->saveSuccessLogin($user);
 
-                        return $this->response->redirect('users');
+                        return $this->response->redirect('/');
                     }
                 }
             }
@@ -193,28 +189,7 @@ class Auth extends Component
         $this->cookies->get('RMU')->delete();
         $this->cookies->get('RMT')->delete();
 
-        return $this->response->redirect('session/login');
-    }
-
-    /**
-     * Checks if the user is banned/inactive/suspended
-     *
-     * @param \Raffledo\Models\Users $user
-     * @throws Exception
-     */
-    public function checkUserFlags(Users $user)
-    {
-        /*if ($user->active != 'Y') {
-            throw new Exception('The user is inactive');
-        }
-
-        if ($user->banned != 'N') {
-            throw new Exception('The user is banned');
-        }
-
-        if ($user->suspended != 'N') {
-            throw new Exception('The user is suspended');
-        }*/
+        return $this->response->redirect('/login');
     }
 
     /**
@@ -235,7 +210,7 @@ class Auth extends Component
     public function getName()
     {
         $identity = $this->session->get('auth-identity');
-        return $identity['name'];
+        return $identity['username'];
     }
 
     /**
@@ -273,11 +248,9 @@ class Auth extends Component
             throw new Exception('The user does not exist');
         }
 
-        $this->checkUserFlags($user);
-
         $this->session->set('auth-identity', [
             'id' => $user->id,
-            'name' => $user->name,
+            'username' => $user->username,
             'profile' => $user->profile->name
         ]);
     }

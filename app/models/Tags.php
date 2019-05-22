@@ -1,9 +1,13 @@
 <?php
 
-use Phalcon\Mvc\Model\Behavior\Timestampable;
-use Phalcon\Mvc\Model\Relation;
+namespace Raffledo\Models;
 
-class Games extends \Phalcon\Mvc\Model
+use Phalcon\Mvc\Model;
+use Phalcon\Mvc\Model\Behavior\Timestampable;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
+
+class Tags extends Model
 {
 
     /**
@@ -16,85 +20,25 @@ class Games extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $url;
+    public $tag;
+
+    /**
+     *
+     * @var string
+     */
+    public $name;
+
+    /**
+     *
+     * @var string
+     */
+    public $description;
 
     /**
      *
      * @var integer
      */
-    public $companies_id;
-
-    /**
-     *
-     * @var string
-     */
-    public $title;
-
-    /**
-     *
-     * @var string
-     */
-    public $price;
-
-    /**
-     *
-     * @var integer
-     */
-    public $type_register;
-
-    /**
-     *
-     * @var integer
-     */
-    public $type_sms;
-
-    /**
-     *
-     * @var integer
-     */
-    public $type_buy;
-
-    /**
-     *
-     * @var integer
-     */
-    public $type_internet;
-
-    /**
-     *
-     * @var integer
-     */
-    public $type_submission;
-
-    /**
-     *
-     * @var string
-     */
-    public $suggested_solution;
-
-    /**
-     *
-     * @var string
-     */
-    public $deadline_date;
-
-    /**
-     *
-     * @var string
-     */
-    public $deadline_time;
-
-    /**
-     *
-     * @var string
-     */
-    public $enter_date;
-
-    /**
-     *
-     * @var string
-     */
-    public $enter_time;
+    public $footer;
 
     /**
      *
@@ -114,32 +58,21 @@ class Games extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("phalcon");
-        $this->setSource("games");
-
-        $this->belongsTo(
-            'companies_id',
-            'Companies',
-            'id',
-            [
-                'alias' => 'company'
-            ]
-        );
+        $this->setSource("tags");
         $this->hasMany(
             'id',
-            'GamesTags',
-            'games_id',
-            [
-                'foreignKey' => [
-                    'action' => Relation::ACTION_CASCADE
-                ]
-            ]
-        );        
+            __NAMESPACE__ . '\GamesTags',
+            'tags_id'
+        );
         $this->hasManyToMany(
             'id',
-            'GamesTags',
-            'games_id', 'tags_id',
-            'Tags',
-            'id'
+            __NAMESPACE__ . '\GamesTags',
+            'tags_id', 'games_id',
+            __NAMESPACE__ . '\Games',
+            'id',
+            [
+                'alias' => 'games'
+            ]
         );
         $this->addBehavior(
             new Timestampable(
@@ -170,14 +103,14 @@ class Games extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'games';
+        return 'tags';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Games[]|Games|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return Tags[]|Tags|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -188,11 +121,24 @@ class Games extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Games|\Phalcon\Mvc\Model\ResultInterface
+     * @return Tags|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {
         return parent::findFirst($parameters);
     }
 
+    /**
+     * Validate that emails are unique across users
+     */
+    public function validation()
+    {
+        $validator = new Validation();
+
+        $validator->add('tag', new Uniqueness([
+            "message" => "The tag is already isset"
+        ]));
+
+        return $this->validate($validator);
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Multiple\Frontend\Models;
+namespace Raffledo\Models;
 
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
@@ -135,7 +135,8 @@ class Games extends Model
             [
                 'foreignKey' => [
                     'action' => Relation::ACTION_CASCADE
-                ]
+                ],
+                'alias' => 'gamesTags'
             ]
         );        
         $this->hasManyToMany(

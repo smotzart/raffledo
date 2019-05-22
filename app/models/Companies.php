@@ -1,8 +1,13 @@
 <?php
 
-use Phalcon\Mvc\Model\Behavior\Timestampable;
+namespace Raffledo\Models;
 
-class Tags extends \Phalcon\Mvc\Model
+use Phalcon\Mvc\Model\Behavior\Timestampable;
+use Phalcon\Mvc\Model;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
+
+class Companies extends Model
 {
 
     /**
@@ -21,13 +26,13 @@ class Tags extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $title;
+    public $name;
 
     /**
      *
      * @var string
      */
-    public $description;
+    public $host;
 
     /**
      *
@@ -53,39 +58,15 @@ class Tags extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("phalcon");
-        $this->setSource("tags");
+        $this->setSource("companies");    
         $this->hasMany(
             'id',
-            'GamesTags',
-            'tags_id'
-        );
-        $this->hasManyToMany(
-            'id',
-            'GamesTags',
-            'games_id', 'tags_id',
-            'Games',
-            'id'
-        );
-        $this->addBehavior(
-            new Timestampable(
-                [
-                    'beforeCreate' => [
-                        'field'  => 'created_at',
-                        'format' => 'Y-m-d H:i:s',
-                    ]
-                ]
-            )
-        );
-        $this->addBehavior(
-            new Timestampable(
-                [
-                    'beforeUpdate' => [
-                        'field'  => 'updated_at',
-                        'format' => 'Y-m-d H:i:s',
-                    ]
-                ]
-            )
-        );
+            __NAMESPACE__ . '\Games',
+            'companies_id',
+            [
+                'alias' => 'games'
+            ]
+        );    
     }
 
     /**
@@ -95,14 +76,14 @@ class Tags extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'tags';
+        return 'companies';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Tags[]|Tags|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return Companies[]|Companies|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -113,11 +94,25 @@ class Tags extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Tags|\Phalcon\Mvc\Model\ResultInterface
+     * @return Companies|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {
         return parent::findFirst($parameters);
+    }
+
+    /**
+     * Validate that emails are unique across users
+     */
+    public function validation()
+    {
+        $validator = new Validation();
+
+        $validator->add('tag', new Uniqueness([
+            "message" => "The tag is already isset"
+        ]));
+
+        return $this->validate($validator);
     }
 
 }

@@ -1,6 +1,8 @@
 <?php
 
-class Permissions extends \Phalcon\Mvc\Model
+namespace Raffledo\Models;
+
+class FailedLogins extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -13,19 +15,19 @@ class Permissions extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $profiles_id;
+    public $users_id;
 
     /**
      *
      * @var string
      */
-    public $resource;
+    public $ipAddress;
 
     /**
      *
-     * @var string
+     * @var integer
      */
-    public $action;
+    public $attempted;
 
     /**
      * Initialize method for model.
@@ -33,15 +35,11 @@ class Permissions extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("phalcon");
-        $this->setSource("permissions");
-        $this->belongsTo(
-            'profiles_id',
-            'Profiles',
-            'id',
-            [
-                'alias' => 'profile'
-            ]
-        );
+        $this->setSource("failed_logins");
+        
+        $this->belongsTo('users_id', 'Users', 'id', [
+            'alias' => 'user'
+        ]);
     }
 
     /**
@@ -51,14 +49,14 @@ class Permissions extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'permissions';
+        return 'failed_logins';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Permissions[]|Permissions|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return FailedLogins[]|FailedLogins|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -69,7 +67,7 @@ class Permissions extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Permissions|\Phalcon\Mvc\Model\ResultInterface
+     * @return FailedLogins|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {

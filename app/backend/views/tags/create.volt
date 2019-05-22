@@ -16,8 +16,8 @@
     {{ form.render("tag", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
-    <label for="title">Title</label>
-    {{ form.render("title", ['class': 'form-control']) }}
+    <label for="name">Name</label>
+    {{ form.render("name", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
     <label for="description">Description</label>

@@ -8,12 +8,8 @@
         
           <h3 class="display-4 mb-5">Jetzt kostenlos anmelden!</h3>
           <div class="form-group">
-            <label for="name">Benutzername</label>
-            <?= $form->render('name', ['class' => 'form-control form-control-lg']) ?>
-          </div>
-          <div class="form-group">
-            <label for="email">E-Mail</label>
-            <?= $form->render('email', ['class' => 'form-control form-control-lg']) ?>
+            <label for="username">Benutzername</label>
+            <?= $form->render('username', ['class' => 'form-control form-control-lg']) ?>
           </div>
           <div class="form-group">
             <label for="password">Passwort</label>
@@ -33,7 +29,7 @@
         </div>
       </form>
       
-      <div class="welcome-footer">
+      <div class="welcome-footer bg-primary">
         <?= $this->tag->linkTo(['/gewinnspiele', '› Ohne Registrierung zu den Gewinnspielen']) ?>
       </div>
     </div>

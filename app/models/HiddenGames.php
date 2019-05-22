@@ -1,11 +1,8 @@
 <?php
 
-namespace Multiple\Frontend\Models;
+namespace Raffledo\Models;
 
-use Phalcon\Mvc\Model\Behavior\Timestampable;
-use Phalcon\Mvc\Model;
-
-class Companies extends Model
+class HiddenGames extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -16,39 +13,15 @@ class Companies extends Model
 
     /**
      *
-     * @var string
+     * @var integer
      */
-    public $tag;
-
-    /**
-     *
-     * @var string
-     */
-    public $name;
-
-    /**
-     *
-     * @var string
-     */
-    public $host;
+    public $games_id;
 
     /**
      *
      * @var integer
      */
-    public $footer;
-
-    /**
-     *
-     * @var string
-     */
-    public $created_at;
-
-    /**
-     *
-     * @var string
-     */
-    public $updated_at;
+    public $users_id;
 
     /**
      * Initialize method for model.
@@ -56,7 +29,19 @@ class Companies extends Model
     public function initialize()
     {
         $this->setSchema("phalcon");
-        $this->setSource("companies");        
+        $this->setSource("hidden_games");
+        
+        $this->belongsTo(
+            'games_id',
+            __NAMESPACE__ . '\Games',
+            'id'
+        );
+
+        $this->belongsTo(
+            'users_id',
+            __NAMESPACE__ . '\Users',
+            'id'
+        );
     }
 
     /**
@@ -66,14 +51,14 @@ class Companies extends Model
      */
     public function getSource()
     {
-        return 'companies';
+        return 'hidden_games';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Companies[]|Companies|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return HidenGames[]|HidenGames|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -84,7 +69,7 @@ class Companies extends Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Companies|\Phalcon\Mvc\Model\ResultInterface
+     * @return HidenGames|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {

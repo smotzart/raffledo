@@ -10,7 +10,7 @@
     <div class="col-10">
       <div class="row">
         <div class="col-3 font-weight-bold">Tag</div>
-        <div class="col-4 font-weight-bold">Title</div>
+        <div class="col-4 font-weight-bold">Name</div>
         <div class="col-5 font-weight-bold">Description</div>        
       </div>
     </div>
@@ -22,7 +22,7 @@
         <div class="col-10">
           <div class="row align-items-center h-100">
             <div class="col-3">{{ item.tag }}</div>
-            <div class="col-4">{{ item.title }}</div>
+            <div class="col-4">{{ item.name }}</div>
             <div class="col-5">{{ item.description }}</div>          
           </div>
         </div>

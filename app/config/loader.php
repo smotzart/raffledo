@@ -7,8 +7,10 @@ $loader = new Phalcon\Loader();
  */
 
 $loader->registerNamespaces([
-  'Raffledo\Forms' => $config->application->formsDir,
-  'Raffledo' => $config->application->libraryDir
+  'Raffledo\Forms'  => $config->application->formsDir,
+  'Raffledo\Models' => $config->application->modelsDir,
+  'Raffledo'        => $config->application->libraryDir
 ])->registerDirs([
-    $config->application->formsDir
+  $config->application->formsDir,
+  $config->application->modelsDir
 ])->register();

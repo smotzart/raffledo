@@ -1,6 +1,6 @@
 <form method="post" autocomplete="off">
   <div class="d-flex align-items-center pb-2 border-bottom mb-4">
-    <h2 class="m-0"><i class="fa fa-hashtag" style="font-size:0.75em"></i>{{ itemTag.tag }} <small>{{ itemTag.title }}</small></h2>  
+    <h2 class="m-0"><i class="fa fa-hashtag" style="font-size:0.75em"></i>{{ itemTag.tag }} <small>{{ itemTag.name }}</small></h2>  
     <div class="ml-auto mr-2">
       {{ link_to('tags/', '<i class="fa fa-angle-left mr-2"></i>Back', 'class': 'btn btn-outline-info') }}
     </div>
@@ -19,8 +19,8 @@
     {{ form.render("tag", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
-    <label for="title">Title</label>
-    {{ form.render("title", ['class': 'form-control']) }}
+    <label for="name">Name</label>
+    {{ form.render("name", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
     <label for="description">Description</label>

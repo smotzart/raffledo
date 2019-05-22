@@ -3,7 +3,7 @@
 namespace Multiple\Backend\Controllers;
 
 use Raffledo\Forms\TagsForm;
-use Multiple\Frontend\Models\Tags;
+use Raffledo\Models\Tags;
 
 class TagsController extends ControllerBase
 {
@@ -37,12 +37,11 @@ class TagsController extends ControllerBase
           ]);
 
           if (!$tag->save()) {
-            $this->flashSession->error($tag->getMessages());
+            $this->flash->error($tag->getMessages());
           } else {
             $this->flashSession->success("Tag was created successfully");
+            return $this->response->redirect('tags');
           }
-
-          return $this->response->redirect('tags');
         }
       }
 
@@ -79,12 +78,11 @@ class TagsController extends ControllerBase
           ]);
 
           if (!$tag->save()) {
-            $this->flashSession->error($tag->getMessages());
+            $this->flash->error($tag->getMessages());
           } else {
             $this->flashSession->success("Tag was updated successfully");
+            return $this->response->redirect('tags');
           }
-
-          return $this->response->redirect('tags');
         }
       }
 

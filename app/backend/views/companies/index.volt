@@ -9,8 +9,9 @@
   <div class="row py-3 bg-light text-muted">
     <div class="col-10">
       <div class="row">
-        <div class="col-4 font-weight-bold">Name</div>
-        <div class="col-8 font-weight-bold">Host</div>       
+        <div class="col-3 font-weight-bold">Name</div>
+        <div class="col-3 font-weight-bold">Tag</div>
+        <div class="col-6 font-weight-bold">Host</div>       
       </div>
     </div>
     <div class="col-2 font-weight-bold">Footer</div>
@@ -20,8 +21,9 @@
       <div class="row py-2 border-top">
         <div class="col-10">
           <div class="row align-items-center h-100">
-            <div class="col-4">{{ item.name }}</div>
-            <div class="col-8">
+            <div class="col-3">{{ item.name }}</div>
+            <div class="col-3">{{ item.tag }}</div>
+            <div class="col-6">
               {{link_to(item.host, '<i class="fa fa-external-link-square"></i>', 'class': 'mr-2 float-left')}}
               <div class="text-truncate">{{ item.host }}</div>
             </div>          

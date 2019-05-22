@@ -6,7 +6,9 @@ use Raffledo\Forms\RegisterForm;
 use Raffledo\Forms\LoginForm;
 use Raffledo\Auth\Exception as AuthException;
 
-use Multiple\Frontend\Models\Companies;
+use Raffledo\Models\Companies;
+use Raffledo\Models\Users;
+
 
 class IndexController extends ControllerBase
 {
@@ -21,29 +23,45 @@ class IndexController extends ControllerBase
 
     public function indexAction()
     {
+
+      if (is_array($this->auth->getIdentity())) {
+        return $this->response->redirect('gewinnspiele');
+      }
+
       $this->view->setVar('logged_in', is_array($this->auth->getIdentity()));
 
       $form = new RegisterForm();
 
       if ($this->request->isPost()) {
 
-        if ($form->isValid($this->request->getPost()) != false) {
+        if ($form->isValid($this->request->getPost()) == false) {
+
+          foreach ($form->getMessages() as $message) {
+            $this->flashSession->error($message);
+          }
+        } else {       
 
           $user = new Users([
-            'name' => $this->request->getPost('name', 'striptags'),
+            'username' => $this->request->getPost('username', 'striptags'),
             'email' => $this->request->getPost('email'),
             'password' => $this->security->hash($this->request->getPost('password')),
             'profiles_id' => 2
           ]);
 
-          if ($user->save()) {
-            return $this->dispatcher->forward([
-              'controller' => 'index',
-              'action' => 'index'
+          if (!$user->save()) {
+            foreach ($user->getMessages() as $message) {
+              $this->flashSession->error($message);
+            }
+          } else {
+            $this->auth->check([
+              'username' => $user->username,
+              'password' => $this->request->getPost('password'),
+              'remember' => 'yes'
             ]);
-          }
 
-          $this->flash->error($user->getMessages());
+            return $this->response->redirect('gewinnspiele');
+          }
+         
         }
       }
 

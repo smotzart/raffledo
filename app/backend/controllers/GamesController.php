@@ -3,9 +3,10 @@
 namespace Multiple\Backend\Controllers;
 
 use Raffledo\Forms\GamesForm;
-use Multiple\Frontend\Models\Games;
-use Multiple\Frontend\Models\Tags;
-use Multiple\Frontend\Models\Companies;
+use Raffledo\Models\Games;
+use Raffledo\Models\Tags;
+use Raffledo\Models\GamesTags;
+use Raffledo\Models\Companies;
 
 class GamesController extends ControllerBase
 {
@@ -60,12 +61,11 @@ class GamesController extends ControllerBase
           $game->gamesTags = $tags;
           
           if (!$game->save()) {
-            $this->flashSession->error($game->getMessages());
+            $this->flash->error($game->getMessages());
           } else {
             $this->flashSession->success("Game was created successfully");
+            return $this->response->redirect('games');
           }
-
-          return $this->response->redirect('games');
         }
       }
 
@@ -130,12 +130,11 @@ class GamesController extends ControllerBase
           $game->gamesTags = $tags;
 
           if (!$game->save()) {
-            $this->flashSession->error($game->getMessages());
+            $this->flash->error($game->getMessages());
           } else {   
             $this->flashSession->success("Game was updated successfully");
-          }
-
-          return $this->response->redirect('games');
+            return $this->response->redirect('games');
+          }          
         }
       }
 

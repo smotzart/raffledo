@@ -24,6 +24,17 @@ class CompaniesForm extends Form
     ]);
     $this->add($name);
 
+    // Title
+    $tag = new Text('tag', [
+      'placeholder' => 'Tag'
+    ]);
+    $tag->addValidators([
+      new PresenceOf([
+        'message' => 'The tag is required'
+      ])
+    ]);
+    $this->add($tag);
+
     // Description
     $host = new TextArea('host', [
       'placeholder' => 'Host'

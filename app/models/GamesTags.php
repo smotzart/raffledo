@@ -1,7 +1,10 @@
 <?php
 
-namespace Multiple\Frontend\Models;
-class Permissions extends \Phalcon\Mvc\Model
+namespace Raffledo\Models;
+
+use Phalcon\Mvc\Model\Behavior\Timestampable;
+
+class GamesTags extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -14,19 +17,19 @@ class Permissions extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $profiles_id;
+    public $games_id;
+
+    /**
+     *
+     * @var integer
+     */
+    public $tags_id;
 
     /**
      *
      * @var string
      */
-    public $resource;
-
-    /**
-     *
-     * @var string
-     */
-    public $action;
+    public $created_at;
 
     /**
      * Initialize method for model.
@@ -34,14 +37,29 @@ class Permissions extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("phalcon");
-        $this->setSource("permissions");
+        $this->setSource("games_tags");
+
         $this->belongsTo(
-            'profiles_id',
-            __NAMESPACE__ . '\Profiles',
-            'id',
-            [
-                'alias' => 'profile'
-            ]
+            'games_id',
+            __NAMESPACE__ . '\Games',
+            'id'
+        );
+
+        $this->belongsTo(
+            'tags_id',
+            __NAMESPACE__ . '\Tags',
+            'id'
+        );
+
+        $this->addBehavior(
+            new Timestampable(
+                [
+                    'beforeCreate' => [
+                        'field'  => 'created_at',
+                        'format' => 'Y-m-d H:i:s',
+                    ]
+                ]
+            )
         );
     }
 
@@ -52,14 +70,14 @@ class Permissions extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'permissions';
+        return 'games_tags';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Permissions[]|Permissions|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return GamesTags[]|GamesTags|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -70,7 +88,7 @@ class Permissions extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Permissions|\Phalcon\Mvc\Model\ResultInterface
+     * @return GamesTags|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {

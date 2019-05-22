@@ -10,8 +10,8 @@ use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Validation\Validator\PresenceOf;
-use Multiple\Frontend\Models\Companies;
-use Multiple\Frontend\Models\Tags;
+use Raffledo\Models\Companies;
+use Raffledo\Models\Tags;
 
 
 class Time extends Date
@@ -105,7 +105,7 @@ class GamesForm extends Form
     $tags_select = new Select('tags_id[]', $tags, [
       'using' => [
         'id',
-        'title'
+        'name'
       ],
       'useEmpty' => false,
       'multiple' => true,
