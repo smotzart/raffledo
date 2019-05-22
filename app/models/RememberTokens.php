@@ -22,13 +22,7 @@ class RememberTokens extends \Phalcon\Mvc\Model
      * @var string
      */
     public $token;
-
-    /**
-     *
-     * @var string
-     */
-    public $userAgent;
-
+    
     /**
      *
      * @var integer

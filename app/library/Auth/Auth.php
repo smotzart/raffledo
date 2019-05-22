@@ -64,7 +64,6 @@ class Auth extends Component
         $successLogin = new SuccessLogins();
         $successLogin->users_id = $user->id;
         $successLogin->ipAddress = $this->request->getClientAddress();
-        $successLogin->userAgent = $this->request->getUserAgent();
         if (!$successLogin->save()) {
             $messages = $successLogin->getMessages();
             throw new Exception($messages[0]);
@@ -115,13 +114,11 @@ class Auth extends Component
      */
     public function createRememberEnvironment(Users $user)
     {
-        $userAgent = $this->request->getUserAgent();
-        $token = md5($user->username . $user->password . $userAgent);
+        $token = md5($user->username . $user->password);
 
         $remember = new RememberTokens();
         $remember->users_id = $user->id;
         $remember->token = $token;
-        $remember->userAgent = $userAgent;
 
         if ($remember->save() != false) {
             $expire = time() + 86400 * 8;
@@ -153,8 +150,7 @@ class Auth extends Component
         $user = Users::findFirstById($userId);
         if ($user) {
 
-            $userAgent = $this->request->getUserAgent();
-            $token = md5($user->username . $user->password . $userAgent);
+            $token = md5($user->username . $user->password);
 
             if ($cookieToken == $token) {
 

@@ -24,12 +24,6 @@ class SuccessLogins extends \Phalcon\Mvc\Model
     public $ipAddress;
 
     /**
-     *
-     * @var string
-     */
-    public $userAgent;
-
-    /**
      * Initialize method for model.
      */
     public function initialize()
