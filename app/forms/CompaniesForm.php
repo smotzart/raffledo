@@ -8,6 +8,7 @@ use Phalcon\Forms\Element\TextArea;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Validation\Validator\Url;
 
 class CompaniesForm extends Form
 {
@@ -42,6 +43,9 @@ class CompaniesForm extends Form
     $host->addValidators([
       new PresenceOf([
         'message' => 'The host is required'
+      ]),
+      new Url([
+        'message' => 'The host must be a url'
       ])
     ]);
     $this->add($host);

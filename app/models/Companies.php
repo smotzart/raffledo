@@ -109,8 +109,12 @@ class Companies extends Model
         $validator = new Validation();
 
         $validator->add('tag', new Uniqueness([
-            "message" => "The tag is already isset"
+            "message" => "The tag already in use"
         ]));
+        $validator->add('name', new Uniqueness([
+            "message" => "The name already in use"
+        ]));
+
 
         return $this->validate($validator);
     }

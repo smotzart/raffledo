@@ -10,6 +10,7 @@ use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Validation\Validator\Url;
 use Raffledo\Models\Companies;
 use Raffledo\Models\Tags;
 
@@ -34,6 +35,9 @@ class GamesForm extends Form
     $url->addValidators([
       new PresenceOf([
         'message' => 'The url is required'
+      ]),
+      new Url([
+        'message' => 'The url must be a url'
       ])
     ]);
     $this->add($url);
