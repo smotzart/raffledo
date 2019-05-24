@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 22 2019 г., 19:55
+-- Время создания: Май 24 2019 г., 11:51
 -- Версия сервера: 10.1.33-MariaDB
 -- Версия PHP: 7.2.6
 
@@ -53,7 +53,9 @@ INSERT INTO `companies` (`id`, `tag`, `name`, `host`, `footer`, `created_at`, `u
 (8, 'c4', 'c4', 'https://tracker.fetz.cc', 0, '2019-05-21 23:59:52', '0000-00-00 00:00:00'),
 (9, 'c5', 'c5', 'https://tracker.fetz.cc', 1, '2019-05-21 23:59:58', '0000-00-00 00:00:00'),
 (10, 'c6', 'c6', 'https://tracker.fetz.cc', 1, '2019-05-22 00:00:05', '0000-00-00 00:00:00'),
-(11, 'c7', 'c7', 'https://tracker.fetz.cc', 1, '2019-05-22 00:00:12', '0000-00-00 00:00:00');
+(11, 'c7', 'c7', 'https://tracker.fetz.cc', 1, '2019-05-22 00:00:12', '0000-00-00 00:00:00'),
+(12, 'qwerty', 'qwerty', 'https://getbootstrap.com/docs/4.3/components/forms/', 1, '2019-05-24 09:42:45', '0000-00-00 00:00:00'),
+(13, 'qwerty2', 'qwerty2', 'https://getbootstrap.com/docs/4.3/components/forms/', 1, '2019-05-24 09:46:05', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -92,15 +94,16 @@ CREATE TABLE `games` (
   `companies_id` int(10) NOT NULL,
   `title` varchar(255) CHARACTER SET latin1 NOT NULL,
   `price` text CHARACTER SET latin1,
+  `price_info` int(1) NOT NULL DEFAULT '0',
   `type_register` int(1) NOT NULL DEFAULT '0',
   `type_sms` int(1) NOT NULL DEFAULT '0',
   `type_buy` int(1) NOT NULL DEFAULT '0',
   `type_internet` int(1) NOT NULL DEFAULT '0',
   `type_submission` int(1) NOT NULL DEFAULT '0',
   `suggested_solution` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `enter_date` date DEFAULT '0000-00-00',
+  `enter_date` datetime DEFAULT NULL,
   `enter_time` time DEFAULT NULL,
-  `deadline_date` date DEFAULT '0000-00-00',
+  `deadline_date` datetime DEFAULT NULL,
   `deadline_time` time DEFAULT '23:59:00',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
@@ -110,14 +113,16 @@ CREATE TABLE `games` (
 -- Дамп данных таблицы `games`
 --
 
-INSERT INTO `games` (`id`, `url`, `companies_id`, `title`, `price`, `type_register`, `type_sms`, `type_buy`, `type_internet`, `type_submission`, `suggested_solution`, `enter_date`, `enter_time`, `deadline_date`, `deadline_time`, `created_at`, `updated_at`) VALUES
-(1, 'https://forum.phalconphp.com/discussion/14919/datetime-form-field-shows-only-date-no-time', 2, 'first game', '', 1, 0, 1, 0, 0, '', '2019-05-10', '23:59:00', '2019-05-11', '23:59:00', '2019-05-19 20:18:20', '2019-05-22 07:58:45'),
-(2, '2nd', 1, 'first another 2', '', 1, 1, 1, 0, 0, '123', '0000-00-00', '23:59:00', '0000-00-00', '19:59:00', '2019-05-19 20:27:19', '2019-05-21 16:33:27'),
-(4, 'sfgg', 1, 'first', '', 0, 1, 1, 0, 0, '', '0000-00-00', '23:59:00', '0000-00-00', '23:59:00', '2019-05-20 04:53:51', '2019-05-21 16:32:32'),
-(5, 'https://www.google.com/search?q=phalcon', 3, 'ololo', '', 1, 1, 1, 1, 1, 'sdfsdf', '2019-05-22', '23:59:00', '2019-05-19', '23:59:00', '2019-05-21 17:07:33', '2019-05-22 08:16:37'),
-(6, 'https://www.google.com/search?q=phalcon', 4, 'asdf', '', 1, 0, 0, 0, 0, '123', '0000-00-00', '23:59:00', '0000-00-00', '23:59:00', '2019-05-21 17:07:53', '0000-00-00 00:00:00'),
-(7, 'https://www.google.com/search?q=phalcon', 2, 'asdasdas', 'qwert gghjkk', 0, 0, 0, 0, 0, '', '0000-00-00', '23:59:00', '0000-00-00', '23:59:00', '2019-05-21 17:08:10', '0000-00-00 00:00:00'),
-(8, 'https://www.google.com/search?q=phalcon', 1, '123 yui', 'd f hg f', 0, 0, 0, 1, 1, 'sdsdsdds', '0000-00-00', '08:59:00', '2020-02-01', '23:59:00', '2019-05-21 17:08:57', '0000-00-00 00:00:00');
+INSERT INTO `games` (`id`, `url`, `companies_id`, `title`, `price`, `price_info`, `type_register`, `type_sms`, `type_buy`, `type_internet`, `type_submission`, `suggested_solution`, `enter_date`, `enter_time`, `deadline_date`, `deadline_time`, `created_at`, `updated_at`) VALUES
+(1, 'https://forum.phalconphp.com/discussion/14919/datetime-form-field-shows-only-date-no-time', 2, 'first game', '', 1, 1, 0, 1, 0, 0, '', '2019-05-10 00:00:00', '23:59:00', '2019-05-11 00:00:00', '23:59:00', '2019-05-19 20:18:20', '2019-05-24 08:35:10'),
+(2, '2nd', 1, 'first another 2', '', 0, 1, 1, 1, 0, 0, '123', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '19:59:00', '2019-05-19 20:27:19', '2019-05-21 16:33:27'),
+(4, 'sfgg', 1, 'first', '', 0, 0, 1, 1, 0, 0, '', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '23:59:00', '2019-05-20 04:53:51', '2019-05-21 16:32:32'),
+(5, 'https://www.google.com/search?q=phalcon', 3, 'ololo', '', 0, 1, 1, 1, 1, 1, 'sdfsdf', '2019-05-22 00:00:00', '23:59:00', '2019-05-19 00:00:00', '23:59:00', '2019-05-21 17:07:33', '2019-05-22 08:16:37'),
+(6, 'https://www.google.com/search?q=phalcon', 4, 'asdf', '', 0, 1, 0, 0, 0, 0, '123', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '23:59:00', '2019-05-21 17:07:53', '0000-00-00 00:00:00'),
+(7, 'https://www.google.com/search?q=phalcon', 2, 'asdasdas', 'qwert gghjkk', 0, 0, 0, 0, 0, 0, '', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '23:59:00', '2019-05-21 17:08:10', '0000-00-00 00:00:00'),
+(8, 'https://www.google.com/search?q=phalcon', 1, '123 yui', 'd f hg f', 0, 0, 0, 0, 1, 1, 'sdsdsdds', '0000-00-00 00:00:00', '08:59:00', '2020-02-01 00:00:00', '23:59:00', '2019-05-21 17:08:57', '0000-00-00 00:00:00'),
+(9, 'https://getbootstrap.com/docs/4.3/components/forms/', 12, 'qwerty game', 'ololo\r\nololo', 0, 1, 0, 1, 1, 0, '', '2019-05-24 00:00:00', '23:59:00', '2019-05-24 00:00:00', '23:59:00', '2019-05-24 08:42:45', '0000-00-00 00:00:00'),
+(10, 'https://getbootstrap.com/docs/4.3/components/forms/', 13, 'sdfsdfsdf', '', 0, 0, 0, 0, 0, 0, '', '2019-05-24 00:00:00', '23:59:00', '2019-05-24 00:00:00', '23:59:00', '2019-05-24 08:46:05', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -146,7 +151,9 @@ INSERT INTO `games_tags` (`id`, `games_id`, `tags_id`, `created_at`) VALUES
 (75, 8, 21, '2019-05-21 17:08:57'),
 (76, 8, 23, '2019-05-21 17:08:57'),
 (77, 8, 24, '2019-05-21 17:08:57'),
-(83, 5, 22, '2019-05-22 08:16:37');
+(83, 5, 22, '2019-05-22 08:16:37'),
+(84, 1, 22, '2019-05-24 08:35:10'),
+(85, 9, 22, '2019-05-24 08:42:45');
 
 -- --------------------------------------------------------
 
@@ -455,7 +462,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT для таблицы `failed_logins`
@@ -467,25 +474,25 @@ ALTER TABLE `failed_logins`
 -- AUTO_INCREMENT для таблицы `games`
 --
 ALTER TABLE `games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT для таблицы `games_tags`
 --
 ALTER TABLE `games_tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT для таблицы `hidden_companies`
 --
 ALTER TABLE `hidden_companies`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `hidden_games`
 --
 ALTER TABLE `hidden_games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `hidden_tags`
@@ -515,7 +522,7 @@ ALTER TABLE `remember_tokens`
 -- AUTO_INCREMENT для таблицы `saved_games`
 --
 ALTER TABLE `saved_games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `success_logins`
