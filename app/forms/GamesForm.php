@@ -30,43 +30,107 @@ class GamesForm extends Form
   {
     // Url
     $url = new Text('url', [
-      'placeholder' => 'Url'
+      'placeholder' => 'URL'
     ]);
     $url->addValidators([
       new PresenceOf([
-        'message' => 'The url is required'
+        'message' => 'The URL is required'
       ]),
       new Url([
-        'message' => 'The url must be a url'
+        'message' => 'The URL must be a url'
       ])
     ]);
     $this->add($url);
 
+
+    
+
+
     // Company
     $companies = Companies::find();
-    $this->add(new Select('companies_id', $companies, [
+    $companies_opt = [
       'using' => [
         'id',
         'name'
       ],
-      'useEmpty' => false
-    ]));
+      'useEmpty' => false,
+      'emptyText' => 'New',
+      'emptyValue' => 'new'
+    ];
+    if (!$options['edit']) {
+
+      $c_name = new Text('c_name', [
+        'placeholder' => 'Name'
+      ]);
+      $c_name->addValidators([
+        new PresenceOf([
+          'message' => 'The Name is required'
+        ])
+      ]);
+      $this->add($c_name);
+
+      $c_tag = new Text('c_tag', [
+        'placeholder' => 'Tag'
+      ]);
+      $c_tag->addValidators([
+        new PresenceOf([
+          'message' => 'The Tag is required'
+        ])
+      ]);
+      $this->add($c_tag);
+
+      $c_host = new Text('c_host', [
+        'placeholder' => 'Host'
+      ]);    
+      $c_host->addValidators([
+        new PresenceOf([
+          'message' => 'The Host is required'
+        ]),
+        new Url([
+          'message' => 'The Host must be a url'
+        ])
+      ]);
+      $this->add($c_host);
+
+      $companies_opt['useEmpty'] = true;
+    }
+
+    $this->add(new Select('companies_id', $companies, $companies_opt));
+
+
+
 
     // Title
     $title = new Text('title', [
-      'placeholder' => 'Title'
+      'placeholder' => 'Titel'
     ]);
     $title->addValidators([
       new PresenceOf([
-        'message' => 'The title is required'
+        'message' => 'The Titel is required'
       ])
     ]);
     $this->add($title);
-
-    // Price
-    $price = new TextArea('price', [
-      'placeholder' => 'Price'
+    // Type 4
+    $info = new Check('price_info', [
+      'value' => 1
     ]);
+    $info->setLabel('Info');
+    $this->add($info);
+
+    if (isset($entity) && $entity->price_info == 1) {
+      $price = new TextArea('price', [
+        'placeholder' => 'Preis',
+        'rows' => 4,
+        'style' => 'resize:none;'
+      ]);
+    } else {
+      $price = new TextArea('price', [
+        'placeholder' => 'Preis',
+        'rows' => 1,
+        'style' => 'resize:none;'
+      ]);      
+    }
+    // Price
     $this->add($price);
 
     // Type 1

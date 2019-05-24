@@ -44,6 +44,12 @@ class Games extends Model
      *
      * @var integer
      */
+    public $price_info;
+
+    /**
+     *
+     * @var integer
+     */
     public $type_register;
 
     /**

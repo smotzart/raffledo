@@ -15,23 +15,28 @@
   {{ content() }}
 
   <div class="form-group">
-    <label for="url">Url</label>
+    <label for="url">URL</label>
     {{ form.render("url", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
-    <label for="companies_id">Company</label>
+    <label for="companies_id">Anbieter</label>
     {{ form.render("companies_id", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
-    <label for="title">Title</label>
+    <label for="title">Titel</label>
     {{ form.render("title", ['class': 'form-control']) }}
   </div>
+  
   <div class="form-group">
-    <label for="price">Price</label>
+    <label for="price">Preis</label>
+    <div class="form-group form-check">
+      {{ form.render('price_info', ['class': 'form-check-input']) }}
+      {{ form.label('price_info', ['class': 'form-check-label']) }}
+    </div>
     {{ form.render("price", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
-    <h5>Game type</h5>
+    <h5>Gewinnspiel Typ</h5>
     <div class="form-check">
       {{ form.render('type_register', ['class': 'form-check-input']) }}
       {{ form.label('type_register', ['class': 'form-check-label']) }}

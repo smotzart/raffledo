@@ -12,23 +12,51 @@
   {{ content() }}
 
   <div class="form-group">
-    <label for="url">Url</label>
+    <label for="url">URL</label>
     {{ form.render("url", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
-    <label for="companies_id">Company</label>
+    <label for="companies_id">Anbieter</label>
     {{ form.render("companies_id", ['class': 'form-control']) }}
+    <small class="form-text text-muted">Choose from existing or create new</small>
+  </div>
+  <div class="row bg-light py-4 mb-3" id="new_game">
+    <div class="col-12">
+      <h5>New company</h5>
+    </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label for="c_name">Name</label>
+        {{ form.render("c_name", ['class': 'form-control']) }}
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label for="c_tag">Tag</label>
+        {{ form.render("c_tag", ['class': 'form-control']) }}
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="form-group">
+        <label for="c_host">Host</label>
+        {{ form.render("c_host", ['class': 'form-control']) }}
+      </div>
+    </div>
   </div>
   <div class="form-group">
-    <label for="title">Title</label>
+    <label for="title">Titel</label>
     {{ form.render("title", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
-    <label for="price">Price</label>
+    <label for="price">Preis</label>
+    <div class="form-group form-check">
+      {{ form.render('price_info', ['class': 'form-check-input']) }}
+      {{ form.label('price_info', ['class': 'form-check-label']) }}
+    </div>
     {{ form.render("price", ['class': 'form-control']) }}
   </div>
   <div class="form-group">
-    <h5>Game type</h5>
+    <h5>Gewinnspiel Typ</h5>
     <div class="form-check">
       {{ form.render('type_register', ['class': 'form-check-input']) }}
       {{ form.label('type_register', ['class': 'form-check-label']) }}

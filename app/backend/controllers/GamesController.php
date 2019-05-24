@@ -33,7 +33,7 @@ class GamesController extends ControllerBase
         } else {
           $game = new Games([
             'url' => $this->request->getPost('url', 'striptags'),
-            'companies_id' => $this->request->getPost('companies_id'),
+            //'companies_id' => $this->request->getPost('companies_id'),
             'title' => $this->request->getPost('title', 'striptags'),
             'price' => $this->request->getPost('price', 'striptags'),
             'type_register' => $this->request->getPost('type_register') ? 1 : 0,
@@ -48,17 +48,30 @@ class GamesController extends ControllerBase
             'deadline_time' => $this->request->getPost('deadline_time')
           ]);
 
+          if ($this->request->getPost('companies_id') == 'new') {
+            $company = new Companies([
+              'name' => $this->request->getPost('c_name', 'striptags'),
+              'tag' => $this->request->getPost('c_tag', 'striptags'),
+              'host' => $this->request->getPost('c_host', 'striptags')
+            ]);
+            $game->company = $company;
+          } else {
+            $game->companies_id = $this->request->getPost('companies_id');
+          }
+
           $updated_tags = $this->request->getPost('tags_id');
 
-          $tags = array();
-          
-          foreach($updated_tags as $tag_id) {
-            $gt = new GamesTags([
-              'tags_id' => $tag_id
-            ]);
-            $tags[] = $gt;
+          if ($updated_tags && count($updated_tags) > 0) {
+            $tags = array();
+            
+            foreach($updated_tags as $tag_id) {
+              $gt = new GamesTags([
+                'tags_id' => $tag_id
+              ]);
+              $tags[] = $gt;
+            }
+            $game->gamesTags = $tags;
           }
-          $game->gamesTags = $tags;
           
           if (!$game->save()) {
             $this->flash->error($game->getMessages());
@@ -119,15 +132,16 @@ class GamesController extends ControllerBase
           $tags = array();
           $game->getGamesTags()->delete();
           
-          //$missing_tags = array_diff($current_tags, $updated_tags);
+          if ($updated_tags && count($updated_tags) > 0) {
           
-          foreach($updated_tags as $tag_id) {
-            $gt = new GamesTags([
-              'tags_id' => $tag_id
-            ]);
-            $tags[] = $gt;
+            foreach($updated_tags as $tag_id) {
+              $gt = new GamesTags([
+                'tags_id' => $tag_id
+              ]);
+              $tags[] = $gt;
+            }
+            $game->gamesTags = $tags;
           }
-          $game->gamesTags = $tags;
 
           if (!$game->save()) {
             $this->flash->error($game->getMessages());
