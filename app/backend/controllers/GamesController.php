@@ -7,6 +7,7 @@ use Raffledo\Models\Games;
 use Raffledo\Models\Tags;
 use Raffledo\Models\GamesTags;
 use Raffledo\Models\Companies;
+use Phalcon\Filter;
 
 class GamesController extends ControllerBase
 {
@@ -177,6 +178,22 @@ class GamesController extends ControllerBase
       return $this->dispatcher->forward([
         'action' => 'index'
       ]);
+    }
+
+    public function searchAction($search = '') {
+      $this->view->disable();
+
+      $filter = new Filter();
+      $search = $filter->sanitize($_GET['search'], 'striptags');
+
+      $search_url = parse_url($search);
+      $search_url = isset($search_url['host']) ? $search_url['host'] : $search_url['path'];
+
+      $games = Games::find([
+        "conditions" => "url LIKE '%" . $search_url . "%'"
+      ]);
+
+      return $this->response->setContent(json_encode($games));
     }
 }
 

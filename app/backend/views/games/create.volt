@@ -11,7 +11,7 @@
 
   {{ content() }}
 
-  <div class="form-group">
+  <div class="form-group" id="url_change">
     <label for="url">URL</label>
     {{ form.render("url", ['class': 'form-control']) }}
   </div>
@@ -120,3 +120,17 @@
     <button type="submit" class="btn btn-success"><i class="fa fa-save mr-2"></i>Save</button>
   </div>
 </form>
+
+<div class="modal fade" id="existUrl" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content rounded-0">   
+      <div class="modal-header">
+        <h5 class="modal-title">Existing games</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>  
+      <div class="modal-body p-0"></div>
+    </div>
+  </div>
+</div>
