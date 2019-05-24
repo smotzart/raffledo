@@ -66,6 +66,75 @@
       </div>
     </main>
 
+    <?php 
+      $companies_footer = $this->modelsManager->createBuilder()
+        ->from(['companies' => 'Raffledo\Models\Companies'])
+        ->leftJoin('Raffledo\Models\Games', 'games.companies_id = companies.id', 'games')
+        ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
+        ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
+        ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
+
+        ->where('companies.footer = 1 AND saved.id IS NULL AND hidden.id IS NULL AND hc.id IS NULL')
+        ->having('count(games.id) > 0')
+        ->groupBy('companies.id')
+        ->limit(8)
+        ->getQuery()->execute();
+
+      $tags_footer= $this->modelsManager->createBuilder()
+        ->from(['tags' => 'Raffledo\Models\Tags'])
+        ->where('tags.footer = 1')
+        ->limit(4)
+        ->getQuery()->execute();
+    ?>
+
+    <div class="bg-warning text-white mb-7 py-7 footer-nav">
+      <div class="container">
+        <div class="row mb-7">
+          <div class="col-12 col-md-3">
+            <?php if ($controllerName) : ?>
+            <h5 class="mb-4">Top Preise</h5>
+            <ul class="list-unstyled">
+              <?php foreach ($tags_footer as $tag) : ?>   
+                <li><a href="/<?php echo $tag->tag; ?>-gewinnspiel" class="text-capitalize"><?php echo $tag->name; ?></a></li>
+              <?php endforeach; ?>
+            </ul>
+          <?php endif; ?>
+          </div>
+          <div class="col-12 col-md-6 col-lg-5">
+            <?php if ($controllerName) : ?>
+            <h5 class="mb-4">Gewinnspiel Anbieter</h5>
+            <div class="row">
+              <div class="col">                
+                <ul class="list-unstyled">
+                  <?php foreach ($companies_footer as $key => $company) : if ($key < 4) : ?>   
+                    <li><a href="/<?php echo $company->tag; ?>-gewinnspiele" class="text-capitalize"><?php echo $company->name; ?></a></li>
+                  <?php endif; endforeach; ?>
+                </ul>
+              </div>
+              <div class="col">                    
+                <ul class="list-unstyled">
+                  <?php foreach ($companies_footer as $key => $company) : if ($key > 3) : ?>   
+                    <li><a href="/<?php echo $company->tag; ?>-gewinnspiele" class="text-capitalize"><?php echo $company->name; ?></a></li>
+                  <?php endif; endforeach; ?>
+                </ul>
+              </div>
+            </div>
+          <?php endif; ?>
+          </div>
+          <div class="col-12 col-md-3">
+            <h5 class="mb-4">Über Raffledo</h5>       
+            <ul class="list-unstyled">
+              <li><a href="/impressum" class="text-capitalize">Impressum</a></li>
+              <li><a href="/datenschutz" class="text-capitalize">Datenschutz</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="text-center">
+          Copyright 2019 • BAWS Websolutions GmbH • Alle Reechte vorbehalten
+        </div>
+      </div>
+    </div>
+
 
     <footer class="mt-auto">
       <div class="container">
