@@ -4,6 +4,7 @@ namespace Multiple\Frontend\Controllers;
 
 use Raffledo\Forms\GamesForm;
 use Raffledo\Forms\ReportForm;
+use Raffledo\Forms\RegisterForm;
 use Raffledo\Models\Games;
 use Raffledo\Models\Tags;
 use Raffledo\Models\SavedGames;
@@ -59,6 +60,7 @@ class GamesController extends ControllerBase
     $this->view->search_name = $search_name;
 
     $this->view->report = new ReportForm();
+    $this->view->regform = new RegisterForm();
 
   }
 
@@ -167,6 +169,9 @@ class GamesController extends ControllerBase
     ]);
 
     $this->view->page = $paginator->getPaginate();
+
+
+    
 
   }
 

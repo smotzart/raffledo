@@ -16,6 +16,12 @@ class ControllerBase extends Controller
    */
   public function beforeExecuteRoute(Dispatcher $dispatcher)
   {
-    $controllerName = $dispatcher->getControllerName();
+   
+    $user = $this->auth->getUser();
+    if (!$user || $user->profile->id != 1) {
+      $url = "http://" . $_SERVER['HTTP_HOST'];  
+      header('Location: ' . $url, true, 302);
+      die();
+    }
   }
 }

@@ -25,7 +25,7 @@
           {%- endfor -%}
         </ul>
         <ul class="navbar-nav">
-          <li class="nav-item active">{{ link_to('/login/logout', 'Logout', 'class': 'nav-link') }}</li>            
+          <li class="nav-item active">{{ link_to('session/logout', 'Logout', 'class': 'nav-link') }}</li>            
         </ul>
       </div>
     </div>

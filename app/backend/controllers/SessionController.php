@@ -53,8 +53,10 @@ class SessionController extends ControllerBase
     public function logoutAction()
     {
         $this->auth->remove();
+        $url = "http://" . $_SERVER['HTTP_HOST'];  
+        header('Location: ' . $url, true, 302);
+        die();
 
-        return $this->response->redirect('index');
     }
 }
 
