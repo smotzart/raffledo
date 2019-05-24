@@ -11,7 +11,9 @@
     <div class="row py-2 border-top align-items-center">
       <div class="col-4">{{ report.user.username }}</div>
       <div class="col-6">
-        <div class="text-truncate">{{ report.game.title }}</div>
+        <div class="text-truncate">
+          {{ link_to('games/edit/' ~ report.game.id, '<i class="fa fa-external-link-square"></i>', 'class': 'mr-2 float-left') }}
+          {{ report.game.title }}</div>
       </div>  
       <div class="col-2 d-flex align-items-center">
         {{ link_to('reports/view/' ~ report.id, '<i class="fa fa-eye"></i>', 'class': 'btn btn-sm btn-info ml-auto') }}
