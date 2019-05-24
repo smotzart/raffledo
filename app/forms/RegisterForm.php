@@ -77,7 +77,7 @@ class RegisterForm extends Form
     $this->add($terms);
 
     // CSRF
-    $csrf = new Hidden('csrf');
+/*    $csrf = new Hidden('csrf');
 
     $csrf->addValidator(new Identical([
       'value' => $this->security->getSessionToken(),
@@ -86,7 +86,7 @@ class RegisterForm extends Form
 
     $csrf->clear();
 
-    $this->add($csrf);
+    $this->add($csrf);*/
 
     // Sign Up
     $this->add(new Submit('Jetzt kostenlos anmelden!', [

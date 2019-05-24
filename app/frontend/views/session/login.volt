@@ -12,7 +12,6 @@
             <label for="password">Passwort</label>
             {{ form.render('password', ['class': 'form-control form-control-lg']) }}
           </div>
-          {{ form.render('csrf', ['value': security.getToken()]) }}
           <div>            
             {{ form.render('Login') }}    
           </div>

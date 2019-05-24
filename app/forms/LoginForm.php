@@ -50,7 +50,7 @@ class LoginForm extends Form
     $this->add($remember);*/
 
     // CSRF
-    $csrf = new Hidden('csrf');
+    /*$csrf = new Hidden('csrf');
 
     $csrf->addValidator(new Identical([
       'value' => $this->security->getSessionToken(),
@@ -59,7 +59,7 @@ class LoginForm extends Form
 
     $csrf->clear();
 
-    $this->add($csrf);
+    $this->add($csrf);*/
 
     // Sign Up
     $this->add(new Submit('Login', [
