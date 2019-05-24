@@ -11,7 +11,8 @@
           {%- set menus = [
             {'title': 'Games', 'controller': 'games', 'icon': '<i class="fa fa-gamepad mr-2 text-primary"></i>'},
             {'title': 'Tags', 'controller': 'tags', 'icon': '<i class="fa fa-hashtag mr-2 text-warning"></i>'},
-            {'title': 'Companies', 'controller': 'companies', 'icon': '<i class="fa fa-group mr-2 text-success"></i>'}
+            {'title': 'Companies', 'controller': 'companies', 'icon': '<i class="fa fa-group mr-2 text-success"></i>'},
+            {'title': 'New game', 'controller': 'new', 'icon': '<i class="fa fa-bullhorn mr-2 text-info"></i>'}
           ] -%}
 
           {%- for item in menus %}

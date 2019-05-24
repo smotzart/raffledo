@@ -87,6 +87,13 @@ $router->add("/favoriten", [
   'action'     => 'favorite'
 ]);
 
+$router->add("/neues", [
+  'module'     => 'frontend',
+  'controller' => 'new',
+  'action'     => 'index'
+]);
+
+
 $router->add("/gewinnspiele/:action", [
   'module'     => 'frontend',
   'controller' => 'games',
