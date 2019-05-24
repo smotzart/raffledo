@@ -30,7 +30,8 @@
                 <input type="hidden" name="actionType" value="hideTags" />
                 <input type="hidden" name="actionId" value="{{ game.id }}" />
                 <button type="submit" class="dropdown-item">Tags/Preise ausschließen</button>
-              </form>              
+              </form>         
+              <a href data-gameid="{{ game.id }}" class="dropdown-item" data-toggle="modal" data-target="#reportGameModal">Gewinnspiel melden</a>
             </div>
           </div>
         {% endif %}

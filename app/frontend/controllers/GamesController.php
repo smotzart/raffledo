@@ -3,9 +3,11 @@
 namespace Multiple\Frontend\Controllers;
 
 use Raffledo\Forms\GamesForm;
+use Raffledo\Forms\ReportForm;
 use Raffledo\Models\Games;
 use Raffledo\Models\Tags;
 use Raffledo\Models\SavedGames;
+use Raffledo\Models\Reports;
 use Raffledo\Models\HiddenGames;
 use Raffledo\Models\HiddenCompanies;
 use Raffledo\Models\HiddenTags;
@@ -55,6 +57,8 @@ class GamesController extends ControllerBase
       $search_name = '';
     }
     $this->view->search_name = $search_name;
+
+    $this->view->report = new ReportForm();
 
   }
 
@@ -279,6 +283,36 @@ class GamesController extends ControllerBase
     $this->view->disable();
 
     return false;
+  }
+
+
+  public function reportAction()
+  {
+    $user = $this->auth->getUser();
+
+    if ($user) {
+
+      if ($this->request->isPost()) {
+        $game = Games::findFirst($this->request->getPost('games_id', 'int'));
+        
+        $report = new Reports([
+          'users_id' => $user->id,
+          'games_id' => $game->id,
+          'report'   => $this->request->getPost('report', 'striptags'),
+        ]);
+
+        if (!$report->save()) {
+          $this->flashSession->error($report->getMessages());
+        } else {
+          $this->flashSession->success("Report was created successfully");
+          return $this->response->redirect('index');
+        }
+      }
+
+    } else {
+      $this->flashSession->error("Only register user can do this action");      
+    }
+
   }
 
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 24 2019 г., 14:06
+-- Время создания: Май 24 2019 г., 14:51
 -- Версия сервера: 10.1.33-MariaDB
 -- Версия PHP: 7.2.6
 
@@ -295,6 +295,26 @@ INSERT INTO `remember_tokens` (`id`, `users_id`, `token`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `reports`
+--
+
+CREATE TABLE `reports` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `users_id` int(10) NOT NULL,
+  `games_id` int(10) NOT NULL,
+  `report` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `reports`
+--
+
+INSERT INTO `reports` (`id`, `users_id`, `games_id`, `report`) VALUES
+(1, 2, 2, 'test report');
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `saved_games`
 --
 
@@ -464,6 +484,12 @@ ALTER TABLE `remember_tokens`
   ADD KEY `token` (`token`);
 
 --
+-- Индексы таблицы `reports`
+--
+ALTER TABLE `reports`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `saved_games`
 --
 ALTER TABLE `saved_games`
@@ -558,6 +584,12 @@ ALTER TABLE `profiles`
 --
 ALTER TABLE `remember_tokens`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT для таблицы `reports`
+--
+ALTER TABLE `reports`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `saved_games`
