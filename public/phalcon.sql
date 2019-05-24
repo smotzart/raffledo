@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 24 2019 г., 11:51
+-- Время создания: Май 24 2019 г., 14:06
 -- Версия сервера: 10.1.33-MariaDB
 -- Версия PHP: 7.2.6
 
@@ -114,7 +114,7 @@ CREATE TABLE `games` (
 --
 
 INSERT INTO `games` (`id`, `url`, `companies_id`, `title`, `price`, `price_info`, `type_register`, `type_sms`, `type_buy`, `type_internet`, `type_submission`, `suggested_solution`, `enter_date`, `enter_time`, `deadline_date`, `deadline_time`, `created_at`, `updated_at`) VALUES
-(1, 'https://forum.phalconphp.com/discussion/14919/datetime-form-field-shows-only-date-no-time', 2, 'first game', '', 1, 1, 0, 1, 0, 0, '', '2019-05-10 00:00:00', '23:59:00', '2019-05-11 00:00:00', '23:59:00', '2019-05-19 20:18:20', '2019-05-24 08:35:10'),
+(1, 'https://forum.phalconphp.com', 2, 'first game', '', 1, 1, 0, 1, 0, 0, '', '2019-05-24 13:10:51', '23:59:00', '2019-05-24 13:10:51', '23:59:00', '2019-05-19 20:18:20', '2019-05-24 10:10:51'),
 (2, '2nd', 1, 'first another 2', '', 0, 1, 1, 1, 0, 0, '123', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '19:59:00', '2019-05-19 20:27:19', '2019-05-21 16:33:27'),
 (4, 'sfgg', 1, 'first', '', 0, 0, 1, 1, 0, 0, '', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '23:59:00', '2019-05-20 04:53:51', '2019-05-21 16:32:32'),
 (5, 'https://www.google.com/search?q=phalcon', 3, 'ololo', '', 0, 1, 1, 1, 1, 1, 'sdfsdf', '2019-05-22 00:00:00', '23:59:00', '2019-05-19 00:00:00', '23:59:00', '2019-05-21 17:07:33', '2019-05-22 08:16:37'),
@@ -152,8 +152,8 @@ INSERT INTO `games_tags` (`id`, `games_id`, `tags_id`, `created_at`) VALUES
 (76, 8, 23, '2019-05-21 17:08:57'),
 (77, 8, 24, '2019-05-21 17:08:57'),
 (83, 5, 22, '2019-05-22 08:16:37'),
-(84, 1, 22, '2019-05-24 08:35:10'),
-(85, 9, 22, '2019-05-24 08:42:45');
+(85, 9, 22, '2019-05-24 08:42:45'),
+(86, 1, 22, '2019-05-24 10:10:51');
 
 -- --------------------------------------------------------
 
@@ -190,6 +190,27 @@ CREATE TABLE `hidden_tags` (
   `tags_id` int(10) NOT NULL,
   `users_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `new_games`
+--
+
+CREATE TABLE `new_games` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `company` varchar(100) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `text1` text,
+  `text2` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `new_games`
+--
+
+INSERT INTO `new_games` (`id`, `company`, `url`, `text1`, `text2`) VALUES
+(1, 'test', 'https://www.gewinnspielverzeichnis.at/gewinnspiel_melden.html', 'ttest', 'sdfsd');
 
 -- --------------------------------------------------------
 
@@ -283,6 +304,13 @@ CREATE TABLE `saved_games` (
   `users_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Дамп данных таблицы `saved_games`
+--
+
+INSERT INTO `saved_games` (`id`, `games_id`, `users_id`) VALUES
+(1, 4, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -307,7 +335,8 @@ INSERT INTO `success_logins` (`id`, `users_id`, `ipAddress`) VALUES
 (38, 2, '127.0.0.1'),
 (39, 2, '127.0.0.1'),
 (40, 2, '127.0.0.1'),
-(41, 2, '127.0.0.1');
+(41, 2, '127.0.0.1'),
+(42, 2, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -409,6 +438,12 @@ ALTER TABLE `hidden_tags`
   ADD UNIQUE KEY `hidden_tags_users` (`tags_id`,`users_id`);
 
 --
+-- Индексы таблицы `new_games`
+--
+ALTER TABLE `new_games`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `permissions`
 --
 ALTER TABLE `permissions`
@@ -480,7 +515,7 @@ ALTER TABLE `games`
 -- AUTO_INCREMENT для таблицы `games_tags`
 --
 ALTER TABLE `games_tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT для таблицы `hidden_companies`
@@ -499,6 +534,12 @@ ALTER TABLE `hidden_games`
 --
 ALTER TABLE `hidden_tags`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `new_games`
+--
+ALTER TABLE `new_games`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `permissions`
@@ -522,13 +563,13 @@ ALTER TABLE `remember_tokens`
 -- AUTO_INCREMENT для таблицы `saved_games`
 --
 ALTER TABLE `saved_games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `success_logins`
 --
 ALTER TABLE `success_logins`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT для таблицы `tags`
