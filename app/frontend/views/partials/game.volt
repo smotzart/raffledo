@@ -2,7 +2,7 @@
   <div class="box-body">
     <div class="row no-gutters align-items-center">
       <div class="col-10 col-xl-8 box-title">
-        {{ game.title }}
+        {{ game.title }} / {{ game.id }}
       </div>
       <div class="d-none d-xl-block col-12 col-md-3">
         <span class="box-label">Gewinnspiel-Typ</span>
@@ -48,7 +48,7 @@
       <div class="col-12 col-md-7">
         <p>
           <span class="box-label">Anbieter</span>
-          <a href="/{{ game.company.tag }}-gewinnspiele" class="text-body">{{ game.company.name }}</a>
+          <a href="/{{ game.company.tag }}-gewinnspiele" class="text-body">{{ game.company.name }} / {{ game.company.id }}</a>
         </p>
         {% if game.price %}
           <p>

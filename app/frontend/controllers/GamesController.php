@@ -130,25 +130,31 @@ class GamesController extends ControllerBase
       if (!$company) {
         return $this->flashSession->error("Can't find choosen company");
       }
-      //$games = $company ? $company->games : Games::find();
-      $games = $this->modelsManager->createBuilder()
-        ->from(['games' => 'Raffledo\Models\Games'])
-        ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
-        ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-        ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
-        ->where('games.companies_id = '.$company->id.' AND saved.id IS NULL AND hidden.id IS NULL AND hc.id IS NULL')
-        ->getQuery()
-        ->execute();
+
+      $phql = 'SELECT g.*';
+      $phql .= $user ? ' , hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
+      $phql .= ' FROM Raffledo\Models\Games AS g';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
+      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND g.companies_id = ' . $company->id : '';
+      $phql .= $user ? ' ORDER BY save_id DESC' : '';
+      $phql .= $user ? '' : ' LIMIT 5';
+
+      $games = $this->modelsManager->executeQuery($phql);
 
     } else {
 
       $phql = 'SELECT g.*';
       $phql .= $user ? ' , hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
       $phql .= ' FROM Raffledo\Models\Games AS g';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql .= $user ? ' WHERE hg.id IS NULL ORDER BY save_id DESC' : '';
+      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL' : '';
+      $phql .= $user ? ' ORDER BY save_id DESC' : '';
       $phql .= $user ? '' : ' LIMIT 5';
 
       $games = $this->modelsManager->executeQuery($phql);
@@ -157,7 +163,7 @@ class GamesController extends ControllerBase
 
     if (!$user) {
       $this->view->single_type = true;
-    }   
+    }
 
     $paginator = new Paginator([
       "data"  => $games,
@@ -303,6 +309,32 @@ class GamesController extends ControllerBase
     } else {
       $this->flashSession->error("Only register user can do this action");      
     }
+
+  }
+
+
+  public function allAction()
+  {
+    $numberPage = 1;
+    $user = $this->auth->getUser();
+
+    if ($user) {
+      $numberPage = $this->request->getQuery("page", "int");
+    }
+
+    $phql = 'SELECT g.*';
+    $phql .= ' FROM Raffledo\Models\Games AS g';
+    $phql .= $user ? '' : ' LIMIT 5';
+
+    $games = $this->modelsManager->executeQuery($phql);
+
+    $paginator = new Paginator([
+      "data"  => $games,
+      "limit" => 5,
+      "page"  => $numberPage
+    ]);
+
+    $this->view->page = $paginator->getPaginate();
 
   }
 

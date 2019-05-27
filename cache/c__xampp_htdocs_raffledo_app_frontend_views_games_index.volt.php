@@ -28,7 +28,7 @@
         <div class="col-12 col-md-9 col-lg-8 mx-auto">
           <div class="box-label mb-5">Filter aktiv</div>
           <p class="mb-7">Du nutzt einen Filter, dadurch werden nicht alle <br class="d-none d-lg-block">Gewinnspiele angezeigt.</p>
-          <a href="" class="btn btn-block btn-theme">Weitere Gewinnspiele anzeigen</a>
+          <a href="/gewinnspiele-zeige-mir-alle-gewinnspiele-die-ich-noch-nicht-ausgeblendet-habe" class="btn btn-block btn-theme">Weitere Gewinnspiele anzeigen</a>
         </div>
       </div>
     </div>

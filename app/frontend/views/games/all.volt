@@ -1,10 +1,6 @@
 {% for game in page.items %}
   
-  {% if single_type is defined %}
-    {{ partial('partials/game', ['game': game, 'logged_in': logged_in]) }}
-  {% else %}
-    {{ partial('partials/game', ['game': game.g, 'logged_in': logged_in, 'is_view': game.is_view]) }}
-  {% endif %}
+  {{ partial('partials/game', ['game': game, 'logged_in': logged_in]) }}
 
   {% if loop.last and logged_in %}
     <div class="d-flex align-items-center justify-content-end">
