@@ -2,7 +2,7 @@
   <div class="box-body">
     <div class="row no-gutters align-items-center">
       <div class="col-10 col-xl-8 box-title">
-        {{ game.title }} / {{ game.id }}
+        {{ game.title }}
       </div>
       <div class="d-none d-xl-block col-12 col-md-3">
         <span class="box-label">Gewinnspiel-Typ</span>
