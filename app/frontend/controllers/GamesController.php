@@ -143,7 +143,7 @@ class GamesController extends ControllerBase
     } else {
 
       $phql = 'SELECT g.*';
-      $phql .= $user ? ' , ht.id as hide_tag, hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
+      $phql .= $user ? ' , hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
       $phql .= ' FROM Raffledo\Models\Games AS g';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
