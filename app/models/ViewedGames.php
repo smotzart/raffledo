@@ -2,7 +2,7 @@
 
 namespace Raffledo\Models;
 
-class HiddenTags extends \Phalcon\Mvc\Model
+class ViewedGames extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -15,7 +15,7 @@ class HiddenTags extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $tags_id;
+    public $games_id;
 
     /**
      *
@@ -29,21 +29,24 @@ class HiddenTags extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("phalcon");
-        $this->setSource("hidden_tags");
+        $this->setSource("viewed_games");
 
         $this->belongsTo(
-            'tags_id',
-            __NAMESPACE__ . '\Tags',
+            'games_id',
+            __NAMESPACE__ . '\Games',
             'id',
             [
-                'alias' => 'tag_entry'
+                'alias' => 'game'
             ]
         );
 
         $this->belongsTo(
             'users_id',
             __NAMESPACE__ . '\Users',
-            'id'
+            'id',
+            [
+                'alias' => 'user'
+            ]
         );
     }
 
@@ -54,14 +57,14 @@ class HiddenTags extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'hidden_tags';
+        return 'viewed_games';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return HiddenTags[]|HiddenTags|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return ViewedGames[]|ViewedGames|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -72,7 +75,7 @@ class HiddenTags extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return HiddenTags|\Phalcon\Mvc\Model\ResultInterface
+     * @return ViewedGames|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {

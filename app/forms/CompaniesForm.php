@@ -39,15 +39,13 @@ class CompaniesForm extends Form
     $this->add($tag);
 
     // Description
-    $host = new TextArea('host', [
-      'placeholder' => 'Host'
+    $host = new Text('host', [
+      'placeholder' => 'Host',
+      'data-role' => 'tagsinput'
     ]);
     $host->addValidators([
       new PresenceOf([
         'message' => 'The host is required'
-      ]),
-      new Url([
-        'message' => 'The host must be a url'
       ])
     ]);
     $this->add($host);

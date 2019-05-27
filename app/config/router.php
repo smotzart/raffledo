@@ -81,12 +81,6 @@ $router->add("/{company:[a-zA-Z0-9]+}-gewinnspiele", [
   'action'     => 'index',
 ]);
 
-$router->add("/favoriten", [
-  'module'     => 'frontend',
-  'controller' => 'games',
-  'action'     => 'favorite'
-]);
-
 $router->add("/neues", [
   'module'     => 'frontend',
   'controller' => 'new',

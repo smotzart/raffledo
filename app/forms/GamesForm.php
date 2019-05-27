@@ -26,6 +26,42 @@ class Time extends Date
 
 class GamesForm extends Form
 {
+  public function beforeValidation($data, $entity) 
+  {
+    $elements = $this->getElements();
+
+    if (isset($data['c_name'])) {
+      $elements['c_name']->addValidators([
+        new PresenceOf([
+          'message' => 'The company Name is required'
+        ])
+      ]);
+    }
+    if (isset($data['c_tag'])) {
+      $elements['c_tag']->addValidators([
+        new PresenceOf([
+          'message' => 'The company Tag is required'
+        ])
+      ]);
+    }
+    if (isset($data['c_host'])) {
+      $elements['c_host']->addValidators([
+        new PresenceOf([
+          'message' => 'The company Host is required'
+        ])
+      ]);
+    }
+  }
+  public function renderTextarea($name)
+  {
+    $element  = $this->get($name);
+
+    
+    echo '<textarea class="form-control" id="', $element->getName(), '" rows="',$element->getAttributes()['rows'],'" placeholder="',$element->getAttributes()['placeholder'],'" style="',$element->getAttributes()['style'],'">', nl2br($element->getValue()), '</textarea>';
+
+  }
+
+
   public function initialize($entity = null, $options = null)
   {
     // Url
@@ -57,39 +93,23 @@ class GamesForm extends Form
       'emptyText' => 'New',
       'emptyValue' => 'new'
     ];
+
     if (!$options['edit']) {
 
       $c_name = new Text('c_name', [
         'placeholder' => 'Name'
-      ]);
-      $c_name->addValidators([
-        new PresenceOf([
-          'message' => 'The Name is required'
-        ])
       ]);
       $this->add($c_name);
 
       $c_tag = new Text('c_tag', [
         'placeholder' => 'Tag'
       ]);
-      $c_tag->addValidators([
-        new PresenceOf([
-          'message' => 'The Tag is required'
-        ])
-      ]);
       $this->add($c_tag);
 
       $c_host = new Text('c_host', [
-        'placeholder' => 'Host'
+        'placeholder' => 'Host',
+        'data-role' => 'tagsinput'
       ]);    
-      $c_host->addValidators([
-        new PresenceOf([
-          'message' => 'The Host is required'
-        ]),
-        new Url([
-          'message' => 'The Host must be a url'
-        ])
-      ]);
       $this->add($c_host);
 
       $companies_opt['useEmpty'] = true;
@@ -119,8 +139,8 @@ class GamesForm extends Form
 
     if (isset($entity) && $entity->price_info == 1) {
       $price = new TextArea('price', [
-        'placeholder' => 'Preis',
-        'rows' => 4,
+        'placeholder' => 'Information',
+        'rows' => 5,
         'style' => 'resize:none;'
       ]);
     } else {
@@ -130,7 +150,6 @@ class GamesForm extends Form
         'style' => 'resize:none;'
       ]);      
     }
-    // Price
     $this->add($price);
 
     // Type 1
@@ -169,17 +188,24 @@ class GamesForm extends Form
     $this->add($type_5);
  
     // Tags
-    $tags = Tags::find();
-    $tags_select = new Select('tags_id[]', $tags, [
-      'using' => [
-        'id',
-        'name'
-      ],
-      'useEmpty' => false,
-      'multiple' => true,
-      'size' => 10
-    ]);
-    $tags_select->setDefault($options['tags']);
+    //$tags = Tags::find();
+    //if ($options['edit']) {
+      $tags = Tags::find();
+      $tags_select = new Select('tags_id[]', $tags, [
+        'using' => [
+          'id',
+          'name'
+        ],
+        'useEmpty' => false,
+        'multiple' => true,
+        'size' => 10
+      ]);
+      $tags_select->setDefault($options['tags']);
+    /*} else {
+      $tags_select = new Text('tags_id[]');
+    }*/
+
+    
     $this->add($tags_select);
 
     // Lösungsvorschlag
@@ -205,7 +231,7 @@ class GamesForm extends Form
     $this->add($enter_date);
 
     $enter_time = new Time('enter_time');
-    $enter_time->setDefault('23:59');
+    $enter_time->setDefault('06:00');
     $this->add($enter_time);
 
   }

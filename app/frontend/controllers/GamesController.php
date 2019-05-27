@@ -5,11 +5,14 @@ namespace Multiple\Frontend\Controllers;
 use Raffledo\Forms\GamesForm;
 use Raffledo\Forms\ReportForm;
 use Raffledo\Forms\RegisterForm;
+
 use Raffledo\Models\Games;
-use Raffledo\Models\Tags;
 use Raffledo\Models\SavedGames;
-use Raffledo\Models\Reports;
 use Raffledo\Models\HiddenGames;
+use Raffledo\Models\ViewedGames;
+
+use Raffledo\Models\Tags;
+use Raffledo\Models\Reports;
 use Raffledo\Models\HiddenCompanies;
 use Raffledo\Models\HiddenTags;
 use Raffledo\Models\Companies;
@@ -72,6 +75,7 @@ class GamesController extends ControllerBase
     if ($user) {
       $numberPage = $this->request->getQuery("page", "int");
 
+      /*
       if ($this->request->isPost()) {
         $user = $this->auth->getUser();
         $game = $this->request->getPost('actionId', 'int');
@@ -95,9 +99,10 @@ class GamesController extends ControllerBase
             $new = new HiddenGames(['games_id' => $game, 'users_id' => $user->id]);
             $new->save();
           }          
-        }  
+        }
+
         return $this->response->redirect($_SERVER['HTTP_REFERER']);
-      }
+      }*/
     }
 
     
@@ -137,30 +142,22 @@ class GamesController extends ControllerBase
 
     } else {
 
-      if ($user) {
-        $games = $this->modelsManager->createBuilder()
-          ->from(['games' => 'Raffledo\Models\Games'])
-          ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
-          ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-          ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
-          ->where('saved.id IS NULL AND hidden.id IS NULL AND hc.id IS NULL')
-          ->getQuery()
-          ->execute();
-      } else {
-        $games = $this->modelsManager->createBuilder()
-          ->from(['games' => 'Raffledo\Models\Games'])
-          ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-          ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
-          ->where('hidden.id IS NULL AND hc.id IS NULL')
-          ->limit(5)
-          ->getQuery()
-          ->execute();
-      }
+      $phql = 'SELECT g.*';
+      $phql .= $user ? ' , ht.id as hide_tag, hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
+      $phql .= ' FROM Raffledo\Models\Games AS g';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
+      $phql .= $user ? ' WHERE hg.id IS NULL ORDER BY save_id DESC' : '';
+      $phql .= $user ? '' : ' LIMIT 5';
+
+      $games = $this->modelsManager->executeQuery($phql);
 
     }
-    
-    
-   
+
+    if (!$user) {
+      $this->view->single_type = true;
+    }   
 
     $paginator = new Paginator([
       "data"  => $games,
@@ -169,50 +166,39 @@ class GamesController extends ControllerBase
     ]);
 
     $this->view->page = $paginator->getPaginate();
-
-
-    
-
   }
 
   public function showAction($id) {
     $game = Games::findFirst($id);
+    $user = $this->auth->getUser();
+
+    if ($user && $game) {
+      /*$hide = new HiddenGames([
+        'games_id' => $game->id
+      ]);*/
+      $view = ViewedGames::findFirst([
+        'games_id = :games_id: AND users_id = :users_id:',
+        'bind' => [
+          'games_id' => $game->id,
+          'users_id' => $user->id
+        ]
+      ]);
+      
+      if (!$view) {
+        $view = new ViewedGames([
+          'games_id' => $game->id
+        ]);
+        
+        //$user->hiddenGames = $hide;
+        $user->viewedGames = $view;
+        $user->save();   
+      }
+         
+    }
+
     return $this->response->redirect($game->url, true, 302);
   }
 
-  public function favoriteAction() {
-
-    $this->view->setTemplateBefore('favorite');
-
-    if (!is_array($this->auth->getIdentity())) {
-      return $this->dispatcher->forward([
-        "action" => "index"
-      ]);
-    }
-
-    $user = $this->auth->getUser();
-
-    $games = $this->modelsManager->createBuilder()
-      ->from(['games' => 'Raffledo\Models\Games'])
-      ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
-      ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-      ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
-      ->where('saved.users_id = '.$user->id.' AND hidden.id IS NULL AND hc.id IS NULL')
-      ->getQuery()
-      ->execute();
-
-    $numberPage = 1;
-    $numberPage = $this->request->getQuery("page", "int");
-
-    $paginator = new Paginator([
-      "data"  => $games,
-      "limit" => 5,
-      "page"  => $numberPage
-    ]);
-
-    $this->view->page = $paginator->getPaginate();
-
-  }
 
   public function controlAction()
   {
@@ -261,24 +247,24 @@ class GamesController extends ControllerBase
         } 
 
         if ($type == 'hideTags') {
-          $proc_tags = $game->tags;
+          $proc_tags = $this->request->getPost('tags_id');
 
           foreach ($proc_tags as $proc_tag) {
-            $entry = HiddenTags::findFirst(['tags_id = ' . $proc_tag->id . ' AND users_id = ' . $user->id]);
+            $entry = HiddenTags::findFirst(['tags_id = ' . $proc_tag . ' AND users_id = ' . $user->id]);
             if ($entry) {
-              $this->flashSession->error("This tag is allredy hidden for you");
+              $this->flashSession->error("Tag ".$entry->tag_entry->name." is allredy hidden for you");
             } else {
-              $new = new HiddenTags(['tags_id' => $proc_tag->id, 'users_id' => $user->id]);
+              $new = new HiddenTags(['tags_id' => $proc_tag, 'users_id' => $user->id]);
               if (!$new->save()) {              
                 $this->flashSession->error("Can't hide tag");
-              }     
+              } else {                
+                $this->flashSession->success("Tag ".$entry->tag_entry->name." successfully hide for you");
+              }
             }
-          }         
-          
+          }
         } 
         
-        $url = explode('?', $this->request->getHTTPReferer());
-        return $this->response->redirect($url[0]);        
+        return $this->response->redirect('index');        
       }
 
     } else {

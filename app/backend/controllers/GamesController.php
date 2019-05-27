@@ -26,7 +26,6 @@ class GamesController extends ControllerBase
       $form = new GamesForm(null);
 
       if ($this->request->isPost()) {
-
         if ($form->isValid($this->request->getPost()) == false) {                
           foreach ($form->getMessages() as $message) {
             $this->flash->error($message);
@@ -36,7 +35,8 @@ class GamesController extends ControllerBase
             'url' => $this->request->getPost('url', 'striptags'),
             //'companies_id' => $this->request->getPost('companies_id'),
             'title' => $this->request->getPost('title', 'striptags'),
-            'price' => $this->request->getPost('price', 'striptags'),
+            'price' => $this->request->getPost('price'),
+            'price_info' => $this->request->getPost('price_info') ? 1 : 0,
             'type_register' => $this->request->getPost('type_register') ? 1 : 0,
             'type_sms' => $this->request->getPost('type_sms') ? 1 : 0,
             'type_buy' => $this->request->getPost('type_buy') ? 1 : 0,
@@ -77,8 +77,13 @@ class GamesController extends ControllerBase
           if (!$game->save()) {
             $this->flash->error($game->getMessages());
           } else {
-            $this->flashSession->success("Game was created successfully");
-            return $this->response->redirect('games');
+            $this->flashSession->success("Game was created successfully");     
+            $again = $this->request->getPost('again');
+            if (isset($again)) {
+              $form->clear();
+            } else {
+              return $this->response->redirect('games');
+            }
           }
         }
       }
@@ -115,7 +120,8 @@ class GamesController extends ControllerBase
             'url' => $this->request->getPost('url', 'striptags'),
             'companies_id' => $this->request->getPost('companies_id'),
             'title' => $this->request->getPost('title', 'striptags'),
-            'price' => $this->request->getPost('price', 'striptags'),
+            'price' => $this->request->getPost('price'),
+            'price_info' => $this->request->getPost('price_info') ? 1 : 0,
             'type_register' => $this->request->getPost('type_register') ? 1 : 0,
             'type_sms' => $this->request->getPost('type_sms') ? 1 : 0,
             'type_buy' => $this->request->getPost('type_buy') ? 1 : 0,
@@ -148,7 +154,12 @@ class GamesController extends ControllerBase
             $this->flash->error($game->getMessages());
           } else {   
             $this->flashSession->success("Game was updated successfully");
-            return $this->response->redirect('games');
+            $again = $this->request->getPost('again');
+            if (isset($again)) {
+              return $this->response->redirect('games/create');
+            } else {
+              return $this->response->redirect('games');
+            }
           }          
         }
       }

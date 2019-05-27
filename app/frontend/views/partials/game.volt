@@ -1,8 +1,8 @@
-<div class="box">
+<div class="box" id="box-{{ game.id }}">
   <div class="box-body">
     <div class="row no-gutters align-items-center">
       <div class="col-10 col-xl-8 box-title">
-        {{ game.title }}
+        {{ game.title }} / {{ game.id }}
       </div>
       <div class="d-none d-xl-block col-12 col-md-3">
         <span class="box-label">Gewinnspiel-Typ</span>
@@ -26,11 +26,17 @@
                 <input type="hidden" name="actionId" value="{{ game.id }}" />
                 <button type="submit" class="dropdown-item border-0">Anbieter ausblenden</button>
               </form>
-              <form action="games/control" method="post" accept-charset="utf-8">
-                <input type="hidden" name="actionType" value="hideTags" />
-                <input type="hidden" name="actionId" value="{{ game.id }}" />
-                <button type="submit" class="dropdown-item">Tags/Preise ausschließen</button>
-              </form>         
+              {% if ( game.tags | length ) > 0 %}
+                {% if ( game.tags | length ) > 1 %}
+                  <a href data-gameid="{{ game.id }}" class="dropdown-item" data-toggle="modal" data-target="#hideTagsModal">Tags/Preise ausschließen</a>
+                {% else %}                
+                  <form action="games/control" method="post" accept-charset="utf-8">
+                    <input type="hidden" name="actionType" value="hideTags" />
+                    <input type="hidden" name="tags_id[]" value="{{ game.tags[0].id }}" />
+                    <button type="submit" class="dropdown-item">Tags/Preise ausschließen</button>
+                  </form>
+                {% endif %}
+              {% endif %}
               <a href data-gameid="{{ game.id }}" class="dropdown-item" data-toggle="modal" data-target="#reportGameModal">Gewinnspiel melden</a>
             </div>
           </div>
@@ -40,18 +46,24 @@
     <hr>
     <div class="row no-gutters">
       <div class="col-12 col-md-7">
-        <p><span class="box-label">Anbieter</span> <a href="/{{ game.company.tag }}-gewinnspiele" class="text-body">{{ game.company.name }}</a></p>
+        <p>
+          <span class="box-label">Anbieter</span>
+          <a href="/{{ game.company.tag }}-gewinnspiele" class="text-body">{{ game.company.name }}</a>
+        </p>
         {% if game.price %}
-          <p><span class="box-label">Preis</span>{{ game.price }}</p>
+          <p>
+            <span class="box-label">{% if game.price_info %}Info{% else %}Preis{% endif %}</span>
+            {{ game.price | nl2br }}
+          </p>
         {% endif %}
       </div>
       <div class="col-12 col-md-4 ml-auto">
-        <p><span class="box-label">Einsendeschluss</span>1. September 2019</p>
+        <p><span class="box-label">Einsendeschluss</span>{{ date('j. l Y', game.deadline_date) }}</p>
         {% if game.suggested_solution and logged_in %}
-          <p><span class="box-label">Lösungsvorschlag</span>{{ game.suggested_solution }}</p>
+          <p><span class="box-label">Lösungsvorschlag</span><span id="view-game-{{ game.id }}">{{ game.suggested_solution }}</span></p>
         {% endif %}
         {% if !logged_in %}
-          <p><span class="box-label">Lösungsvorschlag</span>{{ link_to('/', 'nur für User sichtbar', 'class': 'text-body') }}</p>
+          <p><span class="box-label">Lösungsvorschlag</span>{{ link_to('/', '<span id="view-game-' ~ game.id ~'">nur für User sichtbar</span>', 'class': 'text-body') }}</p>
         {% endif %}
       </div>
       <div class="col-12 d-block d-xl-none">
@@ -74,13 +86,15 @@
           <input type="hidden" name="actionId" value="{{ game.id }}" />
           <button type="submit" class="btn btn-theme">Merken</button>
         </form>
-        <form method="post" action="games/control" accept-charset="utf-8" class="mr-2">
-          <input type="hidden" name="actionType" value="hide" />
-          <input type="hidden" name="actionId" value="{{ game.id }}" />
-          <button type="submit" class="btn btn-outline-mute">Ausblenden</button>
-        </form>
+        {% if is_view is not defined %}
+          <form method="post" action="games/control" accept-charset="utf-8" class="mr-2">
+            <input type="hidden" name="actionType" value="hide" />
+            <input type="hidden" name="actionId" value="{{ game.id }}" />
+            <button type="submit" class="btn btn-outline-mute">Ausblenden</button>
+          </form>
+        {% endif %}
       {% endif %}
-      <a href="/win/{{ game.id }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-warning">Zum Gewinnspiel</a>
+      <a href="/win/{{ game.id }}" target="_blank" rel="noopener noreferrer" data-game="{{ game.id }}" class="view-game btn btn-outline-warning">Zum Gewinnspiel</a>
     </div>
     <div class="box-tags order-md-0">
       {% for tagItem in game.tags %}

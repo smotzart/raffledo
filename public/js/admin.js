@@ -11,18 +11,22 @@ $(function() {
   });
   $('#price_info').on('change', function(event) {
     if ($(this).is(':checked')) {
-      $('#price').attr('rows', 4);
-      return console.log('4');
+      return $('#price').attr({
+        'rows': 5,
+        'placeholder': 'Information '
+      });
     } else {
-      $('#price').attr('rows', 1);
-      return console.log('4');
+      return $('#price').attr({
+        'rows': 1,
+        'placeholder': 'Preis'
+      });
     }
   });
   $('#companies_id').on('change', function() {
     if ($(this).val() === 'new') {
-      return $('#new_game').removeClass('d-none');
+      return $('#new_game').removeClass('d-none').find('input').removeAttr('disabled');
     } else {
-      return $('#new_game').addClass('d-none');
+      return $('#new_game').addClass('d-none').find('input').attr('disabled', 'disabled');
     }
   });
   return $('#url_change .form-control').on('change', function(event) {
@@ -44,5 +48,23 @@ $(function() {
     }, 'json');
   });
 });
+
+/*
+tagsname = new Bloodhound
+datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name')
+queryTokenizer: Bloodhound.tokenizers.whitespace
+prefetch: 
+url: '/admin/tags/get'
+
+tagsname.initialize()
+
+$('#tags_input').tagsinput
+itemValue: 'id'
+itemText: 'name'
+typeaheadjs:
+name: 'tagsname'
+displayKey: 'name'
+source: tagsname.ttAdapter()
+*/
 
 //# sourceMappingURL=admin.js.map

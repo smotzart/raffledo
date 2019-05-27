@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 24 2019 г., 14:51
+-- Время создания: Май 27 2019 г., 11:54
 -- Версия сервера: 10.1.33-MariaDB
 -- Версия PHP: 7.2.6
 
@@ -80,7 +80,11 @@ INSERT INTO `failed_logins` (`id`, `users_id`, `ipAddress`, `attempted`) VALUES
 (3, 1, '127.0.0.1', 1558472063),
 (4, 1, '127.0.0.1', 1558472125),
 (5, 0, '127.0.0.1', 1558473761),
-(6, 3, '127.0.0.1', 1558477228);
+(6, 3, '127.0.0.1', 1558477228),
+(7, 0, '127.0.0.1', 1558790325),
+(8, 0, '127.0.0.1', 1558868682),
+(9, 2, '127.0.0.1', 1558902531),
+(10, 2, '127.0.0.1', 1558934066);
 
 -- --------------------------------------------------------
 
@@ -101,12 +105,12 @@ CREATE TABLE `games` (
   `type_internet` int(1) NOT NULL DEFAULT '0',
   `type_submission` int(1) NOT NULL DEFAULT '0',
   `suggested_solution` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `enter_date` datetime DEFAULT NULL,
-  `enter_time` time DEFAULT NULL,
-  `deadline_date` datetime DEFAULT NULL,
+  `enter_date` int(10) DEFAULT NULL,
+  `enter_time` time DEFAULT '06:00:00',
+  `deadline_date` int(10) DEFAULT NULL,
   `deadline_time` time DEFAULT '23:59:00',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+  `created_at` int(10) UNSIGNED NOT NULL,
+  `updated_at` int(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -114,15 +118,15 @@ CREATE TABLE `games` (
 --
 
 INSERT INTO `games` (`id`, `url`, `companies_id`, `title`, `price`, `price_info`, `type_register`, `type_sms`, `type_buy`, `type_internet`, `type_submission`, `suggested_solution`, `enter_date`, `enter_time`, `deadline_date`, `deadline_time`, `created_at`, `updated_at`) VALUES
-(1, 'https://forum.phalconphp.com', 2, 'first game', '', 1, 1, 0, 1, 0, 0, '', '2019-05-24 13:10:51', '23:59:00', '2019-05-24 13:10:51', '23:59:00', '2019-05-19 20:18:20', '2019-05-24 10:10:51'),
-(2, '2nd', 1, 'first another 2', '', 0, 1, 1, 1, 0, 0, '123', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '19:59:00', '2019-05-19 20:27:19', '2019-05-21 16:33:27'),
-(4, 'sfgg', 1, 'first', '', 0, 0, 1, 1, 0, 0, '', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '23:59:00', '2019-05-20 04:53:51', '2019-05-21 16:32:32'),
-(5, 'https://www.google.com/search?q=phalcon', 3, 'ololo', '', 0, 1, 1, 1, 1, 1, 'sdfsdf', '2019-05-22 00:00:00', '23:59:00', '2019-05-19 00:00:00', '23:59:00', '2019-05-21 17:07:33', '2019-05-22 08:16:37'),
-(6, 'https://www.google.com/search?q=phalcon', 4, 'asdf', '', 0, 1, 0, 0, 0, 0, '123', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '23:59:00', '2019-05-21 17:07:53', '0000-00-00 00:00:00'),
-(7, 'https://www.google.com/search?q=phalcon', 2, 'asdasdas', 'qwert gghjkk', 0, 0, 0, 0, 0, 0, '', '0000-00-00 00:00:00', '23:59:00', '0000-00-00 00:00:00', '23:59:00', '2019-05-21 17:08:10', '0000-00-00 00:00:00'),
-(8, 'https://www.google.com/search?q=phalcon', 1, '123 yui', 'd f hg f', 0, 0, 0, 0, 1, 1, 'sdsdsdds', '0000-00-00 00:00:00', '08:59:00', '2020-02-01 00:00:00', '23:59:00', '2019-05-21 17:08:57', '0000-00-00 00:00:00'),
-(9, 'https://getbootstrap.com/docs/4.3/components/forms/', 12, 'qwerty game', 'ololo\r\nololo', 0, 1, 0, 1, 1, 0, '', '2019-05-24 00:00:00', '23:59:00', '2019-05-24 00:00:00', '23:59:00', '2019-05-24 08:42:45', '0000-00-00 00:00:00'),
-(10, 'https://getbootstrap.com/docs/4.3/components/forms/', 13, 'sdfsdfsdf', '', 0, 0, 0, 0, 0, 0, '', '2019-05-24 00:00:00', '23:59:00', '2019-05-24 00:00:00', '23:59:00', '2019-05-24 08:46:05', '0000-00-00 00:00:00');
+(1, 'https://forum.phalconphp.com', 2, 'first game', '', 0, 1, 0, 1, 0, 0, '', 1558935577, '23:59:00', 1558935577, '23:59:00', 2147483647, 1558935577),
+(2, '2nd', 1, 'first another 2', '', 0, 1, 1, 1, 0, 0, '123', 0, '23:59:00', 0, '19:59:00', 4294967295, 2147483647),
+(4, 'http://raf.my/gewinnspiele', 1, 'first', '', 0, 0, 1, 1, 0, 0, '', 0, '23:59:00', 0, '23:59:00', 4294967295, 2147483647),
+(29, 'http://raf.my/gewinnspiele', 11, 'wer', '', 0, 0, 0, 0, 0, 0, '', 1558908469, '06:00:00', 1558908469, '23:59:00', 1558908469, NULL),
+(30, 'http://raf.my/gewinnspiele', 11, 'wer', '', 0, 0, 0, 0, 0, 0, '', 1558908670, '06:00:00', 1558908670, '23:59:00', 1558908670, NULL),
+(31, 'http://raf.my/gewinnspiele', 3, 'qwe135687', '', 0, 0, 0, 0, 0, 0, '', 1558908706, '06:00:00', 1558908706, '23:59:00', 1558908706, NULL),
+(32, 'http://raf.my/gewinnspiele', 1, 'tttttttt', '', 0, 0, 0, 0, 0, 0, '', 1558908721, '06:00:00', 1558908721, '23:59:00', 1558908721, NULL),
+(33, 'http://raf.my/gewinnspiele', 9, 'q89', '', 0, 0, 0, 0, 0, 0, '', 1558908765, '06:00:00', 1558908765, '23:59:00', 1558908765, NULL),
+(34, 'http://raf.my/gewinnspiele', 3, 'ui00', '', 0, 0, 0, 0, 0, 0, '', 1558908776, '06:00:00', 1558908776, '23:59:00', 1558908776, NULL);
 
 -- --------------------------------------------------------
 
@@ -147,13 +151,7 @@ INSERT INTO `games_tags` (`id`, `games_id`, `tags_id`, `created_at`) VALUES
 (67, 4, 23, '2019-05-21 16:32:32'),
 (68, 4, 24, '2019-05-21 16:32:32'),
 (70, 2, 23, '2019-05-21 16:33:27'),
-(74, 6, 24, '2019-05-21 17:07:53'),
-(75, 8, 21, '2019-05-21 17:08:57'),
-(76, 8, 23, '2019-05-21 17:08:57'),
-(77, 8, 24, '2019-05-21 17:08:57'),
-(83, 5, 22, '2019-05-22 08:16:37'),
-(85, 9, 22, '2019-05-24 08:42:45'),
-(86, 1, 22, '2019-05-24 10:10:51');
+(112, 1, 22, '2019-05-27 04:39:37');
 
 -- --------------------------------------------------------
 
@@ -190,6 +188,13 @@ CREATE TABLE `hidden_tags` (
   `tags_id` int(10) NOT NULL,
   `users_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `hidden_tags`
+--
+
+INSERT INTO `hidden_tags` (`id`, `tags_id`, `users_id`) VALUES
+(5, 22, 2);
 
 -- --------------------------------------------------------
 
@@ -290,7 +295,7 @@ CREATE TABLE `remember_tokens` (
 --
 
 INSERT INTO `remember_tokens` (`id`, `users_id`, `token`, `created_at`) VALUES
-(7, 2, '11aa2a8b943b661b9e8dc6db7261cf6c', 1558543453);
+(4, 2, '11aa2a8b943b661b9e8dc6db7261cf6c', 1558934071);
 
 -- --------------------------------------------------------
 
@@ -329,7 +334,8 @@ CREATE TABLE `saved_games` (
 --
 
 INSERT INTO `saved_games` (`id`, `games_id`, `users_id`) VALUES
-(1, 4, 2);
+(2, 4, 2),
+(3, 4, 3);
 
 -- --------------------------------------------------------
 
@@ -356,7 +362,19 @@ INSERT INTO `success_logins` (`id`, `users_id`, `ipAddress`) VALUES
 (39, 2, '127.0.0.1'),
 (40, 2, '127.0.0.1'),
 (41, 2, '127.0.0.1'),
-(42, 2, '127.0.0.1');
+(42, 2, '127.0.0.1'),
+(43, 2, '127.0.0.1'),
+(44, 6, '127.0.0.1'),
+(45, 2, '127.0.0.1'),
+(46, 2, '127.0.0.1'),
+(47, 2, '127.0.0.1'),
+(48, 2, '127.0.0.1'),
+(49, 2, '127.0.0.1'),
+(50, 2, '127.0.0.1'),
+(51, 2, '127.0.0.1'),
+(52, 2, '127.0.0.1'),
+(53, 2, '127.0.0.1'),
+(54, 2, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -403,7 +421,30 @@ INSERT INTO `users` (`id`, `username`, `password`, `profiles_id`) VALUES
 (2, 'smotzart', '$2y$08$UlBPY1dSeFpnaTluRlg1YuZl0RbDZGgKCPaA5kf6FIMtpomlgfhhG', 1),
 (3, 'smotzart2', '$2y$08$N2ZhOElLTG9hekNOV0wxYOYCp4KGbrTlpYz3aeJFqauDSWvX9Xi6K', 2),
 (4, 'smotzart3', '$2y$08$VTlQOFhDSDZnL2Z1cGRTV.qqMB7IyQunWCNisGs0Bnlg5kGL7PUHy', 2),
-(5, 'smotzart4', '$2y$08$SmpiMXVwUzMzWklSbnkwVu9KJMRAA3VEDJWcJxCMC1LhcgkIWWCYC', 2);
+(5, 'smotzart4', '$2y$08$SmpiMXVwUzMzWklSbnkwVu9KJMRAA3VEDJWcJxCMC1LhcgkIWWCYC', 2),
+(6, '1234qwer', '$2y$08$NXhONld3WlFKTXRLMVhhWOr6oCFevOBo6vhRFDQ2mLCQQNIAE2u..', 2),
+(7, 'admin', '$2y$08$UlBPY1dSeFpnaTluRlg1YuZl0RbDZGgKCPaA5kf6FIMtpomlgfhhG', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `viewed_games`
+--
+
+CREATE TABLE `viewed_games` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `games_id` int(10) UNSIGNED NOT NULL,
+  `users_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `viewed_games`
+--
+
+INSERT INTO `viewed_games` (`id`, `games_id`, `users_id`) VALUES
+(3, 1, 2),
+(1, 4, 2),
+(7, 29, 2);
 
 --
 -- Индексы сохранённых таблиц
@@ -516,6 +557,13 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `viewed_games`
+--
+ALTER TABLE `viewed_games`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `viewed_game_user` (`games_id`,`users_id`);
+
+--
 -- AUTO_INCREMENT для сохранённых таблиц
 --
 
@@ -529,19 +577,19 @@ ALTER TABLE `companies`
 -- AUTO_INCREMENT для таблицы `failed_logins`
 --
 ALTER TABLE `failed_logins`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT для таблицы `games`
 --
 ALTER TABLE `games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT для таблицы `games_tags`
 --
 ALTER TABLE `games_tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
 -- AUTO_INCREMENT для таблицы `hidden_companies`
@@ -559,7 +607,7 @@ ALTER TABLE `hidden_games`
 -- AUTO_INCREMENT для таблицы `hidden_tags`
 --
 ALTER TABLE `hidden_tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `new_games`
@@ -583,7 +631,7 @@ ALTER TABLE `profiles`
 -- AUTO_INCREMENT для таблицы `remember_tokens`
 --
 ALTER TABLE `remember_tokens`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `reports`
@@ -595,13 +643,13 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT для таблицы `saved_games`
 --
 ALTER TABLE `saved_games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `success_logins`
 --
 ALTER TABLE `success_logins`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT для таблицы `tags`
@@ -613,7 +661,13 @@ ALTER TABLE `tags`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT для таблицы `viewed_games`
+--
+ALTER TABLE `viewed_games`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

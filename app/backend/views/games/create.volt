@@ -6,6 +6,7 @@
     </div>
     <div>
       <button type="submit" class="btn btn-success"><i class="fa fa-save mr-2"></i>Save</button>
+      <button type="submit" name="again" class="btn btn-outline-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
     </div>
   </div>
 
@@ -53,7 +54,7 @@
       {{ form.render('price_info', ['class': 'form-check-input']) }}
       {{ form.label('price_info', ['class': 'form-check-label']) }}
     </div>
-    {{ form.render("price", ['class': 'form-control']) }}
+    {{ form.render("price", ['class': 'form-control']) | nl2br }}
   </div>
   <div class="form-group">
     <h5>Gewinnspiel Typ</h5>
@@ -80,7 +81,7 @@
   </div>
   <div class="form-group">
     <label for="tags_id">Tags</label>
-    {{ form.render("tags_id[]", ['class': 'form-control']) }}
+    {{ form.render("tags_id[]", ['class': 'form-control', 'id': 'tags_input']) }}
     <small class="form-text text-muted">Hold down the Ctrl (windows) / Command (Mac) button to select multiple tags.</small>
   </div>
   <div class="form-group">
@@ -118,6 +119,7 @@
 
   <div class="form-group">
     <button type="submit" class="btn btn-success"><i class="fa fa-save mr-2"></i>Save</button>
+    <button type="submit" name="again" class="btn btn-outline-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
   </div>
 </form>
 

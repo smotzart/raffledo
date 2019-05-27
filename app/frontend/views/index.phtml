@@ -32,11 +32,6 @@
             <?php if (is_array($this->auth->getIdentity())) : ?>
               <ul class="navbar-nav ml-auto mr-65px">
                 <li class="nav-item">
-                  <a class="nav-link" href="/favoriten">
-                    Favoriten
-                  </a>
-                </li>
-                <li class="nav-item">
                   <a class="nav-link" href="/neues">
                     Neues Gewinnspiel melden
                   </a>
@@ -87,7 +82,7 @@
         ->getQuery()->execute();
     ?>
 
-    <div class="bg-warning text-white mb-7 py-7 footer-nav">
+    <div class="bg-warning text-white mb-7 py-7 footer-nav mt-auto">
       <div class="container">
         <div class="row mb-7">
           <div class="col-12 col-md-3">
@@ -136,7 +131,7 @@
     </div>
 
 
-    <footer class="mt-auto">
+    <footer>
       <div class="container">
         <div class="border-top border-theme"></div>
         <div class="d-flex py-6">
@@ -148,7 +143,7 @@
     </footer>
 
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="js/core-min.js"></script>

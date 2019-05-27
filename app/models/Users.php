@@ -145,6 +145,15 @@ class Users extends \Phalcon\Mvc\Model
             ]
         );
 
+        $this->hasMany(
+            'id',
+            __NAMESPACE__ . '\ViewedGames',
+            'users_id',
+            [
+                'alias' => 'viewedGames'
+            ]
+        );
+
         $this->hasManyToMany(
             'id',
             __NAMESPACE__ . '\SavedGames',

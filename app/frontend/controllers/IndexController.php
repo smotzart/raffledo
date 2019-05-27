@@ -5,6 +5,7 @@ namespace Multiple\Frontend\Controllers;
 use Raffledo\Forms\RegisterForm;
 use Raffledo\Forms\LoginForm;
 use Raffledo\Auth\Exception as AuthException;
+use Phalcon\Filter;
 
 use Raffledo\Models\Companies;
 use Raffledo\Models\Users;
@@ -69,5 +70,28 @@ class IndexController extends ControllerBase
 
     }
 
+    public function tagsAction()     
+    {      
+      $filter = new Filter();
+      $game_id = $filter->sanitize($_GET['games_id'], 'striptags');
+
+      $phql = 'SELECT t.* FROM Raffledo\Models\Tags AS t INNER JOIN Raffledo\Models\GamesTags AS gt ON gt.tags_id = t.id WHERE gt.games_id= :game_id:';
+      $tags = $this->modelsManager->executeQuery($phql, [
+        'game_id' => $game_id
+      ]);
+
+      $data = [];
+
+      foreach ($tags as $tag) {
+        $data[] = [
+          'id'   => $tag->id,
+          'name' => $tag->name,
+        ];
+      }
+
+      $this->view->disable();
+
+      echo json_encode($data);
+    }
 }
 

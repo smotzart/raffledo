@@ -118,5 +118,11 @@ class TagsController extends ControllerBase
         'action' => 'index'
       ]);
     }
+
+    public function getAction() {
+      $this->view->disable();
+      $tags = Tags::find()->toArray();
+      echo json_encode($tags);
+    }
 }
 

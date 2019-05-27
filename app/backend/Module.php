@@ -81,5 +81,6 @@ class Module implements ModuleDefinitionInterface
       // For frontend module.php:  $url->setBaseUri("/");
       return $url;
     });
+
   }
 }
