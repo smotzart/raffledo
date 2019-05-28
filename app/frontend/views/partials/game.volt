@@ -5,8 +5,7 @@
         {{ game.title }}
       </div>
       <div class="d-none d-xl-block col-12 col-md-3">
-        <span class="box-label">Gewinnspiel-Typ</span>
-        <div>
+        <div class="lh-0">
           {% if (game.type_register == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Registrierung erforderlich" class="fi flaticon-user mr-2"></i>{% endif %}
           {% if (game.type_sms == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="SMS/Anruf erforderlich" class="fi flaticon-tablet mr-2"></i>{% endif %}
           {% if (game.type_buy == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="fi flaticon-shield mr-2"></i>{% endif %}
@@ -17,7 +16,7 @@
       <div class="col-2 col-xl-1 text-right">
         {% if logged_in %}
           <div class="dropdown float-right">
-            <a href="#" class="btn btn-link text-secondary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a href="#" class="btn btn-link text-secondary py-2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-ellipsis-v"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right">

@@ -1,5 +1,8 @@
 $(function() {
   $('[data-toggle="tooltip"]').tooltip();
+  $('.welcome').on('click', 'form', function(event) {
+    return $('.welcome-footer').addClass('fade');
+  });
   $('#reportGameModal').on('show.bs.modal', function(event) {
     var button, gameId, modal;
     button = $(event.relatedTarget);
