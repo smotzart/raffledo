@@ -34,7 +34,7 @@
       {{ form.render('price_info', ['class': 'form-check-input']) }}
       {{ form.label('price_info', ['class': 'form-check-label']) }}
     </div>
-    {{ form.render("price", ['class': 'form-control']) | nl2br }}
+    {{ str_replace('<br />', '&#13;&#10;', form.render("price", ['class': 'form-control']) | nl2br) }}
   </div>
   <div class="form-group">
     <h5>Gewinnspiel Typ</h5>

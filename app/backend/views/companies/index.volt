@@ -24,8 +24,16 @@
             <div class="col-3">{{ item.name }}</div>
             <div class="col-3">{{ item.tag }}</div>
             <div class="col-6">
-              <a href="{{ url(item.host) }}" class="mr-2 float-left" target="_blank"><i class="fa fa-external-link-square"></i></a>
-              <div class="text-truncate">{{ item.host }}</div>
+              {% set hosts = explode(',', item.host) %}
+              {% for host in hosts %}
+                <div>
+                  <a href="{{ url(host) }}" class="mr-2 float-left" target="_blank"><i class="fa fa-external-link-square"></i></a>
+                  <div class="text-truncate">{{ host }}</div>                  
+                </div>
+              {% endfor %}
+
+              
+
             </div>          
           </div>
         </div>

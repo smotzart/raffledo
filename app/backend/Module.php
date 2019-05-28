@@ -65,11 +65,17 @@ class Module implements ModuleDefinitionInterface
               'compiledSeparator' => '_'
             ]);
 
+            $compiler = $volt->getCompiler();
+            $compiler->addFunction('str_replace', 'str_replace');
+            $compiler->addFunction('explode', 'explode');
+
             return $volt;
           },
           '.phtml' => PhpEngine::class
 
         ]);
+
+
 
         return $view;
       }

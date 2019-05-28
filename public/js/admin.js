@@ -22,6 +22,10 @@ $(function() {
       });
     }
   });
+  $("[data-tag='yes']").tagsinput({
+    tagClass: 'badge badge-info',
+    cancelConfirmKeysOnEmpty: false
+  });
   $('#companies_id').on('change', function() {
     if ($(this).val() === 'new') {
       return $('#new_game').removeClass('d-none').find('input').removeAttr('disabled');

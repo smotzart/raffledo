@@ -30,14 +30,7 @@
     
           <div class="collapse navbar-collapse" id="navbar-body">
             <?php if (is_array($this->auth->getIdentity())) : ?>
-              <ul class="navbar-nav ml-auto mr-65px">
-                <li class="nav-item">
-                  <a class="nav-link" href="/neues">
-                    Neues Gewinnspiel melden
-                  </a>
-                </li>
-              </ul>
-              <a href="/logout" class="btn px-5 btn-outline-theme mr-lg-4">Logout</a>
+              <a href="/logout" class="btn px-5 btn-outline-theme mr-lg-4 ml-auto">Logout</a>
             <?php else : ?>
               <div class="ml-auto">
                 <a href="/login" class="btn px-5 btn-outline-theme mr-lg-4">Login</a>
@@ -121,6 +114,10 @@
             <ul class="list-unstyled">
               <li><a href="/impressum" class="text-capitalize">Impressum</a></li>
               <li><a href="/datenschutz" class="text-capitalize">Datenschutz</a></li>
+              <?php if (is_array($this->auth->getIdentity())) : ?>
+                <li><a href="/neues" class="text-capitalize">Neues Gewinnspiel melden</a></li>
+                <li><a href="/einstellungen" class="text-capitalize">Einstellungen</a></li>                
+              <?php endif; ?>
             </ul>
           </div>
         </div>

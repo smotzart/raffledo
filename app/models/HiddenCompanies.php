@@ -34,7 +34,10 @@ class HiddenCompanies extends \Phalcon\Mvc\Model
         $this->belongsTo(
             'companies_id',
             __NAMESPACE__ . '\Companies',
-            'id'
+            'id',
+            [
+                'alias' => 'company'
+            ]
         );
 
         $this->belongsTo(

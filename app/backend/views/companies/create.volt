@@ -22,6 +22,7 @@
   <div class="form-group">
     <label for="host">Host</label>
     {{ form.render("host", ['class': 'form-control']) }}
+    <small class="form-text text-muted">Enter new hostname separated by comma</small>
   </div>
   <div class="form-group form-check">
     {{ form.render('footer', ['class': 'form-check-input']) }}

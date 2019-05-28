@@ -94,6 +94,12 @@ $router->add("/neues", [
   'action'     => 'index'
 ]);
 
+$router->add("/einstellungen", [
+  'module'     => 'frontend',
+  'controller' => 'settings',
+  'action'     => 'index'
+]);
+
 
 $router->add("/gewinnspiele/:action", [
   'module'     => 'frontend',

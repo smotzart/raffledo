@@ -135,6 +135,15 @@ class Users extends \Phalcon\Mvc\Model
 
         $this->hasMany(
             'id',
+            __NAMESPACE__ . '\ViewedGames',
+            'users_id',
+            [
+                'alias' => 'viewedGames'
+            ]
+        );
+
+        $this->hasMany(
+            'id',
             __NAMESPACE__ . '\SuccessLogins',
             'users_id',
             [
@@ -142,15 +151,6 @@ class Users extends \Phalcon\Mvc\Model
                 'foreignKey' => [
                     'message' => 'User cannot be deleted because he/she has activity in the system'
                 ]
-            ]
-        );
-
-        $this->hasMany(
-            'id',
-            __NAMESPACE__ . '\ViewedGames',
-            'users_id',
-            [
-                'alias' => 'viewedGames'
             ]
         );
 

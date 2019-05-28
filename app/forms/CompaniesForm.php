@@ -8,6 +8,9 @@ use Phalcon\Forms\Element\TextArea;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Forms\Element\Check;
+
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Callback;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Identical;
 use Phalcon\Validation\Validator\Url;
@@ -40,13 +43,27 @@ class CompaniesForm extends Form
 
     // Description
     $host = new Text('host', [
-      'placeholder' => 'Host',
-      'data-role' => 'tagsinput'
+      'placeholder' => 'Enter new hostname',
+      'data-tag' => 'yes'
     ]);
     $host->addValidators([
       new PresenceOf([
         'message' => 'The host is required'
-      ])
+      ]),
+      new Callback(
+        [
+          'callback' => function($data) {
+            $hosts = explode(',', $data['host']);
+            foreach ($hosts as $hos) {
+              if (!filter_var($hos, FILTER_VALIDATE_URL)) {
+                return false;
+              }
+            }
+            return true;
+          },
+          'message' => "One of the hostname must be a url"
+        ]
+      )
     ]);
     $this->add($host);
 

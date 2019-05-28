@@ -34,7 +34,10 @@ class HiddenGames extends \Phalcon\Mvc\Model
         $this->belongsTo(
             'games_id',
             __NAMESPACE__ . '\Games',
-            'id'
+            'id',
+            [
+                'alias' => 'games'
+            ]
         );
 
         $this->belongsTo(
