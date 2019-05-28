@@ -16,8 +16,6 @@ use Raffledo\Models\Reports;
 use Raffledo\Models\HiddenCompanies;
 use Raffledo\Models\HiddenTags;
 use Raffledo\Models\Companies;
-use Phalcon\Mvc\Model\Criteria;
-use Phalcon\Paginator\Adapter\Model as Paginator;
 
 class GamesController extends ControllerBase
 {
@@ -33,12 +31,10 @@ class GamesController extends ControllerBase
 
   public function indexAction()
   {
-    $numberPage = 1;
     $user = $this->auth->getUser();
 
     if ($user) {
       $this->view->register_view = true;
-      $numberPage = $this->request->getQuery("page", "int");
     }
     
 
@@ -107,13 +103,7 @@ class GamesController extends ControllerBase
 
     }
 
-    $paginator = new Paginator([
-      "data"  => $games,
-      "limit" => 5,
-      "page"  => $numberPage
-    ]);
-
-    $this->view->page = $paginator->getPaginate();
+    $this->view->games = $games;
   }
 
   public function showAction($id) {
@@ -254,15 +244,9 @@ class GamesController extends ControllerBase
 
   }
 
-
   public function allAction()
   {
-    $numberPage = 1;
     $user = $this->auth->getUser();
-
-    if ($user) {
-      $numberPage = $this->request->getQuery("page", "int");
-    }
 
     $phql = 'SELECT g.*';
     $phql .= ' FROM Raffledo\Models\Games AS g';
@@ -270,14 +254,7 @@ class GamesController extends ControllerBase
 
     $games = $this->modelsManager->executeQuery($phql);
 
-    $paginator = new Paginator([
-      "data"  => $games,
-      "limit" => 5,
-      "page"  => $numberPage
-    ]);
-
-    $this->view->page = $paginator->getPaginate();
-
+    $this->view->games = $games;
   }
 
 }
