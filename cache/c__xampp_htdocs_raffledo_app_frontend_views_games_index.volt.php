@@ -1,42 +1,46 @@
+<?php $order = 0; ?>
 
-<?php $title = 0; ?>
-
-
-
-<?php $v29779762421iterated = false; ?><?php $v29779762421iterator = $games; $v29779762421incr = 0; $v29779762421loop = new stdClass(); $v29779762421loop->self = &$v29779762421loop; $v29779762421loop->length = count($v29779762421iterator); $v29779762421loop->index = 1; $v29779762421loop->index0 = 1; $v29779762421loop->revindex = $v29779762421loop->length; $v29779762421loop->revindex0 = $v29779762421loop->length - 1; ?><?php foreach ($v29779762421iterator as $game) { ?><?php $v29779762421loop->first = ($v29779762421incr == 0); $v29779762421loop->index = $v29779762421incr + 1; $v29779762421loop->index0 = $v29779762421incr; $v29779762421loop->revindex = $v29779762421loop->length - $v29779762421incr; $v29779762421loop->revindex0 = $v29779762421loop->length - ($v29779762421incr + 1); $v29779762421loop->last = ($v29779762421incr == ($v29779762421loop->length - 1)); ?><?php $v29779762421iterated = true; ?>
+<?php if (isset($register_view)) { ?>
   
-  <?php if ($v29779762421loop->first) { ?>
-    <?php if (isset($limited_view) && isset($search_name)) { ?>
-      <div class="mb-5">
-        <h2 class="m-0"><span class="text-capitalize"><?= $search_name ?></span> <?php if (isset($search_description)) { ?><small class="text-muted"><?= $search_description ?></small><?php } ?></h2>
-      </div>
-    <?php } elseif (isset($register_view) && $game->save_id) { ?>
-      <?php $title = 1; ?>
-      <div class="mb-5">
-        <h2 class="text-capitalize m-0">Favoriten</h2>
-      </div>
-    <?php } else { ?>
-      <div class="mb-5">
-        <h2 class="text-capitalize m-0">Aktuelle Gewinnspiele</h2>
-      </div>
-    <?php } ?>
-  <?php } ?>
+  <div id="favs-games">
+    <div class="box-header mb-5 <?php if (isset($favs) && ($this->length($favs)) > 0) { ?>d-block<?php } else { ?>d-none<?php } ?>">
+      <h2 class="text-capitalize m-0">Favoriten</h2>
+    </div>
+    <div id="favs-games-body" class="box-parent favs">
+      <?php if (isset($favs)) { ?>
+        <?php foreach ($favs as $game) { ?>
+          <?= $this->partial('partials/game', ['lindex' => $order, 'game' => $game->g, 'logged_in' => $logged_in, 'is_view' => $game->is_view]) ?>
+          <?php $order = $order + 1; ?>
+        <?php } ?>
+      <?php } ?>
+    </div>
+  </div>
 
-  <?php if ($v29779762421loop->index > 1 && isset($register_view) && !$game->save_id && $title == 1) { ?>
-    <?php $title = 0; ?>
-    <div class="mb-5">
+<?php } ?>
+
+<div id="regular-games" <?php if (isset($limited_view)) { ?>class="limited-view"<?php } ?>>
+  <?php if (isset($limited_view) && isset($search_name)) { ?>
+    <div class="box-header mb-5">
+      <h2 class="m-0"><span class="text-capitalize"><?= $search_name ?></span> <?php if (isset($search_description)) { ?><small class="text-muted"><?= $search_description ?></small><?php } ?></h2>
+    </div>
+  <?php } else { ?>
+    <div class="box-header mb-5 d-<?php if (($this->length($games)) == 0 && (isset($favs) && ($this->length($favs)) > 0)) { ?>none<?php } else { ?>block<?php } ?>">
       <h2 class="text-capitalize m-0">Aktuelle Gewinnspiele</h2>
     </div>
   <?php } ?>
+  <div id="regular-games-body" class="box-parent regular">
+    <?php foreach ($games as $game) { ?>
 
-  <?php if (isset($register_view)) { ?>
-    <?= $this->partial('partials/game', ['game' => $game->g, 'logged_in' => $logged_in, 'is_view' => $game->is_view]) ?>
-  <?php } else { ?>
-    <?= $this->partial('partials/game', ['game' => $game, 'logged_in' => $logged_in]) ?>
-  <?php } ?>
+      <?php if (isset($register_view)) { ?>
+        <?= $this->partial('partials/game', ['lindex' => $order, 'game' => $game->g, 'logged_in' => $logged_in, 'is_view' => $game->is_view]) ?>
+      <?php } else { ?>
+        <?= $this->partial('partials/game', ['lindex' => $order, 'game' => $game, 'logged_in' => $logged_in]) ?>
+      <?php } ?>
+      <?php $order = $order + 1; ?>
 
-<?php $v29779762421incr++; } if (!$v29779762421iterated) { ?>
-  <div class="box" id="box-empty">
+    <?php } ?>
+  </div>
+  <div id="regular-games-empty" class="box d-<?php if ((!isset($favs) || ($this->length($favs)) == 0) && (($this->length($games)) == 0 || !isset($games))) { ?>block<?php } else { ?>none<?php } ?>" id="box-empty">
     <div class="box-body text-center py-7">    
       <div class="row">
         <div class="col-12 col-md-9 col-lg-8 mx-auto">
@@ -47,4 +51,4 @@
       </div>
     </div>
   </div>
-<?php } ?>
+</div>

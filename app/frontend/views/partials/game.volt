@@ -1,4 +1,8 @@
-<div class="box" id="box-{{ game.id }}">
+
+<div class="box" id="box-{{ game.id }}" data-order="{{ lindex }}">
+  <div class="d-none">
+  order-{{ lindex }} 
+</div>
   <div class="box-body">
     <div class="row no-gutters align-items-center">
       <div class="col-10 col-xl-8 box-title">
@@ -63,8 +67,7 @@
         <p><span class="box-label">Einsendeschluss</span>{{ date('j. l Y', game.deadline_date) }}</p>
         {% if game.suggested_solution and logged_in %}
           <p><span class="box-label">Lösungsvorschlag</span><span id="view-game-{{ game.id }}">{{ game.suggested_solution }}</span></p>
-        {% endif %}
-        {% if !logged_in %}
+        {% else %}
           <p><span class="box-label">Lösungsvorschlag</span>{{ link_to('/', '<span id="view-game-' ~ game.id ~'">nur für User sichtbar</span>', 'class': 'text-body') }}</p>
         {% endif %}
       </div>
@@ -85,20 +88,20 @@
   <div class="box-footer d-flex flex-column align-items-md-center flex-md-row">
     <div class="box-btn order-md-1 ml-md-auto">
       {% if logged_in %}
-        <form method="post" action="games/control" accept-charset="utf-8" class="mr-2">
+        <form method="post" action="games/control" accept-charset="utf-8" class="box-save-form mr-2">
           <input type="hidden" name="actionType" value="save" />
           <input type="hidden" name="actionId" value="{{ game.id }}" />
-          <button type="submit" class="btn btn-theme">Merken</button>
+          <button type="submit" class="btn btn-theme box-save-btn">Merken</button>
         </form>
         {% if is_view is not defined %}
-          <form method="post" action="games/control" accept-charset="utf-8" class="mr-2">
+          <form method="post" action="games/control" accept-charset="utf-8" class="box-hide-form game-hide-control mr-2">
             <input type="hidden" name="actionType" value="hide" />
             <input type="hidden" name="actionId" value="{{ game.id }}" />
-            <button type="submit" class="btn btn-outline-mute">Ausblenden</button>
+            <button type="submit" class="btn btn-outline-mute box-hide-btn">Ausblenden</button>
           </form>
         {% endif %}
       {% endif %}
-      <a href="/win/{{ game.id }}" target="_blank" rel="noopener noreferrer" data-game="{{ game.id }}" class="view-game btn btn-outline-warning">Zum Gewinnspiel</a>
+      {{ link_to('/win/' ~ game.id, 'Zum Gewinnspiel', 'target': '_blank', 'rel': 'noopener noreferrer', 'data-game': game.id, 'class': 'view-game btn btn-outline-warning') }}
     </div>
     <div class="box-tags order-md-0">
       {% for tagItem in game.tags %}

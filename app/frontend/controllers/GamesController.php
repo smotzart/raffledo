@@ -54,7 +54,7 @@ class GamesController extends ControllerBase
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
       $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND gt.tags_id = ' . $tag->id : ' WHERE gt.tags_id = ' . $tag->id;
-      $phql .= $user ? ' ORDER BY save_id DESC' : '';
+      $phql .= ' ORDER BY g.id DESC';
       $phql .= $user ? '' : ' LIMIT 5';
 
       $games = $this->modelsManager->executeQuery($phql);
@@ -78,7 +78,7 @@ class GamesController extends ControllerBase
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
       $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND g.companies_id = ' . $company->id : ' WHERE g.companies_id = ' . $company->id;
-      $phql .= $user ? ' ORDER BY save_id DESC' : '';
+      $phql .= ' ORDER BY g.id DESC';
       $phql .= $user ? '' : ' LIMIT 5';
 
       $games = $this->modelsManager->executeQuery($phql);
@@ -95,11 +95,27 @@ class GamesController extends ControllerBase
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL' : '';
-      $phql .= $user ? ' ORDER BY save_id DESC' : '';
+      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL' : '';
+      $phql .= ' ORDER BY g.id DESC';
       $phql .= $user ? '' : ' LIMIT 5';
 
       $games = $this->modelsManager->executeQuery($phql);
+
+
+      $phql2 = 'SELECT g.*';
+      $phql2 .= $user ? ' , hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
+      $phql2 .= ' FROM Raffledo\Models\Games AS g';
+      $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
+      $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
+      $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
+      $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
+      $phql2 .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NOT NULL' : '';
+      $phql2 .= ' ORDER BY g.id DESC';
+      $phql2 .= $user ? '' : ' LIMIT 5';
+
+      $favs = $this->modelsManager->executeQuery($phql2);
+
+      $this->view->favs = $favs;
 
     }
 
@@ -157,7 +173,8 @@ class GamesController extends ControllerBase
             if (!$new->save()) {
               $this->flashSession->error("Can't save game to favoriten list");
             }
-          }          
+          }       
+          return true;
         }
 
         if ($type == 'hide') {
@@ -169,7 +186,8 @@ class GamesController extends ControllerBase
             if (!$new->save()) {              
               $this->flashSession->error("Can't hide game");
             }
-          }          
+          }       
+          return true;   
         } 
 
         if ($type == 'hideCompany') {
