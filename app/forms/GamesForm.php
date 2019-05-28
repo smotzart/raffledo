@@ -52,15 +52,6 @@ class GamesForm extends Form
       ]);
     }
   }
-  public function renderTextarea($name)
-  {
-    $element  = $this->get($name);
-
-    
-    echo '<textarea class="form-control" id="', $element->getName(), '" rows="',$element->getAttributes()['rows'],'" placeholder="',$element->getAttributes()['placeholder'],'" style="',$element->getAttributes()['style'],'">', nl2br($element->getValue()), '</textarea>';
-
-  }
-
 
   public function initialize($entity = null, $options = null)
   {
@@ -76,11 +67,7 @@ class GamesForm extends Form
         'message' => 'The URL must be a url'
       ])
     ]);
-    $this->add($url);
-
-
-    
-
+    $this->add($url); 
 
     // Company
     $companies = Companies::find();
@@ -95,7 +82,6 @@ class GamesForm extends Form
     ];
 
     if (!$options['edit']) {
-
       $c_name = new Text('c_name', [
         'placeholder' => 'Name'
       ]);
@@ -114,11 +100,7 @@ class GamesForm extends Form
 
       $companies_opt['useEmpty'] = true;
     }
-
     $this->add(new Select('companies_id', $companies, $companies_opt));
-
-
-
 
     // Title
     $title = new Text('title', [
@@ -130,7 +112,7 @@ class GamesForm extends Form
       ])
     ]);
     $this->add($title);
-    // Type 4
+
     $info = new Check('price_info', [
       'value' => 1
     ]);
@@ -189,7 +171,7 @@ class GamesForm extends Form
  
     // Tags
     //$tags = Tags::find();
-    //if ($options['edit']) {
+    if ($options['edit']) {
       $tags = Tags::find();
       $tags_select = new Select('tags_id[]', $tags, [
         'using' => [
@@ -201,9 +183,11 @@ class GamesForm extends Form
         'size' => 10
       ]);
       $tags_select->setDefault($options['tags']);
-    /*} else {
-      $tags_select = new Text('tags_id[]');
-    }*/
+    } else {
+      $tags_select = new Text('tags_id[]', [
+        'placeholder' => 'New tag'
+      ]);
+    }
 
     
     $this->add($tags_select);

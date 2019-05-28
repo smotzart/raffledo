@@ -60,12 +60,24 @@ class GamesController extends ControllerBase
             $game->companies_id = $this->request->getPost('companies_id');
           }
 
-          $updated_tags = $this->request->getPost('tags_id');
-
+          $updated_tags = strlen($this->request->getPost('tags_id')[0]) > 0 ? explode(',', $this->request->getPost('tags_id')[0]) : null;
           if ($updated_tags && count($updated_tags) > 0) {
             $tags = array();
             
-            foreach($updated_tags as $tag_id) {
+            foreach($updated_tags as $tag_name) {
+              $insert_tag = Tags::findFirst(['conditions' => 'name ="' . $tag_name . '"']);
+              if ($insert_tag) {
+                $tag_id = $insert_tag->id;
+              } else {
+                $new_tag = new Tags([
+                  'tag' => strtolower($tag_name),
+                  'name' => $tag_name
+                ]);
+                if (!$new_tag->save()) {
+                  return $this->flash->error($new_tag->getMessages()); 
+                }
+                $tag_id = $new_tag->id;
+              }
               $gt = new GamesTags([
                 'tags_id' => $tag_id
               ]);

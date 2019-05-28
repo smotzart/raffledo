@@ -6,6 +6,7 @@ use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\Uniqueness;
+use Phalcon\Mvc\Model\Relation;
 
 class Tags extends Model
 {
@@ -65,22 +66,21 @@ class Tags extends Model
             'tags_id',
             [
                 'foreignKey' => [
-                    'message' => 'Tag cannot be deleted because it\'s used on Games'
+                    'action' => Relation::ACTION_CASCADE
                 ]
             ]
         );
-
-        $this->hasManyToMany(
+        $this->hasMany(
             'id',
-            __NAMESPACE__ . '\GamesTags',
-            'tags_id', 'games_id',
-            __NAMESPACE__ . '\Games',
-            'id',
+            __NAMESPACE__ . '\HiddenTags',
+            'tags_id',
             [
-                'alias' => 'games'
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
             ]
-        );
-        
+        ); 
+
         $this->hasManyToMany(
             'id',
             __NAMESPACE__ . '\GamesTags',
@@ -112,6 +112,14 @@ class Tags extends Model
                 ]
             )
         );
+    }
+
+    /**
+     * Before create the tag 
+    */
+    public function beforeCreate()
+    {
+        $this->tag = strtolower(str_replace('+', '-', urlencode($this->tag)));
     }
 
     /**

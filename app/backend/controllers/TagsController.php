@@ -31,7 +31,7 @@ class TagsController extends ControllerBase
         } else {
           $tag = new Tags([
             'tag' => $this->request->getPost('tag', 'striptags'),
-            'title' => $this->request->getPost('title', 'striptags'),
+            'name' => $this->request->getPost('name', 'striptags'),
             'description' => $this->request->getPost('description', 'striptags'),
             'footer' => $this->request->getPost('footer') ? 1 : 0
           ]);
@@ -72,7 +72,7 @@ class TagsController extends ControllerBase
         } else {
           $tag->assign([
             'tag' => $this->request->getPost('tag', 'striptags'),
-            'title' => $this->request->getPost('title', 'striptags'),
+            'name' => $this->request->getPost('name', 'striptags'),
             'description' => $this->request->getPost('description', 'striptags'),
             'footer' => $this->request->getPost('footer') ? 1 : 0
           ]);

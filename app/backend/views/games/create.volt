@@ -79,10 +79,11 @@
       {{ form.label('type_submission', ['class': 'form-check-label']) }}
     </div>  
   </div>
+
   <div class="form-group">
     <label for="tags_id">Tags</label>
     {{ form.render("tags_id[]", ['class': 'form-control', 'id': 'tags_input']) }}
-    <small class="form-text text-muted">Hold down the Ctrl (windows) / Command (Mac) button to select multiple tags.</small>
+    <small class="form-text text-muted">Enter new tag separated by comma</small>
   </div>
   <div class="form-group">
     <label for="suggested_solution">Lösungsvorschlag</label>

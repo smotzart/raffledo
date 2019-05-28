@@ -1,4 +1,5 @@
 $(function() {
+  var tagsname;
   $('[data-toggle="tooltip"]').tooltip();
   $('#removeTag').on('show.bs.modal', function(event) {
     var button, modal, tagId, tagName;
@@ -25,7 +26,7 @@ $(function() {
       return $('#new_game').addClass('d-none').find('input').attr('disabled', 'disabled');
     }
   });
-  return $('#url_change .form-control').on('change', function(event) {
+  $('#url_change .form-control').on('change', function(event) {
     return $.get("/admin/companies/search", {
       'search': $(this).val()
     }, function(data) {
@@ -49,24 +50,33 @@ $(function() {
       }
     }, 'json');
   });
+  tagsname = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: '/admin/tags/get',
+      cache: false,
+      filter: function(tags) {
+        return $.map(tags, function(tag) {
+          return {
+            name: tag.name
+          };
+        });
+      }
+    }
+  });
+  tagsname.initialize();
+  return $('#tags_input').tagsinput({
+    tagClass: 'badge badge-info',
+    cancelConfirmKeysOnEmpty: false,
+    trimValue: true,
+    typeaheadjs: {
+      name: 'tagsname',
+      displayKey: 'name',
+      valueKey: 'name',
+      source: tagsname.ttAdapter()
+    }
+  });
 });
-
-/*
-tagsname = new Bloodhound
-datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name')
-queryTokenizer: Bloodhound.tokenizers.whitespace
-prefetch: 
-url: '/admin/tags/get'
-
-tagsname.initialize()
-
-$('#tags_input').tagsinput
-itemValue: 'id'
-itemText: 'name'
-typeaheadjs:
-name: 'tagsname'
-displayKey: 'name'
-source: tagsname.ttAdapter()
-*/
 
 //# sourceMappingURL=admin.js.map

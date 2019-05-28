@@ -76,13 +76,13 @@ $router->add("/gewinnspiele-zeige-mir-alle-gewinnspiele-die-ich-noch-nicht-ausge
 ]);
 
 
-$router->add("/{tag:[a-zA-Z0-9]+}-gewinnspiel", [
+$router->add("/{tag:[a-zA-Z0-9-]+}-gewinnspiel", [
   'module'     => 'frontend',
   'controller' => 'games',
   'action'     => 'index',
 ]);
 
-$router->add("/{company:[a-zA-Z0-9]+}-gewinnspiele", [
+$router->add("/{company:[a-zA-Z0-9-]+}-gewinnspiele", [
   'module'     => 'frontend',
   'controller' => 'games',
   'action'     => 'index',

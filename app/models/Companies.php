@@ -6,6 +6,7 @@ use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\Uniqueness;
+use Phalcon\Mvc\Model\Relation;
 
 class Companies extends Model
 {
@@ -66,7 +67,17 @@ class Companies extends Model
             [
                 'alias' => 'games'
             ]
-        );    
+        );  
+        $this->hasMany(
+            'id',
+            __NAMESPACE__ . '\HiddenCompanies',
+            'companies_id',
+            [
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
+            ]
+        );   
     }
 
     /**

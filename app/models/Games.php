@@ -188,7 +188,37 @@ class Games extends Model
                 ],
                 'alias' => 'gamesTags'
             ]
-        );        
+        );    
+        $this->hasMany(
+            'id',
+            __NAMESPACE__ . '\HiddenGames',
+            'games_id',
+            [
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
+            ]
+        );  
+        $this->hasMany(
+            'id',
+            __NAMESPACE__ . '\SavedGames',
+            'games_id',
+            [
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
+            ]
+        );  
+        $this->hasMany(
+            'id',
+            __NAMESPACE__ . '\ViewedGames',
+            'games_id',
+            [
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
+            ]
+        );   
         $this->hasManyToMany(
             'id',
             __NAMESPACE__ . '\GamesTags',
