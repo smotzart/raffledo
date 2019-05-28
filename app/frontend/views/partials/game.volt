@@ -5,6 +5,9 @@
         {{ game.title }}
       </div>
       <div class="d-none d-xl-block col-12 col-md-3">
+        {% if game.type_register == 1 or game.type_sms == 1 or game.type_buy == 1 or game.type_internet == 1 or game.type_submission == 1 %}
+          <div class="box-label">Gewinnspiel-Typ</div>
+        {% endif %}
         <div class="lh-0">
           {% if (game.type_register == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Registrierung erforderlich" class="fi flaticon-user mr-2"></i>{% endif %}
           {% if (game.type_sms == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="SMS/Anruf erforderlich" class="fi flaticon-tablet mr-2"></i>{% endif %}
@@ -66,7 +69,9 @@
         {% endif %}
       </div>
       <div class="col-12 d-block d-xl-none">
-        <span class="box-label">Gewinnspiel-Typ</span>
+        {% if game.type_register == 1 or game.type_sms == 1 or game.type_buy == 1 or game.type_internet == 1 or game.type_submission == 1 %}
+          <span class="box-label">Gewinnspiel-Typ</span>
+        {% endif %}
         <div>
           {% if (game.type_register == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Registrierung erforderlich" class="fi flaticon-user mr-2"></i>{% endif %}
           {% if (game.type_sms == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="SMS/Anruf erforderlich" class="fi flaticon-tablet mr-2"></i>{% endif %}
