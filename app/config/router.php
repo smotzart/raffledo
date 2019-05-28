@@ -100,6 +100,13 @@ $router->add("/einstellungen", [
   'action'     => 'index'
 ]);
 
+$router->add("/einstellungen/:action/:params", [
+  'module'     => 'frontend',
+  'controller' => 'settings',
+  'action'     => 1,
+  'params'     => 2
+]);
+
 
 $router->add("/gewinnspiele/:action", [
   'module'     => 'frontend',
