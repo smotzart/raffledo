@@ -26,6 +26,7 @@ $(function() {
       return $('#new_game').addClass('d-none').find('input').attr('disabled', 'disabled');
     }
   });
+  $('#companies_id').change();
   $('#url_change .form-control').on('change', function(event) {
     return $.get("/admin/companies/search", {
       'search': $(this).val()
