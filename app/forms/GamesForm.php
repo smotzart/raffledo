@@ -146,7 +146,7 @@ class GamesForm extends Form
     } else {
       $price = new TextArea('price', [
         'placeholder' => 'Preis',
-        'rows' => 1,
+        'rows' => 5,
         'style' => 'resize:none;'
       ]);      
     }

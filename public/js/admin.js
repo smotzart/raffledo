@@ -10,17 +10,9 @@ $(function() {
     return modal.find('#tagId').val(tagId);
   });
   $('#price_info').on('change', function(event) {
-    if ($(this).is(':checked')) {
-      return $('#price').attr({
-        'rows': 5,
-        'placeholder': 'Information '
-      });
-    } else {
-      return $('#price').attr({
-        'rows': 1,
-        'placeholder': 'Preis'
-      });
-    }
+    return $('#price').attr({
+      'placeholder': $(this).is(':checked') ? 'Information' : 'Preis'
+    });
   });
   $("[data-tag='yes']").tagsinput({
     tagClass: 'badge badge-info',

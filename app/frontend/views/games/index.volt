@@ -1,9 +1,38 @@
+
+{% set title = 0 %}
+
+
+
 {% for game in page.items %}
   
-  {% if single_type is defined %}
-    {{ partial('partials/game', ['game': game, 'logged_in': logged_in]) }}
-  {% else %}
+  {% if loop.first %}
+    {% if limited_view is defined and search_name is defined %}
+      <div class="mb-5">
+        <h2 class="m-0"><span class="text-capitalize">{{ search_name }}</span> {% if search_description is defined %}<small class="text-muted">{{ search_description }}</small>{% endif %}</h2>
+      </div>
+    {% elseif register_view is defined and game.save_id %}
+      {% set title = 1 %}
+      <div class="mb-5">
+        <h2 class="text-capitalize m-0">Favoriten</h2>
+      </div>
+    {% else %}
+      <div class="mb-5">
+        <h2 class="text-capitalize m-0">Aktuelle Gewinnspiele</h2>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% if loop.index > 1 and register_view is defined and !game.save_id and title == 1 %}
+    {% set title = 0 %}
+    <div class="mb-5">
+      <h2 class="text-capitalize m-0">Aktuelle Gewinnspiele</h2>
+    </div>
+  {% endif %}
+
+  {% if register_view is defined %}
     {{ partial('partials/game', ['game': game.g, 'logged_in': logged_in, 'is_view': game.is_view]) }}
+  {% else %}
+    {{ partial('partials/game', ['game': game, 'logged_in': logged_in]) }}
   {% endif %}
 
   {% if loop.last and logged_in %}
