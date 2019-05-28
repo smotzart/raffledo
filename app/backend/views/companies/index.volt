@@ -31,9 +31,6 @@
                   <div class="text-truncate">{{ host }}</div>                  
                 </div>
               {% endfor %}
-
-              
-
             </div>          
           </div>
         </div>

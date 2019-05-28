@@ -127,12 +127,16 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content rounded-0">   
       <div class="modal-header">
-        <h5 class="modal-title">Existing games</h5>
+        <h5 class="modal-title">Existing companies</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>  
       <div class="modal-body p-0"></div>
+      <div class="modal-footer">
+        <small class="text-muted mr-auto">Choose from existing companies or close <br> to be able to create a new one.</small>
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>

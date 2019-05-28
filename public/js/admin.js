@@ -34,18 +34,24 @@ $(function() {
     }
   });
   return $('#url_change .form-control').on('change', function(event) {
-    return $.get("/admin/games/search", {
+    return $.get("/admin/companies/search", {
       'search': $(this).val()
     }, function(data) {
-      var i, insert_data, item, len;
-      console.log(data.length);
+      var i, insert_data, insert_item, item, len;
       if (data.length > 0) {
-        insert_data = '<ul class="list-group list-group-flush">';
+        insert_data = $('<div class="list-group list-group-flush"></div>');
         for (i = 0, len = data.length; i < len; i++) {
           item = data[i];
-          insert_data += '<li class="list-group-item"><h5>' + item.title + '</h5><small>' + item.url + '</small></li>';
+          insert_item = $('<a href="#" data-company="' + item.id + '" class="list-group-item list-group-item-action">' + item.name + '</a>');
+          insert_item.on('click', function(e) {
+            var company_id;
+            event.preventDefault();
+            company_id = $(this).data('company');
+            $('#companies_id').val(company_id).change();
+            return $('#existUrl').modal('hide');
+          });
+          insert_data.append(insert_item);
         }
-        insert_data += '</ul>';
         $('#existUrl .modal-body').html(insert_data);
         return $('#existUrl').modal('show');
       }
