@@ -38,7 +38,7 @@ $(function() {
           insert_item = $('<a href="#" data-company="' + item.id + '" class="list-group-item list-group-item-action">' + item.name + '</a>');
           insert_item.on('click', function(e) {
             var company_id;
-            event.preventDefault();
+            e.preventDefault();
             company_id = $(this).data('company');
             $('#companies_id').val(company_id).change();
             return $('#existUrl').modal('hide');
