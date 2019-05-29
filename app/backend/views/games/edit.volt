@@ -8,8 +8,8 @@
       {{ link_to('games/delete/' ~ game.id, '<i class="fa fa-trash-o"></i>', 'class': 'btn btn-outline-danger') }}
     </div>
     <div>
-      <button type="submit" class="btn btn-success"><i class="fa fa-save"></i></button>
-      <button type="submit" name="again" class="btn btn-outline-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
+      <button type="submit" class="btn btn-outline-success"><i class="fa fa-save"></i></button>
+      <button type="submit" name="again" class="btn btn-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
     </div>
   </div>
 
@@ -99,7 +99,7 @@
 
   <div class="form-group">
     {{ link_to('games/delete/' ~ game.id, '<i class="fa fa-trash-o mr-2"></i>Delete', 'class': 'btn btn-outline-danger') }}
-    <button type="submit" class="btn btn-success"><i class="fa fa-save mr-2"></i>Save</button>
-    <button type="submit" name="again" class="btn btn-outline-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
+    <button type="submit" class="btn btn-outline-success"><i class="fa fa-save mr-2"></i>Save</button>
+    <button type="submit" name="again" class="btn btn-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
   </div>
 </form>

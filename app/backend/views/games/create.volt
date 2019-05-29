@@ -5,8 +5,8 @@
       {{ link_to('games/', '<i class="fa fa-angle-left mr-2"></i>Back', 'class': 'btn btn-outline-info') }}
     </div>
     <div>
-      <button type="submit" class="btn btn-success"><i class="fa fa-save mr-2"></i>Save</button>
-      <button type="submit" name="again" class="btn btn-outline-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
+      <button type="submit" class="btn btn-outline-success"><i class="fa fa-save mr-2"></i>Save</button>
+      <button type="submit" name="again" class="btn btn-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
     </div>
   </div>
 
@@ -119,8 +119,8 @@
   </div>
 
   <div class="form-group">
-    <button type="submit" class="btn btn-success"><i class="fa fa-save mr-2"></i>Save</button>
-    <button type="submit" name="again" class="btn btn-outline-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
+    <button type="submit" class="btn btn-outline-success"><i class="fa fa-save mr-2"></i>Save</button>
+    <button type="submit" name="again" class="btn btn-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
   </div>
 </form>
 
