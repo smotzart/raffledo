@@ -123,6 +123,14 @@ class Tags extends Model
     }
 
     /**
+     * Before create the tag 
+    */
+    public function beforeUpdate()
+    {
+        $this->tag = strtolower(str_replace('+', '-', urlencode($this->tag)));
+    }
+    
+    /**
      * Returns table name mapped in the model.
      *
      * @return string
