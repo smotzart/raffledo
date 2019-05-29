@@ -61,7 +61,7 @@ class GamesController extends ControllerBase
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND gt.tags_id = ' . $tag->id : ' WHERE gt.tags_id = ' . $tag->id;
+      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND gt.tags_id = ' . $tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()': ' WHERE gt.tags_id = ' . $tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
       $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
       $phql .= ' ORDER BY g.id DESC';
       $phql .= $user ? '' : ' LIMIT 5';
@@ -86,7 +86,7 @@ class GamesController extends ControllerBase
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND g.companies_id = ' . $company->id : ' WHERE g.companies_id = ' . $company->id;
+      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND  g.companies_id = ' . $company->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()': ' WHERE g.companies_id = ' . $company->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
       $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
       $phql .= ' ORDER BY g.id DESC';
       $phql .= $user ? '' : ' LIMIT 5';
@@ -105,7 +105,7 @@ class GamesController extends ControllerBase
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL' : '';
+      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()' : ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
       $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
       $phql .= ' ORDER BY g.id DESC';
       $phql .= $user ? '' : ' LIMIT 5';
@@ -119,7 +119,7 @@ class GamesController extends ControllerBase
       $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
       $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql2 .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NOT NULL' : '';
+      $phql2 .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NOT NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()' : ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
       $phql2 .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
       $phql2 .= ' ORDER BY g.id DESC';
       $phql2 .= $user ? '' : ' LIMIT 5';
@@ -279,6 +279,7 @@ class GamesController extends ControllerBase
 
     $phql = 'SELECT g.*';
     $phql .= ' FROM Raffledo\Models\Games AS g';
+    $phql .= ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
     $phql .= $user ? '' : ' LIMIT 5';
 
     $games = $this->modelsManager->executeQuery($phql);
