@@ -42,19 +42,17 @@ $(function() {
     link = $(this).attr('href');
     id = $(this).data('game');
     el = document.getElementById("view-game-" + id);
-    console.log("1");
     if (el !== null) {
-      console.log("2");
       range = document.createRange();
       range.selectNodeContents(el);
       sel = window.getSelection();
       sel.removeAllRanges();
       sel.addRange(range);
       document.execCommand('copy');
-      return $('#box-' + id).find('.game-hide-control').fadeOut('slow', function() {
-        return window.open(link);
-      });
     }
+    return $('#box-' + id).find('.game-hide-control').fadeOut('slow', function() {
+      return window.open(link);
+    });
   });
   $('#regular-games .box-hide-form').each(function(i, e) {
     return $(e).ajaxForm({

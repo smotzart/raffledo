@@ -31,24 +31,30 @@ $(function() {
     return $.get("/admin/companies/search", {
       'search': $(this).val()
     }, function(data) {
-      var i, insert_data, insert_item, item, len;
-      if (data.length > 0) {
-        insert_data = $('<div class="list-group list-group-flush"></div>');
+      var i, item, len, results;
+      if (data.length === 1) {
+        results = [];
         for (i = 0, len = data.length; i < len; i++) {
           item = data[i];
-          insert_item = $('<a href="#" data-company="' + item.id + '" class="list-group-item list-group-item-action">' + item.name + '</a>');
-          insert_item.on('click', function(e) {
-            var company_id;
-            e.preventDefault();
-            company_id = $(this).data('company');
-            $('#companies_id').val(company_id).change();
-            return $('#existUrl').modal('hide');
-          });
-          insert_data.append(insert_item);
+          results.push($('#companies_id').val(item.id).change());
         }
-        $('#existUrl .modal-body').html(insert_data);
-        return $('#existUrl').modal('show');
+        return results;
       }
+    /*
+    if data.length > 0
+      insert_data = $('<div class="list-group list-group-flush"></div>')
+      for item in data
+    insert_item = $('<a href="#" data-company="' + item.id + '" class="list-group-item list-group-item-action">' + item.name + '</a>')
+    insert_item.on 'click', (e) ->
+      e.preventDefault()
+      company_id = $(this).data('company')
+      $('#companies_id').val(company_id).change()
+      $('#existUrl').modal('hide')
+    insert_data.append(insert_item)
+
+      $('#existUrl .modal-body').html(insert_data)
+      $('#existUrl').modal('show')
+    */
     }, 'json');
   });
   tagsname = new Bloodhound({

@@ -29,8 +29,14 @@
           </button>
     
           <div class="collapse navbar-collapse" id="navbar-body">
+             
             <?php if (is_array($this->auth->getIdentity())) : ?>
-              <a href="/logout" class="btn px-5 btn-outline-theme mr-lg-4 ml-auto">Logout</a>
+              <ul class="navbar-nav ml-auto mr-7">
+                <li class="nav-item active">
+                  <a class="nav-link" href="/einstellungen">Einstellungen</a>
+                </li>
+              </ul>
+              <a href="/logout" class="btn px-5 btn-outline-theme mr-lg-4">Logout</a>
             <?php else : ?>
               <div class="ml-auto">
                 <a href="/login" class="btn px-5 btn-outline-theme mr-lg-4">Login</a>
@@ -112,11 +118,11 @@
           <div class="col-12 col-md-3">
             <h5 class="mb-4">Über Raffledo</h5>       
             <ul class="list-unstyled">
-              <li><a href="/impressum" class="text-capitalize">Impressum</a></li>
-              <li><a href="/datenschutz" class="text-capitalize">Datenschutz</a></li>
+              <li><a href="/impressum">Impressum</a></li>
+              <li><a href="/datenschutz">Datenschutz</a></li>
               <?php if (is_array($this->auth->getIdentity())) : ?>
-                <li><a href="/neues" class="text-capitalize">Neues Gewinnspiel melden</a></li>
-                <li><a href="/einstellungen" class="text-capitalize">Einstellungen</a></li>                
+                <li><a href="/neues">Neues Gewinnspiel melden</a></li>
+                <li><a href="/einstellungen">Einstellungen</a></li>                
               <?php endif; ?>
             </ul>
           </div>

@@ -12,8 +12,11 @@
     {{ content() }}
   </div>
 </div>
+</div>
+</main>
 
 {% if !logged_in %}
+<div class="overflow-hidden">
   <div class="row-full bg-2">
     <div class="container">
       <div class="row">
@@ -48,6 +51,7 @@
       </div>
     </div>
   </div>  
+</div>
 {% endif %}
 
 <div class="modal fade" id="reportGameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

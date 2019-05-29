@@ -65,6 +65,9 @@ class Module implements ModuleDefinitionInterface
               'compiledSeparator' => '_'
             ]);
 
+            $compiler = $volt->getCompiler();
+            $compiler->addFunction('strtotime', 'strtotime');
+
             return $volt;
           },
           '.phtml' => PhpEngine::class

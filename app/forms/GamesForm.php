@@ -93,8 +93,7 @@ class GamesForm extends Form
       $this->add($c_tag);
 
       $c_host = new Text('c_host', [
-        'placeholder' => 'Host',
-        'data-role' => 'tagsinput'
+        'placeholder' => 'Host'
       ]);    
       $this->add($c_host);
 
@@ -202,7 +201,11 @@ class GamesForm extends Form
     $deadline_date = new Date('deadline_date', [
       'placeholder' => 'Einsendeschluss'
     ]);
-    $this->add($deadline_date);
+    if ($options['deadline_date']) {
+      $deadline_date->setDefault($options['deadline_date']);  
+    }
+    
+    $this->add($deadline_date);    
 
     $deadline_time = new Time('deadline_time');
     $deadline_time->setDefault('23:59');
@@ -212,6 +215,9 @@ class GamesForm extends Form
     $enter_date = new Date('enter_date', [
       'placeholder' => 'Eintrag für'
     ]);
+    if ($options['enter_date']) {
+      $enter_date->setDefault($options['enter_date']);  
+    }
     $this->add($enter_date);
 
     $enter_time = new Time('enter_time');

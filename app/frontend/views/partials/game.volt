@@ -64,11 +64,9 @@
         {% endif %}
       </div>
       <div class="col-12 col-md-4 ml-auto">
-        <p><span class="box-label">Einsendeschluss</span>{{ date('j. l Y', game.deadline_date) }}</p>
-        {% if game.suggested_solution and logged_in %}
+        <p><span class="box-label">Einsendeschluss</span>{{ date('j. F Y', strtotime(game.deadline_date)) }}</p>
+        {% if game.suggested_solution %}
           <p><span class="box-label">Lösungsvorschlag</span><span id="view-game-{{ game.id }}">{{ game.suggested_solution }}</span></p>
-        {% else %}
-          <p><span class="box-label">Lösungsvorschlag</span>{{ link_to('/', '<span id="view-game-' ~ game.id ~'">nur für User sichtbar</span>', 'class': 'text-body') }}</p>
         {% endif %}
       </div>
       <div class="col-12 d-block d-xl-none">

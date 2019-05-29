@@ -23,7 +23,20 @@ class GamesController extends ControllerBase
 
     public function createAction()
     {
-      $form = new GamesForm(null);
+      $enter_date = date('Y-m-d');
+      $date_games = Games::count(['conditions' => 'enter_date = "' . $enter_date . '"']);
+      while ($date_games > 10) {        
+        $enter_date = date('Y-m-d', strtotime('+1 days'));
+        $date_games = Games::count(['conditions' => 'enter_date = "' . $enter_date . '"']);
+      }
+
+      $deadline_date = date('Y-m-d', strtotime($enter_date . ' +7 days'));
+
+      $form = new GamesForm(null, [
+        'enter_date' => $enter_date,
+        'deadline_date' => $deadline_date,
+        'edit' => false
+      ]);
 
       if ($this->request->isPost()) {
         if ($form->isValid($this->request->getPost()) == false) {                
@@ -118,7 +131,9 @@ class GamesController extends ControllerBase
 
       $form = new GamesForm($game, [
         'edit' => true,
-        'tags' => $current_tags
+        'tags' => $current_tags,
+        'enter_date' => false,
+        'deadline_date' => false
       ]);
 
       if ($this->request->isPost()) {

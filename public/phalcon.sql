@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 27 2019 г., 11:54
+-- Время создания: Май 29 2019 г., 09:33
 -- Версия сервера: 10.1.33-MariaDB
 -- Версия PHP: 7.2.6
 
@@ -43,19 +43,9 @@ CREATE TABLE `companies` (
 --
 
 INSERT INTO `companies` (`id`, `tag`, `name`, `host`, `footer`, `created_at`, `updated_at`) VALUES
-(1, 'test', 'test', 'https://docs.phalconphp.com/3.4/en/db-models.html', 1, '2019-05-20 20:43:05', '2019-05-19 19:07:34'),
-(2, 'relation', 'relation', 'https://docs.phalconphp.com/3.4/en/db-models-relationships', 1, '2019-05-20 20:43:09', '0000-00-00 00:00:00'),
-(3, 'qwe', 'qwe', 'https://stackoverflow.com/questions/23665433/phalcon-php-get-controller-name-in-view', 1, '2019-05-21 15:59:26', '0000-00-00 00:00:00'),
-(4, 'test2', 'test', 'sdfsdf', 0, '2019-05-21 16:04:12', '0000-00-00 00:00:00'),
-(5, 'c1', 'c1df', 'https://tracker.fetz.cc', 1, '2019-05-21 23:59:37', '0000-00-00 00:00:00'),
-(6, 'c2', 'c2', 'https://tracker.fetz.cc', 1, '2019-05-21 23:59:42', '0000-00-00 00:00:00'),
-(7, 'c3', 'c3', 'https://tracker.fetz.cc', 1, '2019-05-21 23:59:47', '0000-00-00 00:00:00'),
-(8, 'c4', 'c4', 'https://tracker.fetz.cc', 0, '2019-05-21 23:59:52', '0000-00-00 00:00:00'),
-(9, 'c5', 'c5', 'https://tracker.fetz.cc', 1, '2019-05-21 23:59:58', '0000-00-00 00:00:00'),
-(10, 'c6', 'c6', 'https://tracker.fetz.cc', 1, '2019-05-22 00:00:05', '0000-00-00 00:00:00'),
-(11, 'c7', 'c7', 'https://tracker.fetz.cc', 1, '2019-05-22 00:00:12', '0000-00-00 00:00:00'),
-(12, 'qwerty', 'qwerty', 'https://getbootstrap.com/docs/4.3/components/forms/', 1, '2019-05-24 09:42:45', '0000-00-00 00:00:00'),
-(13, 'qwerty2', 'qwerty2', 'https://getbootstrap.com/docs/4.3/components/forms/', 1, '2019-05-24 09:46:05', '0000-00-00 00:00:00');
+(14, 'dmas', 'dMAS', 'https://www.dmas.at/', 1, '2019-05-29 06:11:01', '0000-00-00 00:00:00'),
+(15, 'baws', 'BAWS Websolutions GmbH', 'https://www.baws.at/', 1, '2019-05-29 06:12:07', '0000-00-00 00:00:00'),
+(16, 'Mediamarkt GmbH', 'Mediamarkt GmbH', 'https://www.mediamarkt.de/', 1, '2019-05-29 06:23:49', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -105,28 +95,24 @@ CREATE TABLE `games` (
   `type_internet` int(1) NOT NULL DEFAULT '0',
   `type_submission` int(1) NOT NULL DEFAULT '0',
   `suggested_solution` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `enter_date` int(10) DEFAULT NULL,
+  `enter_date` date DEFAULT NULL,
   `enter_time` time DEFAULT '06:00:00',
-  `deadline_date` int(10) DEFAULT NULL,
-  `deadline_time` time DEFAULT '23:59:00',
-  `created_at` int(10) UNSIGNED NOT NULL,
-  `updated_at` int(10) DEFAULT NULL
+  `deadline_date` date DEFAULT NULL,
+  `deadline_time` time DEFAULT '23:59:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `games`
 --
 
-INSERT INTO `games` (`id`, `url`, `companies_id`, `title`, `price`, `price_info`, `type_register`, `type_sms`, `type_buy`, `type_internet`, `type_submission`, `suggested_solution`, `enter_date`, `enter_time`, `deadline_date`, `deadline_time`, `created_at`, `updated_at`) VALUES
-(1, 'https://forum.phalconphp.com', 2, 'first game', '', 0, 1, 0, 1, 0, 0, '', 1558935577, '23:59:00', 1558935577, '23:59:00', 2147483647, 1558935577),
-(2, '2nd', 1, 'first another 2', '', 0, 1, 1, 1, 0, 0, '123', 0, '23:59:00', 0, '19:59:00', 4294967295, 2147483647),
-(4, 'http://raf.my/gewinnspiele', 1, 'first', '', 0, 0, 1, 1, 0, 0, '', 0, '23:59:00', 0, '23:59:00', 4294967295, 2147483647),
-(29, 'http://raf.my/gewinnspiele', 11, 'wer', '', 0, 0, 0, 0, 0, 0, '', 1558908469, '06:00:00', 1558908469, '23:59:00', 1558908469, NULL),
-(30, 'http://raf.my/gewinnspiele', 11, 'wer', '', 0, 0, 0, 0, 0, 0, '', 1558908670, '06:00:00', 1558908670, '23:59:00', 1558908670, NULL),
-(31, 'http://raf.my/gewinnspiele', 3, 'qwe135687', '', 0, 0, 0, 0, 0, 0, '', 1558908706, '06:00:00', 1558908706, '23:59:00', 1558908706, NULL),
-(32, 'http://raf.my/gewinnspiele', 1, 'tttttttt', '', 0, 0, 0, 0, 0, 0, '', 1558908721, '06:00:00', 1558908721, '23:59:00', 1558908721, NULL),
-(33, 'http://raf.my/gewinnspiele', 9, 'q89', '', 0, 0, 0, 0, 0, 0, '', 1558908765, '06:00:00', 1558908765, '23:59:00', 1558908765, NULL),
-(34, 'http://raf.my/gewinnspiele', 3, 'ui00', '', 0, 0, 0, 0, 0, 0, '', 1558908776, '06:00:00', 1558908776, '23:59:00', 1558908776, NULL);
+INSERT INTO `games` (`id`, `url`, `companies_id`, `title`, `price`, `price_info`, `type_register`, `type_sms`, `type_buy`, `type_internet`, `type_submission`, `suggested_solution`, `enter_date`, `enter_time`, `deadline_date`, `deadline_time`) VALUES
+(41, 'https://www.mediamarkt.de/de/product/_google-nest-hub-2548032.html', 16, '1 x 2 Karten für Razorlight – WUK Wien', 'Gutschein für einen Wellness-Urlaub (2 Nächte für je 2 Personen) im REDUCE HOTEL VITAL ****S Bad Tatzmannsdorf inklusive Halbpension', 0, 1, 1, 1, 1, 1, 'Mineralwasser', '2019-05-29', '06:00:00', '2019-06-05', '23:59:00'),
+(42, 'https://www.mediamarkt.de/de/product/_google-nest-hub-2548032.html', 16, '1 x 2 Karten für Razorlight – WUK Wien', 'Gutschein für einen Wellness-Urlaub (2 Nächte für je 2 Personen) im REDUCE HOTEL VITAL ****S Bad Tatzmannsdorf inklusive Halbpension', 0, 1, 1, 1, 1, 1, 'Mineralwasser', '2019-05-29', '06:00:00', '2019-06-05', '23:59:00'),
+(43, 'https://www.mediamarkt.de/de/product/_google-nest-hub-2548032.html', 16, '1 x 2 Karten für Razorlight – WUK Wien', 'Gutschein für einen Wellness-Urlaub (2 Nächte für je 2 Personen) im REDUCE HOTEL VITAL ****S Bad Tatzmannsdorf inklusive Halbpension', 0, 1, 1, 1, 1, 1, 'Mineralwasser', '2019-05-29', '06:00:00', '2019-06-05', '23:59:00'),
+(44, 'https://www.mediamarkt.de/de/product/_google-nest-hub-2548032.html', 16, '1 x 2 Karten für Razorlight – WUK Wien', 'Gutschein für einen Wellness-Urlaub (2 Nächte für je 2 Personen) im REDUCE HOTEL VITAL ****S Bad Tatzmannsdorf inklusive Halbpension', 0, 1, 1, 1, 1, 1, 'Mineralwasser', '2019-05-29', '06:00:00', '2019-06-05', '23:59:00'),
+(45, 'https://www.mediamarkt.de/de/product/_google-nest-hub-2548032.html', 16, '1 x 2 Karten für Razorlight – WUK Wien', 'Gutschein für einen Wellness-Urlaub (2 Nächte für je 2 Personen) im REDUCE HOTEL VITAL ****S Bad Tatzmannsdorf inklusive Halbpension', 0, 1, 1, 1, 1, 1, 'Mineralwasser', '2019-05-29', '06:00:00', '2019-06-05', '23:59:00'),
+(46, 'https://www.mediamarkt.de/de/product/_google-nest-hub-2548032.html', 16, '1 x 2 Karten für Razorlight – WUK Wien', 'Gutschein für einen Wellness-Urlaub (2 Nächte für je 2 Personen) im REDUCE HOTEL VITAL ****S Bad Tatzmannsdorf inklusive Halbpension', 0, 1, 1, 1, 1, 1, 'Mineralwasser', '2019-05-29', '06:00:00', '2019-06-05', '23:59:00'),
+(47, 'https://www.mediamarkt.de/de/product/_google-nest-hub-2548032.html', 16, '1 x 2 Karten für Razorlight – WUK Wien', 'Gutschein für einen Wellness-Urlaub (2 Nächte für je 2 Personen) im REDUCE HOTEL VITAL ****S Bad Tatzmannsdorf inklusive Halbpension', 0, 1, 1, 1, 1, 1, 'Mineralwasser', '2019-05-29', '06:00:00', '2019-06-05', '23:59:00');
 
 -- --------------------------------------------------------
 
@@ -146,12 +132,11 @@ CREATE TABLE `games_tags` (
 --
 
 INSERT INTO `games_tags` (`id`, `games_id`, `tags_id`, `created_at`) VALUES
-(65, 4, 21, '2019-05-21 16:32:32'),
-(66, 4, 22, '2019-05-21 16:32:32'),
-(67, 4, 23, '2019-05-21 16:32:32'),
-(68, 4, 24, '2019-05-21 16:32:32'),
-(70, 2, 23, '2019-05-21 16:33:27'),
-(112, 1, 22, '2019-05-27 04:39:37');
+(147, 41, 21, '2019-05-29 05:23:49'),
+(148, 41, 22, '2019-05-29 05:23:49'),
+(149, 41, 27, '2019-05-29 05:23:49'),
+(150, 41, 29, '2019-05-29 05:23:49'),
+(151, 41, 28, '2019-05-29 05:23:49');
 
 -- --------------------------------------------------------
 
@@ -188,13 +173,6 @@ CREATE TABLE `hidden_tags` (
   `tags_id` int(10) NOT NULL,
   `users_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `hidden_tags`
---
-
-INSERT INTO `hidden_tags` (`id`, `tags_id`, `users_id`) VALUES
-(5, 22, 2);
 
 -- --------------------------------------------------------
 
@@ -290,13 +268,6 @@ CREATE TABLE `remember_tokens` (
   `created_at` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Дамп данных таблицы `remember_tokens`
---
-
-INSERT INTO `remember_tokens` (`id`, `users_id`, `token`, `created_at`) VALUES
-(4, 2, '11aa2a8b943b661b9e8dc6db7261cf6c', 1558934071);
-
 -- --------------------------------------------------------
 
 --
@@ -328,14 +299,6 @@ CREATE TABLE `saved_games` (
   `games_id` int(10) NOT NULL,
   `users_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `saved_games`
---
-
-INSERT INTO `saved_games` (`id`, `games_id`, `users_id`) VALUES
-(2, 4, 2),
-(3, 4, 3);
 
 -- --------------------------------------------------------
 
@@ -374,7 +337,17 @@ INSERT INTO `success_logins` (`id`, `users_id`, `ipAddress`) VALUES
 (51, 2, '127.0.0.1'),
 (52, 2, '127.0.0.1'),
 (53, 2, '127.0.0.1'),
-(54, 2, '127.0.0.1');
+(54, 2, '127.0.0.1'),
+(55, 2, '127.0.0.1'),
+(56, 2, '127.0.0.1'),
+(57, 2, '127.0.0.1'),
+(58, 2, '127.0.0.1'),
+(59, 3, '127.0.0.1'),
+(60, 2, '127.0.0.1'),
+(61, 2, '127.0.0.1'),
+(62, 2, '127.0.0.1'),
+(63, 2, '127.0.0.1'),
+(64, 2, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -397,8 +370,11 @@ CREATE TABLE `tags` (
 --
 
 INSERT INTO `tags` (`id`, `tag`, `name`, `description`, `footer`, `created_at`, `updated_at`) VALUES
-(21, 'linz', 'Linz', '', 1, '2019-05-19 19:57:08', '0000-00-00 00:00:00'),
-(22, 'game', 'Gewinnspiel', '', 1, '2019-05-19 19:57:08', '0000-00-00 00:00:00');
+(21, 'linz', 'Linz', 'test description', 1, '2019-05-19 19:57:08', '2019-05-28 12:14:37'),
+(22, 'game', 'Gewinnspiel', '', 1, '2019-05-19 19:57:08', '0000-00-00 00:00:00'),
+(27, 'karten', 'Karten', '', 1, '2019-05-29 05:12:38', '0000-00-00 00:00:00'),
+(28, 'konzert', 'Konzert', 'Konzert', 1, '2019-05-29 05:12:44', '2019-05-29 05:12:54'),
+(29, 'test', 'Test', 'Lorem Ipsum ist ein einfacher Demo-Text für die Print- und Schriftindustrie.', 1, '2019-05-29 05:23:49', '2019-05-29 05:24:29');
 
 -- --------------------------------------------------------
 
@@ -436,15 +412,6 @@ CREATE TABLE `viewed_games` (
   `games_id` int(10) UNSIGNED NOT NULL,
   `users_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `viewed_games`
---
-
-INSERT INTO `viewed_games` (`id`, `games_id`, `users_id`) VALUES
-(3, 1, 2),
-(1, 4, 2),
-(7, 29, 2);
 
 --
 -- Индексы сохранённых таблиц
@@ -571,7 +538,7 @@ ALTER TABLE `viewed_games`
 -- AUTO_INCREMENT для таблицы `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT для таблицы `failed_logins`
@@ -583,13 +550,13 @@ ALTER TABLE `failed_logins`
 -- AUTO_INCREMENT для таблицы `games`
 --
 ALTER TABLE `games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT для таблицы `games_tags`
 --
 ALTER TABLE `games_tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
 
 --
 -- AUTO_INCREMENT для таблицы `hidden_companies`
@@ -607,7 +574,7 @@ ALTER TABLE `hidden_games`
 -- AUTO_INCREMENT для таблицы `hidden_tags`
 --
 ALTER TABLE `hidden_tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `new_games`
@@ -631,7 +598,7 @@ ALTER TABLE `profiles`
 -- AUTO_INCREMENT для таблицы `remember_tokens`
 --
 ALTER TABLE `remember_tokens`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT для таблицы `reports`
@@ -643,19 +610,19 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT для таблицы `saved_games`
 --
 ALTER TABLE `saved_games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `success_logins`
 --
 ALTER TABLE `success_logins`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT для таблицы `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
@@ -667,7 +634,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `viewed_games`
 --
 ALTER TABLE `viewed_games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
