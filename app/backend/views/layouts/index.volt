@@ -1,7 +1,7 @@
 <header id="header" class="header mb-5">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      {{ link_to(null, 'class': 'navbar-brand', 'Raffledo')}}
+      {{ link_to(null, 'class': 'navbar-brand', '<img src="/img/raffledo@1x.png" srcset="/img/raffledo@1x.png 1x, /img/raffledo.png 2x" alt="Raffledo">')}}
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

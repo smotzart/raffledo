@@ -84,27 +84,29 @@
     </div>
   </div>
   <div class="box-footer d-flex flex-column align-items-md-center flex-md-row">
-    <div class="box-btn order-md-1 ml-md-auto">
+    <div class="box-btn order-md-1 ml-md-auto flex-wrap flex-md-nowrap">
       {% if logged_in %}
-        <form method="post" action="games/control" accept-charset="utf-8" class="box-save-form mr-2">
+        <form method="post" action="games/control" accept-charset="utf-8" class="box-save-form w-50 w-md-auto pr-1 pr-md-0 mr-md-2">
           <input type="hidden" name="actionType" value="save" />
           <input type="hidden" name="actionId" value="{{ game.id }}" />
-          <button type="submit" class="btn btn-theme box-save-btn">Merken</button>
+          <button type="submit" class="btn btn-theme btn-block box-save-btn">Merken</button>
         </form>
         {% if is_view is not defined %}
-          <form method="post" action="games/control" accept-charset="utf-8" class="box-hide-form game-hide-control mr-2">
+          <form method="post" action="games/control" accept-charset="utf-8" class="box-hide-form w-50 w-md-auto game-hide-control pl-1 pl-md-0 mr-md-2">
             <input type="hidden" name="actionType" value="hide" />
             <input type="hidden" name="actionId" value="{{ game.id }}" />
-            <button type="submit" class="btn btn-outline-mute box-hide-btn">Ausblenden</button>
+            <button type="submit" class="btn btn-outline-mute btn-block box-hide-btn">Ausblenden</button>
           </form>
         {% endif %}
       {% endif %}
-      {{ link_to('/win/' ~ game.id, 'Zum Gewinnspiel', 'target': '_blank', 'rel': 'noopener noreferrer', 'data-game': game.id, 'class': 'view-game btn btn-outline-warning') }}
+      {{ link_to('/win/' ~ game.id, 'Zum Gewinnspiel', 'target': '_blank', 'rel': 'noopener noreferrer', 'data-game': game.id, 'class': 'view-game btn w-100 w-md-auto btn-outline-warning') }}
     </div>
-    <div class="box-tags order-md-0">
-      {% for tagItem in game.tags %}
-        <a href="/{{ tagItem.tag }}-gewinnspiel" class="text-muted mr-md-4 d-inline-block"><i class="fas fa-tags fa-flip-horizontal fa-xs mr-2"></i>{{ tagItem.name }}</a>
-      {% endfor %}
-    </div>
+    {% if (game.tags | length) > 0 %}
+      <div class="box-tags order-md-0">
+        {% for tagItem in game.tags %}
+          <a href="/{{ tagItem.tag }}-gewinnspiel" class="text-muted mr-md-4 d-inline-block"><i class="fas fa-tags fa-flip-horizontal fa-xs mr-2"></i>{{ tagItem.name }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 </div>

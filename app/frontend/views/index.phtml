@@ -20,32 +20,32 @@
   <body class="d-flex justify-content-end flex-column <?php echo $bodyClass; ?>">
     <header id="header" class="fixed-top">
       <nav class="navbar navbar-expand-lg navbar-light bg-white pt-lg-6">
-        <div class="container align-items-lg-end">
+        <div class="container">
           <a class="navbar-brand" href="/">
-            <img src="img/raffledo.png" srcset="img/raffledo.png 1x, img/raffledo@2x.png 2x" alt="Raffledo">
+            <img src="img/raffledo@1x.png" srcset="img/raffledo@1x.png 1x, img/raffledo.png 2x" alt="Raffledo">
           </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-body" aria-controls="navbar-body" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="ml-auto navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-body" aria-controls="navbar-body" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-    
+          <div class="ml-4 order-lg-5">
+            <img src="img/germany.png" srcset="img/germany.png 1x, img/germany@2x.png 2x" alt="Germany">
+          </div>
+          
           <div class="collapse navbar-collapse" id="navbar-body">
              
             <?php if (is_array($this->auth->getIdentity())) : ?>
-              <ul class="navbar-nav ml-auto mr-7">
+              <ul class="navbar-nav ml-auto mr-7 mt-5 mt-lg-0">
                 <li class="nav-item active">
                   <a class="nav-link" href="/einstellungen">Einstellungen</a>
                 </li>
               </ul>
               <a href="/logout" class="btn px-5 btn-outline-theme mr-lg-4">Logout</a>
             <?php else : ?>
-              <div class="ml-auto">
+              <div class="ml-auto mt-5 mt-lg-0">
                 <a href="/login" class="btn px-5 btn-outline-theme mr-lg-4">Login</a>
                 <a href="/" class="btn px-5 btn-outline-theme">Registrierung</a>
               </div>
             <?php endif; ?>
-            <div class="ml-4">
-              <img src="img/germany.png" srcset="img/germany.png 1x, img/germany@2x.png 2x" alt="Germany">
-            </div>
           </div>
         </div>
       </nav>
