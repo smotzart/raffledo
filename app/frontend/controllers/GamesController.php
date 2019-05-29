@@ -35,6 +35,14 @@ class GamesController extends ControllerBase
 
     if ($user) {
       $this->view->register_view = true;
+
+      $hidden_games_by_tags = 'SELECT g.id as game_hide_by_tag FROM Raffledo\Models\Games AS g LEFT JOIN Raffledo\Models\GamesTags as gt ON gt.games_id = g.id LEFT JOIN Raffledo\Models\HiddenTags as ht on ht.tags_id = gt.tags_id AND ht.users_id = ' . $user->id .' WHERE ht.id IS NOT NULL GROUP BY g.id';
+      $hhh = $this->modelsManager->executeQuery($hidden_games_by_tags);
+      $not_in = [];
+      foreach ($hhh as $hh) {
+        $not_in[] = $hh->game_hide_by_tag;
+      }
+      $not_in = implode(',',$not_in);
     }
     
 
@@ -54,6 +62,7 @@ class GamesController extends ControllerBase
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
       $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND gt.tags_id = ' . $tag->id : ' WHERE gt.tags_id = ' . $tag->id;
+      $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
       $phql .= ' ORDER BY g.id DESC';
       $phql .= $user ? '' : ' LIMIT 5';
 
@@ -78,6 +87,7 @@ class GamesController extends ControllerBase
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
       $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND g.companies_id = ' . $company->id : ' WHERE g.companies_id = ' . $company->id;
+      $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
       $phql .= ' ORDER BY g.id DESC';
       $phql .= $user ? '' : ' LIMIT 5';
 
@@ -96,11 +106,11 @@ class GamesController extends ControllerBase
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
       $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL' : '';
+      $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
       $phql .= ' ORDER BY g.id DESC';
       $phql .= $user ? '' : ' LIMIT 5';
 
       $games = $this->modelsManager->executeQuery($phql);
-
 
       $phql2 = 'SELECT g.*';
       $phql2 .= $user ? ' , hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
@@ -110,6 +120,7 @@ class GamesController extends ControllerBase
       $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
       $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
       $phql2 .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NOT NULL' : '';
+      $phql2 .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
       $phql2 .= ' ORDER BY g.id DESC';
       $phql2 .= $user ? '' : ' LIMIT 5';
 

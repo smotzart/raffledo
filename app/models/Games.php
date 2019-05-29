@@ -142,7 +142,7 @@ class Games extends Model
     public function beforeCreate()
     {
         if (!$this->deadline_date) {
-            $this->deadline_date = time();    
+            $this->deadline_date = time() + 604800;    
         }
         if (!$this->enter_date) {
             $this->enter_date = time();
@@ -155,7 +155,7 @@ class Games extends Model
     public function beforeUpdate()
     {       
         if (!$this->deadline_date) {
-            $this->deadline_date = time();    
+            $this->deadline_date = time() + 604800;    
         }
         if (!$this->enter_date) {
             $this->enter_date = time();
