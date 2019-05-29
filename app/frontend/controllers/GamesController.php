@@ -231,7 +231,7 @@ class GamesController extends ControllerBase
           }
         } 
         
-        return $this->response->redirect('gewinnspiele');        
+        return $this->response->redirect('/gewinnspiele');        
       }
 
     } else {
