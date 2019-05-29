@@ -1,9 +1,12 @@
 <div class="row mb-65px">
   <div class="col-12 col-lg-3 order-lg-1">
-    <h2 class="invisible mb-5">AD</h2>
-    <div class="d-flex">
-      <a href class="d-block mx-auto mb-g"><img src="img/banner.png" alt="MySEO" class="img-fluid"></a>
+    <div class="cc">
+      <h2 class="invisible mb-5">AD</h2>
+      <div class="d-flex">
+        <a href class="d-block mx-auto mb-g"><img src="img/banner.png" alt="MySEO" class="img-fluid"></a>
+      </div>
     </div>
+    <div></div>
   </div>
   <div class="col-12 col-lg-9">
     {{ content() }}
