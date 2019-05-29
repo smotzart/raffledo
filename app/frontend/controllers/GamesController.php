@@ -17,6 +17,8 @@ use Raffledo\Models\HiddenCompanies;
 use Raffledo\Models\HiddenTags;
 use Raffledo\Models\Companies;
 
+use Phalcon\Mvc\View;
+
 class GamesController extends ControllerBase
 {
 
@@ -28,14 +30,37 @@ class GamesController extends ControllerBase
     $this->view->report  = new ReportForm();
     $this->view->regform = new RegisterForm();
   }
-
+  
   public function indexAction()
   {
+
+  }
+
+  public function getAction()
+  {
+    $this->view->disable();
     $user = $this->auth->getUser();
+    $url_path = $this->request->get('path');
+
+    $last = substr($url_path, -5);
+
+    $path = explode('gewinnspiele', $url_path);
+    if ($last == 'piele') {
+      if (count($path) == 2 && $path[0] == '/') {
+        $type = 'index';
+      } else {
+        $type = 'company';
+        $url_tag  = substr($path[0], 1, -1);      
+      }
+    } elseif ($last == 'spiel') {
+      $path = explode('gewinnspiel', $url_path);
+      $type = 'tag';
+      $url_tag = substr($path[0], 1, -1); 
+    } elseif (count($path) > 2) {
+      $type = 'all';
+    }
 
     if ($user) {
-      $this->view->register_view = true;
-
       $hidden_games_by_tags = 'SELECT g.id as game_hide_by_tag FROM Raffledo\Models\Games AS g LEFT JOIN Raffledo\Models\GamesTags as gt ON gt.games_id = g.id LEFT JOIN Raffledo\Models\HiddenTags as ht on ht.tags_id = gt.tags_id AND ht.users_id = ' . $user->id .' WHERE ht.id IS NOT NULL GROUP BY g.id';
       $hhh = $this->modelsManager->executeQuery($hidden_games_by_tags);
       $not_in = [];
@@ -43,77 +68,9 @@ class GamesController extends ControllerBase
         $not_in[] = $hh->game_hide_by_tag;
       }
       $not_in = implode(',',$not_in);
-    }
-    
 
-    if ($this->dispatcher->getParam('tag')) {
-
-      $tag = Tags::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('tag')]]);
-      if (!$tag) {
-        return $this->flashSession->error("Can't find choosen tag");
-      }
-
-      $phql = 'SELECT g.*';
-      $phql .= $user ? ' , hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
-      $phql .= ' FROM Raffledo\Models\Games AS g';
-      $phql .= ' LEFT JOIN Raffledo\Models\GamesTags AS gt ON gt.games_id = g.id';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND gt.tags_id = ' . $tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()': ' WHERE gt.tags_id = ' . $tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-      $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
-      $phql .= ' ORDER BY g.id DESC';
-      $phql .= $user ? '' : ' LIMIT 5';
-
-      $games = $this->modelsManager->executeQuery($phql);
-      
-      $this->view->search_name = $tag->name;
-      $this->view->search_description = $tag->description;
-      $this->view->limited_view = true;
-
-    } elseif ($this->dispatcher->getParam('company')) {
-
-      $company = Companies::findFirst(['tag = ?0', 'bind' => [$this->dispatcher->getParam('company')]]);
-      if (!$company) {
-        return $this->flashSession->error("Can't find choosen company");
-      }
-
-      $phql = 'SELECT g.*';
-      $phql .= $user ? ' , hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
-      $phql .= ' FROM Raffledo\Models\Games AS g';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND  g.companies_id = ' . $company->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()': ' WHERE g.companies_id = ' . $company->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-      $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
-      $phql .= ' ORDER BY g.id DESC';
-      $phql .= $user ? '' : ' LIMIT 5';
-
-      $games = $this->modelsManager->executeQuery($phql);
-
-      $this->view->search_name = $company->name;
-      $this->view->limited_view = true;
-
-    } else {
-
-      $phql = 'SELECT g.*';
-      $phql .= $user ? ' , hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
-      $phql .= ' FROM Raffledo\Models\Games AS g';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()' : ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-      $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
-      $phql .= ' ORDER BY g.id DESC';
-      $phql .= $user ? '' : ' LIMIT 5';
-
-      $games = $this->modelsManager->executeQuery($phql);
-
-      $phql2 = 'SELECT g.*';
-      $phql2 .= $user ? ' , hg.id as hide_id, hg.users_id as hide_user, sg.id as save_id, sg.users_id as save_user, vg.id as is_view' : '';
+      $phql2 = 'SELECT g.*, g.id as g_id';
+      $phql2 .= $user ? ' , hg.id as hide_id, sg.id as save_id, vg.id as is_view' : '';
       $phql2 .= ' FROM Raffledo\Models\Games AS g';
       $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
       $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
@@ -126,11 +83,100 @@ class GamesController extends ControllerBase
 
       $favs = $this->modelsManager->executeQuery($phql2);
 
-      $this->view->favs = $favs;
+      $nf = [];
+      foreach($favs as $game) {
+        $rf = (array)$game;
+        $rf['company']['name'] = $game->g->company->name;
+        $rf['company']['tag'] = $game->g->company->tag;
+        $rf['tags'] = $game->g->tags;
+        $nf[] = $rf;
+      }
+      $result['user'] = $user->id;
+      $result['collections']['favorite']['title']  = 'Favoriten';
+      $result['collections']['favorite']['games']  = $nf;
 
     }
 
-    $this->view->games = $games;
+    if ($type == 'tag') {
+      $tag = Tags::findFirst(['tag = ?0', 'bind' => [$url_tag]]);
+      if ($tag) {   
+        $phql = 'SELECT g.*, g.id as g_id';
+        $phql .= $user ? ' , hg.id as hide_id, sg.id as save_id, vg.id as is_view' : '';
+        $phql .= ' FROM Raffledo\Models\Games AS g';
+        $phql .= ' LEFT JOIN Raffledo\Models\GamesTags AS gt ON gt.games_id = g.id';
+        $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
+        $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
+        $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
+        $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
+        $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND gt.tags_id = ' . $tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()': ' WHERE gt.tags_id = ' . $tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+        $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
+        $phql .= ' ORDER BY g.id DESC';
+        $phql .= $user ? '' : ' LIMIT 5';
+
+        $games = $this->modelsManager->executeQuery($phql);
+        
+        $result['search_name'] = $tag->name;
+        $result['search_description'] = $tag->description;
+      }
+    }
+    if ($type == 'company') {
+      $company = Companies::findFirst(['tag = ?0', 'bind' => [$url_tag]]);
+      if ($company) {
+        $phql = 'SELECT g.*, g.id as g_id';
+        $phql .= $user ? ' , hg.id as hide_id, sg.id as save_id, vg.id as is_view' : '';
+        $phql .= ' FROM Raffledo\Models\Games AS g';
+        $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
+        $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
+        $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
+        $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
+        $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND  g.companies_id = ' . $company->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()': ' WHERE g.companies_id = ' . $company->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+        $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
+        $phql .= ' ORDER BY g.id DESC';
+        $phql .= $user ? '' : ' LIMIT 5';
+
+        $games = $this->modelsManager->executeQuery($phql);
+
+        $result['search_name'] = $company->name;
+      }
+    }
+    if ($type == 'all') {            
+      $phql = 'SELECT g.*, g.id as g_id';
+      $phql .= ' FROM Raffledo\Models\Games AS g';
+      $phql .= ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+      $phql .= $user ? '' : ' LIMIT 5';
+
+      $games = $this->modelsManager->executeQuery($phql);
+    }
+    if ($type == 'index') { 
+      $phql = 'SELECT g.*, g.id as g_id';
+      $phql .= $user ? ' , hg.id as hide_id, sg.id as save_id, vg.id as is_view' : '';
+      $phql .= ' FROM Raffledo\Models\Games AS g';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
+      $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
+      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()' : ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+      $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
+      $phql .= ' ORDER BY g.id DESC';
+      $phql .= $user ? '' : ' LIMIT 5';
+
+      $games = $this->modelsManager->executeQuery($phql);
+    }
+
+    $display_games = [];
+    foreach($games as $game) {
+      $rg = (array)$game;
+      $rg['company']['name'] = $game->g->company->name;
+      $rg['company']['tag'] = $game->g->company->tag;
+      $rg['tags'] = $game->g->tags;
+      $display_games[] = $rg;
+    }
+
+    $result['collections']['regular']['title'] = 'Aktuelle Gewinnspiele';
+    $result['collections']['regular']['games'] = $display_games;   
+      
+
+    echo json_encode($result);   
   }
 
   public function showAction($id) {
@@ -164,57 +210,72 @@ class GamesController extends ControllerBase
     return $this->response->redirect($game->url, true, 302);
   }
 
-
   public function controlAction()
-  {
+  { 
+    $response = new \Phalcon\Http\Response();
+    $this->view->disable();
     $user = $this->auth->getUser();
 
     if ($user) {
-
       if ($this->request->isPost()) {
-        $game = Games::findFirst($this->request->getPost('actionId', 'int'));
-        $type = $this->request->getPost('actionType', 'striptags');
+        $game = Games::findFirst($this->request->getPut('actionId', 'int'));
+        $type = $this->request->getPut('actionType', 'striptags');
 
         if ($type == 'save') {
           $proc_game = SavedGames::findFirst(['games_id = ' . $game->id . ' AND users_id = ' . $user->id]);
           if ($proc_game) {
             $proc_game->delete();
+            $response->setStatusCode(200, "OK");
           } else {
             $new = new SavedGames(['games_id' => $game->id, 'users_id' => $user->id]);
             if (!$new->save()) {
-              $this->flashSession->error("Can't save game to favoriten list");
+              $response->setStatusCode(404, "Can't save");
+            } else {
+              $response->setStatusCode(200, "OK");
             }
           }       
-          return true;
+          return $response->send();
         }
+
+
 
         if ($type == 'hide') {
           $proc_game = HiddenGames::findFirst(['games_id = ' . $game->id . ' AND users_id = ' . $user->id]);
           if ($proc_game) {
             $proc_game->delete();
+            $response->setStatusCode(200, "OK");
           } else {
             $new = new HiddenGames(['games_id' => $game->id, 'users_id' => $user->id]);
             if (!$new->save()) {              
-              $this->flashSession->error("Can't hide game");
+              $response->setStatusCode(404, "Can't hide");
+            } else {
+              $response->setStatusCode(200, "OK");
             }
           }       
-          return true;   
+          return $response->send();
         } 
 
         if ($type == 'hideCompany') {
           $entry = HiddenCompanies::findFirst(['companies_id = ' . $game->companies_id . ' AND users_id = ' . $user->id]);
           if ($entry) {
-            $this->flashSession->error("This company is allredy hidden for you");
+            $response->setStatusCode(404, "Campany allready hidden");
           } else {
             $new = new HiddenCompanies(['companies_id' => $game->companies_id, 'users_id' => $user->id]);
             if (!$new->save()) {              
-              $this->flashSession->error("Can't hide company");
-            }     
+              $response->setStatusCode(404, "Can't hide company");
+            } else {
+              $response->setStatusCode(200, "OK");              
+            }
           }
+          return $response->send();
         } 
 
         if ($type == 'hideTags') {
-          $proc_tags = $this->request->getPost('tags_id');
+          $proc_tags = $this->request->getPut('tags_id');
+          if (!is_array($proc_tags)) {
+            $proc_tags = explode(",", $proc_tags);
+          }
+
 
           foreach ($proc_tags as $proc_tag) {
             $entry = HiddenTags::findFirst(['tags_id = ' . $proc_tag . ' AND users_id = ' . $user->id]);
@@ -225,24 +286,25 @@ class GamesController extends ControllerBase
               if (!$new->save()) {              
                 $this->flashSession->error("Can't hide tag");
               } else {                
-                $this->flashSession->success("Tag ".$entry->tag_entry->name." successfully hide for you");
+                $response->setStatusCode(200, "OK");   
+                //$this->flashSession->success("Tag ".$entry->tag_entry->name." successfully hide for you");
               }
             }
-          }
+          }  
+          return $response->send();        
         } 
         
         return $this->response->redirect('/gewinnspiele');        
       }
 
     } else {
-      $this->flashSession->error("Only register user can do this action");
+      $response->setStatusCode(404, "Only register user can do this action");
     }
 
-    $this->view->disable();
+    
 
-    return false;
+    return $response->send();
   }
-
 
   public function reportAction()
   {
@@ -270,21 +332,6 @@ class GamesController extends ControllerBase
     } else {
       $this->flashSession->error("Only register user can do this action");      
     }
-
-  }
-
-  public function allAction()
-  {
-    $user = $this->auth->getUser();
-
-    $phql = 'SELECT g.*';
-    $phql .= ' FROM Raffledo\Models\Games AS g';
-    $phql .= ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-    $phql .= $user ? '' : ' LIMIT 5';
-
-    $games = $this->modelsManager->executeQuery($phql);
-
-    $this->view->games = $games;
   }
 
 }

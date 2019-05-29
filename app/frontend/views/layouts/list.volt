@@ -8,8 +8,8 @@
     </div>
     <div></div>
   </div>
-  <div class="col-12 col-lg-9">
-    {{ content() }}
+  <div class="col-12 col-lg-9" ng-app="app" ng-controller="AppCtrl">
+    {{ content() }}    
   </div>
 </div>
 </div>
@@ -75,21 +75,3 @@
     </div>
   </div>
 </div>
-
-<div class="modal fade" id="hideTagsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body p-7">
-        <h3 class="text-theme">Tags/Preise ausschließen</h3>
-        <p class="lead">Welche Tags wollen Sie ausschließen</p>
-        <form action="games/control" method="post" accept-charset="utf-8">
-          <input type="hidden" name="actionType" value="hideTags" />
-          <div class="mb-5" id="modal_tags_list">Game don't have related tags</div> 
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbruch</button>
-          <button type="submit" class="btn btn-theme ml-3">Jetzt ausschließen</button>
-        </form>        
-      </div>
-    </div>
-  </div>
-</div>
-

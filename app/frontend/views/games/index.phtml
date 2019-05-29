@@ -1,0 +1,120 @@
+<div ng-repeat="(key, collection) in data.collections" ng-cloak>
+  <div ng-if="collection.games.length > 0 || (key == 'regular' && data.collections.regular.games.length == 0 && data.collections.favorite.games.length == 0)">
+    <div class="box-header mb-5">
+      <h2 class="text-capitalize m-0" ng-cloak><span ng-if="!data.search_name">{{ collection.title }}</span><span ng-if="data.search_name">{{ data.search_name }}</span></h2>
+      <p class="lead" ng-if="data.search_description">{{ data.search_description }}</p>
+    </div>
+    <div ng-repeat="game in collection.games | orderBy: 'g.id'" class="box">
+      <div class="box-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col-10 col-xl-8 box-title">
+            {{ game.g.title }}
+          </div>
+          <div class="d-none d-xl-block col-12 col-md-3">
+            <div class="box-label" ng-if="game.g.type_register || game.g.type_sms || game.g.type_buy || game.g.type_internet || game.g.type_submission">Gewinnspiel-Typ</div>
+            <div class="lh-0">
+              <i ng-if="game.g.type_register" data-toggle="tooltip" data-placement="bottom" title="Registrierung erforderlich" class="fi flaticon-user mr-2"></i>
+              <i ng-if="game.g.type_sms" data-toggle="tooltip" data-placement="bottom" title="SMS/Anruf erforderlich" class="fi flaticon-tablet mr-2"></i>
+              <i ng-if="game.g.type_buy" data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="fi flaticon-shield mr-2"></i>
+              <i ng-if="game.g.type_internet" data-toggle="tooltip" data-placement="bottom" title="Online-Spiel" class="fi flaticon-gamepad mr-2"></i>
+              <i ng-if="game.g.type_submission" data-toggle="tooltip" data-placement="bottom" title="Kreativ-Einsendung erforderlich" class="fi flaticon-idea mr-2"></i>
+            </div>
+          </div>
+          <div class="col-2 col-xl-1 text-right">              
+            <div ng-if="data.user" class="dropdown float-right">
+              <a href class="btn btn-link text-secondary py-2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <a href ng-click="hideCompany(game)" class="dropdown-item">Anbieter ausblenden</button>
+                <a href ng-if="game.tags.length > 1" data-gameid="{{ game.g.id }}" ng-click="openModal(game)" class="dropdown-item" data-toggle="modal" data-target="#hideTagsModal">Tags/Preise ausschließen</a>
+                <a href ng-if="game.tags.length == 1" ng-click="hideTag(game)" class="dropdown-item">Tags/Preise ausschließen</button>
+                <a href data-gameid="{{ game.g.id }}" class="dropdown-item" data-toggle="modal" data-target="#reportGameModal">Gewinnspiel melden</a>
+              </div>
+            </div>              
+          </div>
+        </div>
+        <hr>
+        <div class="row no-gutters">
+          <div class="col-12 col-md-7">
+            <p>
+              <span class="box-label">Anbieter</span>
+              <a ng-href="/{{ game.company.tag }}-gewinnspiele" class="text-body">{{ game.company.name }}</a>
+            </p>
+            <p ng-if="game.g.price">
+              <span class="box-label"><span ng-if="game.g.price_info">Info</span><span ng-if="!game.g.price_info">Preis</span></span>
+              {{ game.g.price }}
+            </p>
+          </div>
+          <div class="col-12 col-md-4 ml-auto">
+            <p><span class="box-label">Einsendeschluss</span>{{ game.g.deadline_date | date: 'dd. MMMM yyyy' }}</p>
+            <p ng-if="game.g.suggested_solution">
+              <span class="box-label">Lösungsvorschlag</span>
+              <span ng-if="data.user">{{ game.g.suggested_solution }}</span>
+              <a href="/" ng-if="!data.user" class="text-body">nur für User sichtbar</a>
+            </p>
+          </div>
+          <div class="col-12 d-block d-xl-none">
+            <div class="box-label" ng-if="game.g.type_register || game.g.type_sms || game.g.type_buy || game.g.type_internet || game.g.type_submission">Gewinnspiel-Typ</div>
+            <div>
+              <i ng-if="game.g.type_register" data-toggle="tooltip" data-placement="bottom" title="Registrierung erforderlich" class="fi flaticon-user mr-2"></i>
+              <i ng-if="game.g.type_sms" data-toggle="tooltip" data-placement="bottom" title="SMS/Anruf erforderlich" class="fi flaticon-tablet mr-2"></i>
+              <i ng-if="game.g.type_buy" data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="fi flaticon-shield mr-2"></i>
+              <i ng-if="game.g.type_internet" data-toggle="tooltip" data-placement="bottom" title="Online-Spiel" class="fi flaticon-gamepad mr-2"></i>
+              <i ng-if="game.g.type_submission" data-toggle="tooltip" data-placement="bottom" title="Kreativ-Einsendung erforderlich" class="fi flaticon-idea mr-2"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box-footer d-flex flex-column align-items-md-center flex-md-row">
+        <div class="box-btn order-md-1 ml-md-auto flex-wrap flex-md-nowrap">
+          <div ng-if="data.user" class="w-50 w-md-auto pr-1 pr-md-0 mr-md-2">
+            <a href ng-click="toggleSave(game, key)" class="btn btn-theme btn-block box-save-btn">
+              <span ng-if="key == 'regular'">Merken</span>
+              <span ng-if="key == 'favorite'">Nicht mehr merken</span>
+            </a>
+          </div>              
+          <div ng-if="data.user && !game.is_view" class="w-50 w-md-auto pl-1 pl-md-0 mr-md-2">
+            <a href ng-click="hideGame(game, key)" class="btn btn-outline-mute btn-block box-hide-btn">Ausblenden</a>
+          </div>
+          <a href ng-click="showGame(game)" target="_blank" rel="noopener noreferrer" class="btn w-100 w-md-auto btn-outline-warning">Zum Gewinnspiel</a>
+        </div>
+        <div ng-if="game.tags.length > 0" class="box-tags order-md-0">
+          <a ng-repeat="tag in game.tags" ng-href="/{{ tag.tag }}-gewinnspiel" class="text-muted mr-md-4 d-inline-block"><i class="fas fa-tags fa-flip-horizontal fa-xs mr-2"></i>{{ tag.name }}</a>
+        </div>
+      </div>
+    </div>
+    <div class="box" ng-if="data.collections.regular.games.length == 0 && data.collections.favorite.games.length == 0">
+      <div class="box-body text-center py-7">    
+        <div class="row">
+          <div class="col-12 col-md-9 col-lg-8 mx-auto">
+            <div class="box-label mb-5">Filter aktiv</div>
+            <p class="mb-7">Du nutzt einen Filter, dadurch werden nicht alle <br class="d-none d-lg-block">Gewinnspiele angezeigt.</p>
+            <a href="/gewinnspiele-zeige-mir-alle-gewinnspiele-die-ich-noch-nicht-ausgeblendet-habe" class="btn btn-block btn-theme">Weitere Gewinnspiele anzeigen</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="hideTagsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body p-7">
+        <h3 class="text-theme">Tags/Preise ausschließen</h3>
+        <p class="lead">Welche Tags wollen Sie ausschließen</p>
+        <div class="mb-5" id="modal_tags_list">
+          <div class="custom-control custom-checkbox" ng-repeat="tag in modalTags">
+            <input type="checkbox" class="custom-control-input" name="tags_id[]" checklist-model="tags_id" checklist-value="tag.id" id="customCheck{{ tag.id }}">
+            <label class="custom-control-label" for="customCheck{{ tag.id }}">{{ tag.name }}</label>
+          </div>
+        </div> 
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbruch</button>
+        <button type="submit" ng-click="sendModal()" data-dismiss="modal" class="btn btn-theme ml-3">Jetzt ausschließen</button>     
+      </div>
+    </div>
+  </div>
+</div>
+

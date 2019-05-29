@@ -72,7 +72,7 @@ $router->add("/gewinnspiele", [
 $router->add("/gewinnspiele-zeige-mir-alle-gewinnspiele-die-ich-noch-nicht-ausgeblendet-habe", [
   'module'     => 'frontend',
   'controller' => 'games',
-  'action'     => 'all'
+  'action'     => 'index'
 ]);
 
 
