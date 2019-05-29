@@ -42,18 +42,6 @@ class Tags extends Model
     public $footer;
 
     /**
-     *
-     * @var string
-     */
-    public $created_at;
-
-    /**
-     *
-     * @var string
-     */
-    public $updated_at;
-
-    /**
      * Initialize method for model.
      */
     public function initialize()
@@ -92,26 +80,6 @@ class Tags extends Model
             ]
         );
 
-        $this->addBehavior(
-            new Timestampable(
-                [
-                    'beforeCreate' => [
-                        'field'  => 'created_at',
-                        'format' => 'Y-m-d H:i:s',
-                    ]
-                ]
-            )
-        );
-        $this->addBehavior(
-            new Timestampable(
-                [
-                    'beforeUpdate' => [
-                        'field'  => 'updated_at',
-                        'format' => 'Y-m-d H:i:s',
-                    ]
-                ]
-            )
-        );
     }
 
     /**
@@ -129,7 +97,7 @@ class Tags extends Model
     {
         $this->tag = strtolower(str_replace('+', '-', urlencode($this->tag)));
     }
-    
+
     /**
      * Returns table name mapped in the model.
      *
