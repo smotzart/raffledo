@@ -1,8 +1,8 @@
 <div ng-repeat="(key, collection) in data.collections" ng-cloak>
   <div ng-if="collection.games.length > 0 || (key == 'regular' && data.collections.regular.games.length == 0 && data.collections.favorite.games.length == 0)">
     <div class="box-header mb-5">
-      <h2 class="text-capitalize m-0" ng-cloak><span ng-if="!data.search_name">{{ collection.title }}</span><span ng-if="data.search_name">{{ data.search_name }}</span></h2>
-      <p class="lead" ng-if="data.search_description">{{ data.search_description }}</p>
+      <h2 class="text-capitalize m-0" ng-cloak><span ng-if="!data.search_name || key == 'favorite'">{{ collection.title }}</span><span ng-if="data.search_name && key != 'favorite'">{{ data.search_name }}</span></h2>
+      <p class="lead" ng-if="data.search_description && key != 'favorite'">{{ data.search_description }}</p>
     </div>
     <div ng-repeat="game in collection.games | orderBy: 'g.id'" class="box">
       <div class="box-body">
