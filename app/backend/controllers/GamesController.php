@@ -235,13 +235,11 @@ class GamesController extends ControllerBase
       $this->view->disable();
 
       $filter = new Filter();
-      $search = $filter->sanitize($_GET['search'], 'striptags');
-
-      $search_url = parse_url($search);
-      $search_url = isset($search_url['host']) ? $search_url['host'] : $search_url['path'];
+      $search = trim($filter->sanitize($_GET['search'], 'striptags'));
 
       $games = Games::find([
-        "conditions" => "url LIKE '%" . $search_url . "%'"
+        "conditions" => "url = '" . $search . "' AND deadline_date > CURDATE()",
+        "limit" => 1
       ]);
 
       return $this->response->setContent(json_encode($games));

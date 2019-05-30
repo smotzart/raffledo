@@ -15,6 +15,7 @@
   <div class="form-group" id="url_change">
     <label for="url">URL</label>
     {{ form.render("url", ['class': 'form-control']) }}
+    <div class="invalid-feedback">Gewinnspiel bereits vorhanden!</div>
   </div>
   <div class="form-group">
     <label for="companies_id">Anbieter</label>
