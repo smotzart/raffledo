@@ -50,15 +50,16 @@
         </div>
       </nav>
     </header><!-- /header -->
-
-    <main class="py-65px">
-      <div class="container">
-        <?php
-          echo $this->flashSession->output();
-          echo $this->getContent(); 
-        ?>
-      </div>
-    </main>
+    
+    <?php if ($controllerName != 'games') : ?>
+      <main class="py-50px">
+        <div class="container">
+    <?php endif; ?>
+    <?= $this->getContent(); ?>
+    <?php if ($controllerName != 'games') : ?>
+        </div>
+      </main>
+    <?php endif; ?>
 
     <?php 
       $companies_footer = $this->modelsManager->createBuilder()
