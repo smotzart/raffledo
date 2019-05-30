@@ -42,7 +42,7 @@ class GamesController extends ControllerBase
 
       $start_date = date('Y-m-d', strtotime('-5 days'));
       $available_dates = [];
-      for ($i = 0; $i < 30; $i++) {
+      for ($i = 0; $i < 35; $i++) {
         $loop_date    = date('Y-m-d', strtotime($start_date . ' +' . $i . ' days'));
         $loop_amount  = isset($existing_dates[$loop_date]) ? (int) $existing_dates[$loop_date] : 0; 
         $loop_display = date('D, d.m.Y', strtotime($loop_date)) . ' - (' . $loop_amount . ') ';
@@ -157,7 +157,7 @@ class GamesController extends ControllerBase
 
       $start_date = date('Y-m-d', strtotime('-5 days'));
       $available_dates = [];
-      for ($i = 0; $i < 30; $i++) {
+      for ($i = 0; $i < 35; $i++) {
         $loop_date    = date('Y-m-d', strtotime($start_date . ' +' . $i . ' days'));
         $loop_amount  = isset($existing_dates[$loop_date]) ? (int) $existing_dates[$loop_date] : 0; 
         $loop_display = date('D, d.m.Y', strtotime($loop_date)) . ' - (' . $loop_amount . ') ';
