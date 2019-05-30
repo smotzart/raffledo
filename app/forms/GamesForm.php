@@ -185,8 +185,7 @@ class GamesForm extends Form
     ]);
     if ($options['deadline_date']) {
       $deadline_date->setDefault($options['deadline_date']);  
-    }
-    
+    }    
     $this->add($deadline_date);    
 
     $deadline_time = new Time('deadline_time');
@@ -194,9 +193,8 @@ class GamesForm extends Form
     $this->add($deadline_time);
 
     // Eintrag für
-    $enter_date = new Date('enter_date', [
-      'placeholder' => 'Eintrag für'
-    ]);
+    $enter_dates = $options['enter_dates'];
+    $enter_date  = new Select('enter_date', $enter_dates);
     if ($options['enter_date']) {
       $enter_date->setDefault($options['enter_date']);  
     }

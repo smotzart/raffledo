@@ -25,15 +25,35 @@ class GamesController extends ControllerBase
     {
       $enter_date = date('Y-m-d');
       $date_games = Games::count(['conditions' => 'enter_date = "' . $enter_date . '"']);
+
       while ($date_games > 10) {        
         $enter_date = date('Y-m-d', strtotime('+1 days'));
         $date_games = Games::count(['conditions' => 'enter_date = "' . $enter_date . '"']);
       }
       $deadline_date = date('Y-m-d', strtotime($enter_date . ' +7 days'));
 
+      $phql     = 'SELECT g.enter_date as date, count(g.id) as amount FROM Raffledo\Models\Games AS g GROUP BY g.enter_date';  // WHERE g.enter_date >= CURDATE()
+      $current  = $this->modelsManager->executeQuery($phql);
+
+      $existing_dates = [];
+      foreach ($current as $curr) {
+        $existing_dates[$curr->date] = $curr->amount;
+      }
+
+      $start_date = date('Y-m-d', strtotime('-5 days'));
+      $available_dates = [];
+      for ($i = 0; $i < 30; $i++) {
+        $loop_date    = date('Y-m-d', strtotime($start_date . ' +' . $i . ' days'));
+        $loop_amount  = isset($existing_dates[$loop_date]) ? (int) $existing_dates[$loop_date] : 0; 
+        $loop_display = date('D, d.m.Y', strtotime($loop_date)) . ' - (' . $loop_amount . ') ';
+
+        $available_dates[$loop_date] = $loop_display;
+      }
+
       $form = new GamesForm(null, [
         'enter_date' => $enter_date,
         'deadline_date' => $deadline_date,
+        'enter_dates' => $available_dates,
         'tags' => '',
         'edit' => false
       ]);
@@ -127,12 +147,31 @@ class GamesController extends ControllerBase
         ]);
       }
 
+      $phql     = 'SELECT g.enter_date as date, count(g.id) as amount FROM Raffledo\Models\Games AS g GROUP BY g.enter_date';  // WHERE g.enter_date >= CURDATE()
+      $current  = $this->modelsManager->executeQuery($phql);
+
+      $existing_dates = [];
+      foreach ($current as $curr) {
+        $existing_dates[$curr->date] = $curr->amount;
+      }
+
+      $start_date = date('Y-m-d', strtotime('-5 days'));
+      $available_dates = [];
+      for ($i = 0; $i < 30; $i++) {
+        $loop_date    = date('Y-m-d', strtotime($start_date . ' +' . $i . ' days'));
+        $loop_amount  = isset($existing_dates[$loop_date]) ? (int) $existing_dates[$loop_date] : 0; 
+        $loop_display = date('D, d.m.Y', strtotime($loop_date)) . ' - (' . $loop_amount . ') ';
+
+        $available_dates[$loop_date] = $loop_display;
+      }
+
       $current_tags = implode(',', array_map('current', $game->getRelated('tags', ['columns' => 'name'])->toArray()));
       $form = new GamesForm($game, [
         'edit' => true,
         'tags' => $current_tags,
         'enter_date' => false,
-        'deadline_date' => false
+        'deadline_date' => false,
+        'enter_dates' => $available_dates
       ]);
 
       if ($this->request->isPost()) {
