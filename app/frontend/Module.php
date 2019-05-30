@@ -4,6 +4,7 @@ namespace Multiple\Frontend;
 
 use Phalcon\Loader;
 use Phalcon\Mvc\View;
+use Phalcon\Mvc\Url;
 use Phalcon\DiInterface;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\ModuleDefinitionInterface;
@@ -43,6 +44,14 @@ class Module implements ModuleDefinitionInterface
         $dispatcher->setDefaultNamespace('Multiple\Frontend\Controllers');
 
         return $dispatcher;
+      }
+    );
+
+    $di->set(
+      'url',
+      function () {
+        $url = new Url();
+        return $url;
       }
     );
     
