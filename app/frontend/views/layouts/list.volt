@@ -23,7 +23,7 @@
       <div class="container">
         <div class="row">
           <div class="col-12 col-md-9 col-lg-7">
-            <div class="bg-primary welcome text-white mb-50px">
+            <div class="bg-primary welcome text-white">
               <form method="post" action="/" autocomplete="off" class="form">
                 <div class="p-7">
                   <h3 class="display-4 mb-5">Mehr Gewinnspiele? <br>Jetzt kostenlos anmelden!</h3>
