@@ -46,14 +46,6 @@ class Module implements ModuleDefinitionInterface
         return $dispatcher;
       }
     );
-
-    $di->set(
-      'url',
-      function () {
-        $url = new Url();
-        return $url;
-      }
-    );
     
     // Registering the view component
     $di->set(

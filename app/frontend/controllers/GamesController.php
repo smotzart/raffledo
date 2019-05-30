@@ -21,19 +21,46 @@ use Phalcon\Mvc\View;
 
 class GamesController extends ControllerBase
 {
-
   public function initialize()
   {
-    $this->view->setTemplateBefore('list');
-    $this->view->logged_in = is_array($this->auth->getIdentity()); 
+    $user = $this->auth->getUser();
 
-    $this->view->report  = new ReportForm();
-    $this->view->regform = new RegisterForm();
+    if ($user) {
+      if ($this->dispatcher->getParam('tag') || $this->dispatcher->getParam('company')) {
+        $this->view->setTemplateBefore('tag');  
+      } else {
+        $this->view->setTemplateBefore('list');
+      }  
+
+      $this->view->report  = new ReportForm();
+      $this->view->regform = new RegisterForm();
+
+    } else {
+      $this->view->setTemplateBefore('default');
+    }    
   }
+
+
   
   public function indexAction()
   {
+    $user = $this->auth->getUser();
 
+    if ($user) {
+      if ($this->dispatcher->getParam('tag')) {
+
+      } elseif ($this->dispatcher->getParam('company')) {
+
+      } else {
+
+      }   
+    } else {      
+      $games = Games::find(['limit' => 5]);
+      $this->view->games = $games;
+
+      $this->view->pick('games/default');
+    }
+    
   }
 
   public function getAction()
