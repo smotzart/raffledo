@@ -83,75 +83,57 @@
       $user = $this->auth->getUser();
     ?>
 
-    <div class="bg-warning text-white mb-7 py-7 footer-nav mt-auto">
+    <footer class="bg-warning text-white py-7 footer-nav mt-auto">
       <div class="container">
+        <?php if ($controllerName && $user) : ?>
         <div class="row mb-7">
           <div class="col-12 col-md-3">
-            <?php if ($controllerName && $user) : ?>
-              <h5 class="mb-4">Top Preise</h5>
-              <ul class="list-unstyled">
-                <?php foreach ($tags_footer as $tag) : ?>   
-                  <li><a href="/<?php echo $tag->tag; ?>-gewinnspiel" class="text-capitalize"><?php echo $tag->name; ?></a></li>
-                <?php endforeach; ?>
-              </ul>
-            <?php endif; ?>
+            <h5 class="mb-4">Top Preise</h5>
+            <ul class="list-unstyled">
+              <?php foreach ($tags_footer as $tag) : ?>   
+                <li><a href="/<?php echo $tag->tag; ?>-gewinnspiel" class="text-capitalize"><?php echo $tag->name; ?></a></li>
+              <?php endforeach; ?>
+            </ul>
           </div>
           <div class="col-12 col-md-6 col-lg-6">
-            <?php if ($controllerName && $user) : ?>
-              <h5 class="mb-4">Gewinnspiel Anbieter</h5>
-              <div class="row">
-                <div class="col">                
-                  <ul class="list-unstyled">
-                    <?php foreach ($companies_footer as $key => $company) : if ($key < 4) : ?>   
-                      <li><a href="/<?php echo $company->tag; ?>-gewinnspiele" class="text-capitalize"><?php echo $company->name; ?></a></li>
-                    <?php endif; endforeach; ?>
-                  </ul>
-                </div>
-                <div class="col">                    
-                  <ul class="list-unstyled">
-                    <?php foreach ($companies_footer as $key => $company) : if ($key > 3) : ?>   
-                      <li><a href="/<?php echo $company->tag; ?>-gewinnspiele" class="text-capitalize"><?php echo $company->name; ?></a></li>
-                    <?php endif; endforeach; ?>
-                  </ul>
-                </div>
+            <h5 class="mb-4">Gewinnspiel Anbieter</h5>
+            <div class="row">
+              <div class="col">                
+                <ul class="list-unstyled">
+                  <?php foreach ($companies_footer as $key => $company) : if ($key < 4) : ?>   
+                    <li><a href="/<?php echo $company->tag; ?>-gewinnspiele" class="text-capitalize"><?php echo $company->name; ?></a></li>
+                  <?php endif; endforeach; ?>
+                </ul>
               </div>
-            <?php endif; ?>
+              <div class="col">                    
+                <ul class="list-unstyled">
+                  <?php foreach ($companies_footer as $key => $company) : if ($key > 3) : ?>   
+                    <li><a href="/<?php echo $company->tag; ?>-gewinnspiele" class="text-capitalize"><?php echo $company->name; ?></a></li>
+                  <?php endif; endforeach; ?>
+                </ul>
+              </div>
+            </div>
           </div>
           <div class="col-12 col-md-3">
             <h5 class="mb-4">Über Raffledo</h5>       
             <ul class="list-unstyled">
-              <li><a href="/impressum">Impressum</a></li>
-              <li><a href="/datenschutz">Datenschutz</a></li>
-              <?php if (is_array($this->auth->getIdentity())) : ?>
-                <li><a href="/neues">Neues Gewinnspiel melden</a></li>
-                <li><a href="/einstellungen">Einstellungen</a></li>                
-              <?php endif; ?>
+              <li><?= $this->tag->linkTo('impressum', 'Impressum'); ?></li>
+              <li><?= $this->tag->linkTo('datenschutz', 'Datenschutz'); ?></li>
+              <li><?= $this->tag->linkTo('neues', 'Neues Gewinnspiel melden'); ?></li>
+              <li><?= $this->tag->linkTo('einstellungen', 'Einstellungen'); ?></li> 
             </ul>
           </div>
         </div>
+        <?php endif; ?>
         <div class="text-center">
-          Copyright 2019 • BAWS Websolutions GmbH • Alle Reechte vorbehalten
-        </div>
-      </div>
-    </div>
-
-
-    <footer>
-      <div class="container">
-        <div class="border-top border-theme"></div>
-        <div class="d-flex py-6">
-          <a href="http://fetz.cc/" target="_blank" class="d-block mx-auto">
-            <img src="img/fetz.png" srcset="img/fetz.png 1x, img/fetz@2x.png 2x" alt="Othmar Fetz">
-          </a>
+          Copyright 2019 &bull; BAWS Websolutions GmbH &bull; Alle Reechte vorbehalten <?php if (!$controllerName) : ?>&bull; <?= $this->tag->linkTo('impressum', 'Impressum'); ?> &bull; <?= $this->tag->linkTo('datenschutz', 'Datenschutz'); ?><?php endif; ?>
         </div>
       </div>
     </footer>
 
-
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>-->
     <?php if ($controllerName == 'games') : ?>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-resource.min.js"></script>
