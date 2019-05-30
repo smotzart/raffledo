@@ -12,8 +12,6 @@ use Phalcon\Forms\Element\Check;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Url;
 use Raffledo\Models\Companies;
-use Raffledo\Models\Tags;
-
 
 class Time extends Date
 {
@@ -167,28 +165,12 @@ class GamesForm extends Form
     ]);
     $type_5->setLabel('Kreativ-Einsendung erforderlich');
     $this->add($type_5);
- 
-    // Tags
-    //$tags = Tags::find();
-    if ($options['edit']) {
-      $tags = Tags::find();
-      $tags_select = new Select('tags_id[]', $tags, [
-        'using' => [
-          'id',
-          'name'
-        ],
-        'useEmpty' => false,
-        'multiple' => true,
-        'size' => 10
-      ]);
-      $tags_select->setDefault($options['tags']);
-    } else {
-      $tags_select = new Text('tags_id[]', [
-        'placeholder' => 'New tag'
-      ]);
-    }
-
     
+    // Tags
+    $tags_select = new Text('tags_id[]', [
+      'placeholder' => 'New tag'
+    ]);
+    $tags_select->setDefault($options['tags']);  
     $this->add($tags_select);
 
     // Lösungsvorschlag
