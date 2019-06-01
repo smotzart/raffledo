@@ -98,7 +98,7 @@
           <div ng-if="!game.is_view" class="w-50 w-md-auto pl-1 pl-md-0 mr-md-2">
             <a href ng-click="hideGame(game, key)" class="btn btn-outline-mute btn-block box-hide-btn">Ausblenden</a>
           </div>
-          <a href ng-click="showGame(game)" target="_blank" rel="noopener noreferrer" class="btn w-100 w-md-auto btn-outline-warning">Zum Gewinnspiel</a>
+          <a ng-href="/win/{{ game.g.id }}" ng-click="showGame(game)" target="_blank" rel="noopener noreferrer" class="btn w-100 w-md-auto btn-outline-warning">Zum Gewinnspiel</a>
         </div>
         <div ng-if="game.tags.length > 0" class="box-tags order-md-0">
           <a ng-repeat="tag in game.tags" ng-href="/{{ tag.tag }}-gewinnspiel" class="text-muted mr-md-4 d-inline-block"><i class="fas fa-tags fa-flip-horizontal fa-xs mr-2"></i>{{ tag.name }}</a>

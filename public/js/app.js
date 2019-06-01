@@ -21,6 +21,14 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
     return $resource('games/control',
   {});
   }
+]).factory('APIShow', [
+  '$resource',
+  function($resource) {
+    return $resource('games/show/:id',
+  {
+      id: '@id'
+    });
+  }
 ]).run(['$rootScope', '$route'].append(function(root, $route) {})).controller('AppCtrl', [
   '$scope',
   'APIGames',
@@ -120,9 +128,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
     };
     self.showGame = function(game) {
       if (!game.is_view) {
-        game.is_view = true;
+        return game.is_view = true;
       }
-      return window.open('/win/' + game.g.id);
     };
     self.hideCompany = function(game) {
       var control;
