@@ -5,7 +5,6 @@ $router = $di->getRouter();
 $router->setDefaultModule('frontend');
 
 
-
 $router->add('/admin',
   array(
     'module' => 'backend',

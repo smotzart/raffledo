@@ -38,10 +38,31 @@ class Module implements ModuleDefinitionInterface
     // Registering a dispatcher
     $di->set(
       'dispatcher',
-      function () {
+      function () use ($di) {
         $dispatcher = new Dispatcher();
 
         $dispatcher->setDefaultNamespace('Multiple\Frontend\Controllers');
+
+        $evManager = $di->getShared('eventsManager');
+
+        $evManager->attach(
+            "dispatch:beforeException",
+            function($event, $dispatcher, $exception)
+            {
+                switch ($exception->getCode()) {
+                    case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                    case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                        $dispatcher->forward(
+                            array(
+                                'controller' => 'index',
+                                'action'     => 'route404',
+                            )
+                        );
+                        return false;
+                }
+            }
+        );
+        $dispatcher->setEventsManager($evManager);
 
         return $dispatcher;
       }

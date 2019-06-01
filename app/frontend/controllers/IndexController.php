@@ -96,5 +96,10 @@ class IndexController extends ControllerBase
 
       echo json_encode($data);
     }
+
+    public function route404Action()
+    {
+      
+    }
 }
 

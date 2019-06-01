@@ -26,12 +26,14 @@ class SettingsController extends ControllerBase
   {
 
     $user = $this->auth->getUser();
+    if ($user) {
 
-    $this->view->saved      = $user->savedGames;
-    $this->view->hidden     = $user->hiddenGames;
-    $this->view->companies  = $user->hiddenCompany;
-    $this->view->tags       = $user->hiddenTags;
-    $this->view->viewed     = $user->viewedGames;
+      $this->view->saved      = $user->savedGames;
+      $this->view->hidden     = $user->hiddenGames;
+      $this->view->companies  = $user->hiddenCompany;
+      $this->view->tags       = $user->hiddenTags;
+      $this->view->viewed     = $user->viewedGames;
+    }
   
   }
 
