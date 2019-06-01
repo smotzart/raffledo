@@ -3,9 +3,11 @@
     <div class="row">
       <div class="col-12 col-lg-3 order-lg-1">
         <div class="raff-sticky-ad">
-          <h2 class="invisible mb-5">AD</h2>
+          <div class="invisible h2 mb-5 d-none d-lg-block">AD</div>
           <div class="d-flex">
-            <a href class="d-block mx-auto mb-g"><img src="{{ url('img/banner.png') }}" alt="MySEO" class="img-fluid"></a>
+            <a href class="d-block mx-auto mb-50px">
+              <img src="{{ url('img/banner.png') }}" alt="MySEO" class="img-fluid">
+            </a>
           </div>
         </div>
         <div></div>
@@ -24,7 +26,7 @@
         <div class="bg-primary welcome text-white">
           <form method="post" action="/" autocomplete="off" class="form">
             <div id="register"></div>
-            <div class="p-7">
+            <div class="p-4 p-md-7">
               <h3 class="display-4 mb-5">Mehr Gewinnspiele? <br>Jetzt kostenlos anmelden!</h3>
               <div class="form-group">
                 <label for="username">Benutzername</label>
@@ -39,7 +41,7 @@
                 {{ regform.render('confirmPassword', ['class': 'form-control form-control-lg']) }}
               </div>
             </div>
-            <div class="inner-bg p-7">
+            <div class="inner-bg p-4 p-md-7">
               <div class="form-group form-check mb-7">
                 {{ regform.render('terms', ['class': 'form-check-input']) }}
                 {{ regform.label('terms', ['class': 'form-check-label']) }}

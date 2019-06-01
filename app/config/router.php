@@ -50,6 +50,8 @@ $router->add("/logout", [
   'action'     => 'logout',
 ])->setName('frontend-logout');
 
+
+
 $router->add("/datenschutz", [
   'module'     => 'frontend',
   'controller' => 'policy',
@@ -62,33 +64,49 @@ $router->add("/impressum", [
   'action'     => 'index',
 ]);
 
+
+
 $router->add("/gewinnspiele", [
   'module'     => 'frontend',
   'controller' => 'games',
-  'action'     => 'index'
+  'action'     => 'index',
+  'view_type'  => 'list'
+]);
+
+$router->add("/{view_tag:[a-zA-Z0-9-]+}-gewinnspiel", [
+  'module'     => 'frontend',
+  'controller' => 'games',
+  'action'     => 'index',
+  'view_type'  => 'tag'
+]);
+
+$router->add("/{view_tag:[a-zA-Z0-9-]+}-gewinnspiele", [
+  'module'     => 'frontend',
+  'controller' => 'games',
+  'action'     => 'index',
+  'view_type'  => 'company'
 ]);
 
 $router->add("/no-filter", [
   'module'     => 'frontend',
   'controller' => 'games',
-  'action'     => 'all'
+  'action'     => 'index',
+  'view_type'  => 'all'
 ]);
 
-
-$router->add("/{tag_value:[a-zA-Z0-9-]+}-gewinnspiel", [
+$router->add("/suche", [
   'module'     => 'frontend',
   'controller' => 'games',
   'action'     => 'index',
-  'tag_name'   => 'tag'
-
+  'view_type'  => 'search'
 ]);
 
-$router->add("/{tag_value:[a-zA-Z0-9-]+}-gewinnspiele", [
-  'module'     => 'frontend',
-  'controller' => 'games',
-  'action'     => 'index',
-  'tag_name'   => 'company'
-]);
+
+
+
+
+
+
 
 $router->add("/neues", [
   'module'     => 'frontend',

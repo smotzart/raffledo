@@ -7,6 +7,7 @@ use Raffledo\Models\Games;
 use Raffledo\Models\Tags;
 use Raffledo\Models\GamesTags;
 use Raffledo\Models\Companies;
+use Raffledo\Models\Settings;
 use Phalcon\Filter;
 
 class GamesController extends ControllerBase
@@ -23,10 +24,14 @@ class GamesController extends ControllerBase
 
     public function createAction()
     {
+      $settings   = Settings::findFirst();
+
+
+
       $enter_date = date('Y-m-d');
       $date_games = Games::count(['conditions' => 'enter_date = "' . $enter_date . '"']);
 
-      while ($date_games > 10) {        
+      while ($date_games > $settings->entry_amount) {        
         $enter_date = date('Y-m-d', strtotime('+1 days'));
         $date_games = Games::count(['conditions' => 'enter_date = "' . $enter_date . '"']);
       }
@@ -52,7 +57,9 @@ class GamesController extends ControllerBase
 
       $form = new GamesForm(null, [
         'enter_date' => $enter_date,
+        'enter_time' => $settings->enter_time,
         'deadline_date' => $deadline_date,
+        'deadline_time' => $settings->deadline_time,
         'enter_dates' => $available_dates,
         'tags' => '',
         'edit' => false

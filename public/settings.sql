@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Июн 01 2019 г., 08:32
+-- Время создания: Июн 02 2019 г., 01:55
 -- Версия сервера: 10.1.33-MariaDB
 -- Версия PHP: 7.2.6
 
@@ -25,23 +25,31 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `sorting`
+-- Структура таблицы `settings`
 --
 
-CREATE TABLE `sorting` (
+CREATE TABLE `settings` (
   `id` int(10) NOT NULL,
-  `sorting_ids` varchar(50) NOT NULL,
-  `date` date NOT NULL
+  `entry_amount` int(10) NOT NULL DEFAULT '10',
+  `deadline_time` time DEFAULT NULL,
+  `enter_time` time DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `settings`
+--
+
+INSERT INTO `settings` (`id`, `entry_amount`, `deadline_time`, `enter_time`) VALUES
+(1, 10, '23:07:00', '08:58:00');
 
 --
 -- Индексы сохранённых таблиц
 --
 
 --
--- Индексы таблицы `sorting`
+-- Индексы таблицы `settings`
 --
-ALTER TABLE `sorting`
+ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -49,10 +57,10 @@ ALTER TABLE `sorting`
 --
 
 --
--- AUTO_INCREMENT для таблицы `sorting`
+-- AUTO_INCREMENT для таблицы `settings`
 --
-ALTER TABLE `sorting`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `settings`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

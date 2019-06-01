@@ -189,7 +189,7 @@ class GamesForm extends Form
     $this->add($deadline_date);    
 
     $deadline_time = new Time('deadline_time');
-    $deadline_time->setDefault('23:59');
+    $deadline_time->setDefault($options['deadline_time']);
     $this->add($deadline_time);
 
     // Eintrag für
@@ -201,7 +201,7 @@ class GamesForm extends Form
     $this->add($enter_date);
 
     $enter_time = new Time('enter_time');
-    $enter_time->setDefault('06:00');
+    $enter_time->setDefault($options['enter_time']);
     $this->add($enter_time);
 
   }

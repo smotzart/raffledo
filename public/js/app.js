@@ -9,11 +9,7 @@ Array.prototype.append = function(el) {
 angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'checklist-model']).factory('APIGames', [
   '$resource',
   function($resource) {
-    return $resource('games/get/:value/:tag',
-  {
-      value: '@value',
-      tag: '@tag'
-    });
+    return $resource('games/get');
   }
 ]).factory('APIControl', [
   '$resource',
@@ -40,56 +36,19 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
   APIControl,
   window,
   $timeout) {
-    self.$watch('initValue',
-  function() {
-      return self.getData(self.initValue,
-  self.initName);
-    });
     self.data = {};
     self.modalTags = {};
     self.tags_id = [];
     self.showTagSuccess = false;
-    self.getData = function(value,
-  tag) {
-      var params;
-      params = value && tag ? {
-        value: value,
-        tag: tag
-      } : {};
-      return APIGames.get(params,
+    (self.getData = function() {
+      return APIGames.get({},
   function(data) {
         return self.data = data;
       });
-    };
-    self.toggleTagView = function(id,
-  tag) {
-      var control;
-      control = new APIControl({
-        actionType: 'toggleTagById',
-        tag_type: tag,
-        tag_id: id
-      });
-      return control.$save({},
-  function() {
-        if (tag === self.initName) {
-          self.data.entry_hide = !self.data.entry_hide;
-          if (!self.data.entry_hide) {
-            self.showTagSuccess = true;
-            return $timeout(function() {
-              return self.showTagSuccess = false;
-            },
-  3000);
-          }
-        } else {
-          console.log("tt");
-          return self.getData();
-        }
-      },
-  function() {
-        return console.log('not process');
-      });
-    };
-    self.toggleSave = function(game) {
+    })();
+    // fav - show only in list page
+    // fav - move only in list page
+    self.toFavCollection = function(game) {
       var control;
       control = new APIControl({
         actionId: game.g.id,
@@ -100,7 +59,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
         var item,
   position;
         game.save_id = true;
-        if (!self.initValue) {
+        if (self.data.view_type === 'list') {
           position = self.data.collections['regular'].games.indexOf(game);
           item = self.data.collections['regular'].games.splice(position,
   1);
@@ -108,7 +67,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
         }
       });
     };
-    self.hideGame = function(game,
+    // hide - remove from any list
+    self.toHideCollection = function(game,
   key) {
       var control;
       control = new APIControl({
@@ -117,57 +77,61 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       });
       return control.$save({},
   function() {
-        var item,
-  position;
-        if (!self.initValue) {
-          position = self.data.collections[key].games.indexOf(game);
-          return item = self.data.collections[key].games.splice(position,
+        var position;
+        position = self.data.collections[key].games.indexOf(game);
+        return self.data.collections[key].games.splice(position,
   1);
-        }
       });
     };
-    self.showGame = function(game) {
-      if (!game.is_view) {
-        return game.is_view = true;
-      }
+    // view - mark as view that mean pre hide
+    self.toViewCollection = function(game) {
+      var copyElement,
+  range,
+  sel;
+      game.is_view = true;
+      copyElement = document.createElement("span");
+      copyElement.appendChild(document.createTextNode(game.g.suggested_solution));
+      copyElement.className = 'sr-only';
+      angular.element(document.body.append(copyElement));
+      range = document.createRange();
+      range.selectNodeContents(copyElement);
+      sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.execCommand('copy');
+      return copyElement.remove();
     };
-    self.hideCompany = function(game) {
+    // toggle - show/hide company or tag by id
+    self.toggleTagView = function(id,
+  tag) {
       var control;
       control = new APIControl({
-        actionId: game.g.id,
-        actionType: 'hideCompany'
+        actionType: 'toggleTagById',
+        tag_id: id,
+        tag_type: tag
       });
       return control.$save({},
   function() {
-        if (!self.initValue) {
-          return APIGames.get({},
-  function(data) {
-            return self.data = data;
-          });
+        if (self.data.view_type === 'list') {
+          self.getData();
         }
-      });
-    };
-    self.hideTag = function(game) {
-      var control;
-      control = new APIControl({
-        actionId: game.g.id,
-        actionType: 'hideTags',
-        tags_id: self.tags_id
-      });
-      return control.$save({},
-  function() {
-        if (!self.initValue) {
-          return APIGames.get({
-            "path": window.location.pathname
-          },
-  function(data) {
-            return self.data = data;
-          });
+        if (((self.data.view_type === tag && tag === 'company')) || ((self.data.view_type === tag && tag === 'tag'))) {
+          self.data.collections.regular.entry.is_hide = !self.data.collections.regular.entry.is_hide;
+          if (!self.data.collections.regular.entry.is_hide) {
+            self.showTagSuccess = true;
+            return $timeout(function() {
+              return self.showTagSuccess = false;
+            },
+  3000);
+          }
         }
       });
     };
     self.openModal = function(game) {
       return self.modalTags = game.tags;
+    };
+    self.reportGame = function(game) {
+      return self.reportGameId = game.g.id;
     };
     return self.sendModal = function() {
       var control;
@@ -177,14 +141,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       });
       return control.$save({},
   function() {
-        if (!self.initValue) {
-          return APIGames.get({
-            "path": window.location.pathname
-          },
-  function(data) {
-            return self.data = data;
-          });
-        }
+        return self.getData();
       });
     };
   }

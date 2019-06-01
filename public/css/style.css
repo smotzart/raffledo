@@ -362,7 +362,7 @@ h1, h2, h3, h4, h5, h6,
   margin-bottom: 0.5rem;
   font-family: "Muli", sans-serif;
   font-weight: 400;
-  line-height: 1.2; }
+  line-height: 1.4; }
 
 h1, .h1 {
   font-size: 2.5rem; }
@@ -396,22 +396,25 @@ h6, .h6 {
 .display-1 {
   font-size: 6rem;
   font-weight: 300;
-  line-height: 1.2; }
+  line-height: 1.4; }
 
 .display-2 {
   font-size: 5.5rem;
   font-weight: 300;
-  line-height: 1.2; }
+  line-height: 1.4; }
 
 .display-3 {
   font-size: 4.5rem;
   font-weight: 300;
-  line-height: 1.2; }
+  line-height: 1.4; }
 
 .display-4 {
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 400;
-  line-height: 1.2; }
+  line-height: 1.4; }
+  @media (min-width: 768px) {
+    .display-4 {
+      font-size: 2.5rem; } }
 
 hr {
   margin-top: 1rem;
@@ -2686,6 +2689,9 @@ fieldset:disabled a.btn {
   font-size: 1.25rem;
   line-height: 1.5;
   border-radius: 0; }
+  @media (max-width: 767.98px) {
+    .btn-lg, .btn-group-lg > .btn {
+      font-size: 1rem; } }
 
 .btn-sm, .btn-group-sm > .btn {
   padding: 0.25rem 0.5rem;
@@ -2705,8 +2711,8 @@ input[type="button"].btn-block {
   width: 100%; }
 
 .fade {
-  -webkit-transition: opacity 0.7s linear;
-  transition: opacity 0.7s linear; }
+  -webkit-transition: opacity 0.3s linear;
+  transition: opacity 0.3s linear; }
   @media (prefers-reduced-motion: reduce) {
     .fade {
       -webkit-transition: none;
@@ -9900,13 +9906,56 @@ a.text-mute:hover, a.text-mute:focus {
 
 body {
   min-height: 100vh;
-  padding-top: 98px; }
+  padding-top: 84px; }
+  @media (min-width: 992px) {
+    body {
+      padding-top: 98px; } }
 
 @media (min-width: 992px) {
   .raff-sticky-ad {
     position: -webkit-sticky;
     position: sticky;
     top: 110px; } }
+
+.fas {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1; }
+
+.fa-xs {
+  font-size: .75em; }
+
+.fa-flip-horizontal {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+  -webkit-transform: scale(-1, 1);
+  transform: scale(-1, 1); }
+
+.fa-flip-vertical {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+  -webkit-transform: scale(1, -1);
+  transform: scale(1, -1); }
+
+:root .fa-rotate-90,
+:root .fa-rotate-180,
+:root .fa-rotate-270,
+:root .fa-flip-horizontal,
+:root .fa-flip-vertical,
+:root .fa-flip-both {
+  -webkit-filter: none;
+  filter: none; }
+
+.fa-tags:before {
+  content: "\f02c"; }
+
+.fa-ellipsis-v:before {
+  content: "\f142"; }
+
+.fa-search:before {
+  content: "\f002"; }
 
 .btn-top {
   position: absolute;
@@ -9933,8 +9982,8 @@ body {
     top: 0;
     right: 0;
     bottom: 0;
-    -webkit-transition: opacity 0.7s linear;
-    transition: opacity 0.7s linear;
+    -webkit-transition: opacity 0.3s linear;
+    transition: opacity 0.3s linear;
     background: transparent url("../img/basket-dark.png") no-repeat center/cover; }
 
 [ng\:cloak], [ng-cloak], .ng-cloak {
@@ -9992,8 +10041,8 @@ textarea {
   box-shadow: 0 0.125rem 0 0 #7f8d1a; }
 
 .alert {
-  -webkit-transition: opacity 0.7s linear;
-  transition: opacity 0.7s linear; }
+  -webkit-transition: opacity 0.3s linear;
+  transition: opacity 0.3s linear; }
   .alert.ng-hide {
     opacity: 0; }
 
@@ -10001,13 +10050,18 @@ textarea {
   margin: 0 0 40px;
   background: #fff;
   -webkit-box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.25);
-  box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.25);
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out; }
-  .box.ng-leave.ng-leave-active, .box.ng-move, .box.ng-enter {
-    opacity: 0; }
-  .box.ng-leave, .box.ng-move.ng-move-active, .box.ng-enter.ng-enter-active {
+  box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.25); }
+  .box.ng-enter, .box.ng-leave {
+    -webkit-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out; }
+  .box.ng-leave {
     opacity: 1; }
+    .box.ng-leave.ng-leave-active {
+      opacity: 0; }
+  .box.ng-enter {
+    opacity: 0; }
+    .box.ng-enter.ng-enter-active {
+      opacity: 1; }
   .box-body {
     padding: 1rem 0.75rem;
     line-height: 1.1578947; }
@@ -10089,8 +10143,8 @@ textarea {
   position: absolute;
   left: 0;
   top: 50%;
-  -webkit-transform: translateY(-52%);
-  transform: translateY(-52%);
+  -webkit-transform: translateY(calc(-50% + 1px));
+  transform: translateY(calc(-50% + 1px));
   font-size: 1.25rem; }
   .btn-search:hover, .btn-search:focus {
     text-decoration: none; }
@@ -10101,8 +10155,16 @@ textarea {
 .welcome {
   position: relative;
   margin-bottom: 50px;
-  font-size: 1.375rem;
+  font-size: 1rem;
   z-index: 1; }
+  @media (min-width: 768px) {
+    .welcome {
+      font-size: 1.375rem; }
+      .welcome label {
+        font-size: 1rem; } }
+  @media (min-width: 992px) {
+    .welcome label {
+      font-size: 1.125rem; } }
   .welcome a {
     color: #f8e71c;
     text-decoration: underline; }
@@ -10124,7 +10186,7 @@ textarea {
     background-color: #6b3052; }
   .welcome label {
     font-family: "Source Sans Pro", sans-serif;
-    font-size: 1.125rem; }
+    font-size: 0.875rem; }
   .welcome .form-control {
     border-color: #fff;
     color: #fff;

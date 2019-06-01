@@ -14,6 +14,7 @@ use Phalcon\Logger\Adapter\File as FileLogger;
 use Phalcon\Logger\Formatter\Line as FormatterLine;
 use Raffledo\Auth\Auth;
 use Raffledo\Acl\Acl;
+use Phalcon\Http\Response\Cookies;
 
 /**
  * Shared configuration service
@@ -117,7 +118,6 @@ $di->set('flashSession', function () {
     ]);
 });
 
-
 /**
  * Start the session the first time some component request the session service
  */
@@ -131,14 +131,14 @@ $di->setShared('session', function () {
 
 /**
  * Crypt service
- */
+ *//*
 $di->set('crypt', function () {
     $config = $this->getConfig();
 
     $crypt = new Crypt();
     $crypt->setKey($config->application->cryptSalt);
     return $crypt;
-});
+});*/
 
 /**
  * Custom authentication component

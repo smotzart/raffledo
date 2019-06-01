@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/solid.min.css">
     <link rel="stylesheet" href="css/style.css">
     <!-- FontAwesome -->
     <title>Raffledo</title>
@@ -48,12 +49,20 @@
           </button>          
           <div class="collapse navbar-collapse" id="navbar-body">             
             <?php if (is_array($this->auth->getIdentity())) : ?>
-              <ul class="navbar-nav ml-auto mr-7 mt-5 mt-lg-0">
-                <li class="nav-item active">
-                  <?= $this->tag->linkTo(['einstellungen', 'Einstellungen', 'class' => 'nav-link']); ?>
-                </li>
-              </ul>
-              <?= $this->tag->linkTo(['logout', 'Logout', 'class' => 'btn px-5 btn-outline-theme mr-lg-4']); ?>
+              <div class="d-flex align-items-center flex-wrap mt-5 mt-lg-0 ml-lg-auto">
+                <form class="form w-100 w-md-auto mb-4 mb-md-0" method="post" action="/suche">
+                  <div class="position-relative">
+                    <input class="form-control mr-lg-6" type="search" name="search" placeholder="Suche" aria-label="Suche">
+                    <button type="submit" class="btn-search btn btn-link"><i class="fas fa-search text-theme"></i></button>
+                  </div>
+                </form>
+                <ul class="navbar-nav mr-7 ml-auto ml-lg-7">
+                  <li class="nav-item active">
+                    <?= $this->tag->linkTo(['einstellungen', 'Einstellungen', 'class' => 'nav-link']); ?>
+                  </li>
+                </ul>
+                <?= $this->tag->linkTo(['logout', 'Logout', 'class' => 'btn px-5 btn-outline-theme']); ?>
+              </div>              
             <?php else : ?>
               <div class="ml-auto mt-5 mt-lg-0">
                 <?php if ($controllerName == 'games') : ?>
@@ -83,11 +92,7 @@
       $companies_footer = $this->modelsManager->createBuilder()
         ->from(['companies' => 'Raffledo\Models\Companies'])
         ->leftJoin('Raffledo\Models\Games', 'games.companies_id = companies.id', 'games')
-        ->leftJoin('Raffledo\Models\SavedGames', 'saved.games_id = games.id', 'saved')
-        ->leftJoin('Raffledo\Models\HiddenGames', 'hidden.games_id = games.id', 'hidden')
-        ->leftJoin('Raffledo\Models\HiddenCompanies', 'hc.companies_id = games.companies_id', 'hc')
-
-        ->where('companies.footer = 1 AND saved.id IS NULL AND hidden.id IS NULL AND hc.id IS NULL')
+        ->where('companies.footer = 1')
         ->having('count(games.id) > 0')
         ->groupBy('companies.id')
         ->limit(8)
@@ -102,11 +107,7 @@
       $user = $this->auth->getUser();
     ?>
 
-    <div class="position-relative mt-auto">
-      <a href="<?= $this->router->getRewriteUri(); ?>#top" class="btn btn-outline-theme btn-sm btn-top" data-scroll="true">Nach oben</a>
-    </div>
-
-    <footer class="bg-warning text-white py-7 footer-nav">      
+    <footer class="bg-warning text-white py-7 footer-nav mt-auto">      
       <div class="container">
         <?php if ($controllerName && $user) : ?>
         <div class="row mb-7">
@@ -164,6 +165,7 @@
       <script src="js/angular/angular-sanitize.min.js"></script>
       <script src="js/angular/angular-resource.min.js"></script>
       <script src="js/angular/angular-route.min.js"></script>
+      <script src="js/angular/angular-locale_de-de.js"></script>      
       <script src="js/angular-checklist.js"></script>  
       <script src="js/app-min.js"></script>  
     <?php endif; ?>

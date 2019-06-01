@@ -64,7 +64,7 @@
     {% if (game.tags | length) > 0 %}
       <div class="box-tags order-md-0">
         {% for item in game.tags %}
-          <a href="/{{ item.tag }}-gewinnspiel" class="text-muted mr-md-4 d-inline-block"><i class="fas fa-tags fa-flip-horizontal fa-xs mr-2"></i>{{ item.name }}</a>
+          <a href="/{{ item.tag }}-gewinnspiel" class="text-muted mr-2 mr-md-4 d-inline-block"><i class="fas fa-tags fa-flip-horizontal fa-xs mr-2"></i>{{ item.name }}</a>
         {% endfor %}
       </div>
     {% endif %}

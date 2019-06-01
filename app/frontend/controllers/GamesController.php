@@ -3,7 +3,6 @@
 namespace Multiple\Frontend\Controllers;
 
 use Raffledo\Forms\GamesForm;
-use Raffledo\Forms\ReportForm;
 use Raffledo\Forms\RegisterForm;
 
 use Raffledo\Models\Games;
@@ -23,12 +22,12 @@ use Phalcon\Mvc\View;
 
 class GamesController extends ControllerBase
 {
+
   public function initialize()
   {
     $user = $this->auth->getUser();
 
     if ($user) {
-      $this->view->report  = new ReportForm();
       $this->view->setTemplateBefore('angular-list');
     } else {
       $this->view->regform = new RegisterForm();
@@ -40,40 +39,59 @@ class GamesController extends ControllerBase
   
   public function indexAction()
   {
-    $user = $this->auth->getUser();
 
+    $user   = $this->auth->getUser();
+    $games  = [];
+
+    $view_type = $this->dispatcher->getParam('view_type') ? $this->dispatcher->getParam('view_type') : 'list';
+    $view_tag  = $this->dispatcher->getParam('view_tag') ? $this->dispatcher->getParam('view_tag') : '';
+
+    $this->persistent->view_type = $view_type;
+    $this->persistent->view_tag  = $view_tag;
+    
     if ($user) {
-      if ($this->dispatcher->getParam('tag_value')) {
-        $tag_data = [
-          'tag_value' => $this->dispatcher->getParam('tag_value'),
-          'tag_name'  => $this->dispatcher->getParam('tag_name')
-        ];
-        $this->view->tag_data = $tag_data;
+      if ($this->request->isPost()) {
+        $this->persistent->search = $this->request->getPost('search', 'striptags');
+        return $this->response->redirect('suche');
+      }
+      switch ($view_type) {
+        case "list":
+          $this->view->pick('games/user/list');
+          break;
+        case "all":
+          $this->view->pick('games/user/all');
+          break;
+        case "company":
+          $this->view->pick('games/user/company');
+          break;
+        case "tag":
+          $this->view->pick('games/user/tag');
+          break;
+        case "search":
+          $this->view->pick('games/user/all');
+          break;
       }
     } else {
       $sorting = Sorting::findFirst(['conditions' => 'date = CURDATE()']);
 
-      if ($this->dispatcher->getParam('tag_value')) {
+      if (in_array($view_type, ['company', 'tag'])) {
 
-        $url_tag_value = $this->dispatcher->getParam('tag_value', 'striptags');
-        $url_tag_type  = $this->dispatcher->getParam('tag_name');
-
-        $tag_params    = ['tag = ?0', 'bind' => [$url_tag_value]];
-        $url_tag       = $url_tag_type == 'tag' ? Tags::findFirst($tag_params) : Companies::findFirst($tag_params);
-
+        $tag_params    = ['tag = ?0', 'bind' => [$view_tag]];
+        $url_entry     = $view_type == 'tag' ? Tags::findFirst($tag_params) : Companies::findFirst($tag_params);
         $games_params  = ['conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()'];
+
         if ($sorting) {
           $games_params['order'] = ' IF (FIELD (id, ' . $sorting->sorting_ids . ') = 0, 1, 0), FIELD (id, ' . $sorting->sorting_ids . '), RAND()';
         }
 
-        $this->view->pick('games/filter');
-
-        if ($url_tag) { 
-          $games = $url_tag->getRelated('games', $games_params);
-          $this->view->entry = $url_tag;
+        if ($url_entry) { 
+          $games = $url_entry->getRelated('games', $games_params);
+          $this->view->entry = $url_entry;
         }
 
-      } else {  
+        $this->view->pick('games/filter');
+
+      } elseif (in_array($view_type, ['list', 'all'])) {  
         if (!$sorting) {
           $games = Games::find([
             'conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()',
@@ -102,40 +120,25 @@ class GamesController extends ControllerBase
         $this->view->pick('games/default');
 
       }
+
       $this->view->games = $games;
     }
     
   }
 
-  public function allAction() {
-    $user = $this->auth->getUser();
+  public function getAction()
+  {    
+    $view_type  = $this->persistent->view_type;
+    $view_tag   = $this->persistent->view_tag;
 
-    if ($user) {
-      $games = Games::find([
-        'conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()',
-        'order' => 'RAND()'
-      ]);
-
-      $this->view->games = $games;
-      $this->view->pick('games/default');
-
-    } else {
-      return $this->dispatcher->forward([
-        'controller' => 'games',
-        'action' => 'index'
-      ]);
-    }
-  }
-
-  public function getAction($value_r = null, $tag_r = null)
-  {
-    $user     = $this->auth->getUser();
-    $response = new Response();
-    $result   = [];
+    $user       = $this->auth->getUser();
+    $response   = new Response();
+    $result     = [];
 
     if (!$user) {
       $response->setStatusCode(404, "Only register user have access");
     } else {
+      $user_sort = $user->getSorting();
       // Fint hidden games that hidden using tags
       $hide_by_tag_query = 'SELECT g.id as game_hide_by_tag FROM Raffledo\Models\Games AS g LEFT JOIN Raffledo\Models\GamesTags as gt ON gt.games_id = g.id LEFT JOIN Raffledo\Models\HiddenTags as ht on ht.tags_id = gt.tags_id AND ht.users_id = ' . $user->id .' WHERE ht.id IS NOT NULL GROUP BY g.id';
       $hide_by_tag = $this->modelsManager->executeQuery($hide_by_tag_query);
@@ -153,13 +156,15 @@ class GamesController extends ControllerBase
       $phql .= ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id;
       $phql .= ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id;  
 
-      if (!$value_r) {
+      $entry = array('name' => 'Aktuelle Gewinnspiele');
+
+      if ($view_type == 'list') {
 
         // Get favorites games if list view
         $phql_fav  = $phql;    
         $phql_fav .= ' WHERE hg.id IS NULL AND hc.id IS NULL AND vg.id IS NULL AND sg.id IS NOT NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
         $phql_fav .= strlen($not_in_games) > 0 ? ' AND g.id NOT IN (' . $not_in_games . ')' : '';
-        $phql_fav .= ' ORDER BY g.id DESC';
+        $phql_fav .= ' ORDER BY sg.id DESC';
 
         $fav_games = $this->modelsManager->executeQuery($phql_fav);
 
@@ -171,61 +176,86 @@ class GamesController extends ControllerBase
           $rf['tags'] = $game->g->tags;
           $nf[] = $rf;
         }
-        $result['collections']['favorite']['title']  = 'Favoriten';
-        $result['collections']['favorite']['games']  = $nf;
+        $result['collections']['favorite']['entry'] = array('name' => 'Favoriten');
+        $result['collections']['favorite']['games'] = $nf;
 
         // Get regular games if list view
         $phql_games  = $phql;    
         $phql_games .= ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL AND vg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
         $phql_games .= strlen($not_in_games) > 0 ? ' AND g.id NOT IN (' . $not_in_games . ')' : '';
-        $phql_games .= ' ORDER BY g.id DESC';
+        $phql_games .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
+        //$phql_games .= ' ORDER BY g.id DESC';
+
 
         $games = $this->modelsManager->executeQuery($phql_games);
-      } else {
-        $tag_params = ['tag = ?0', 'bind' => [$value_r]];
-        $url_tag    = $tag_r == 'tag' ? Tags::findFirst($tag_params) : Companies::findFirst($tag_params);
+      }
 
-        //$games_params  = ['conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()'];
-        if ($url_tag) { 
-          //$games = $url_tag->getRelated('games', $games_params);
-          $result['entry'] = $url_tag;
-          $result['entry_hide'] = $url_tag->getRelated('hidden', ['conditions' => 'users_id = ' . $user->id])->count() == 0 ? false : true ;
+      if (in_array($view_type, ['company', 'tag'])) {
+        $tag_params = ['tag = ?0', 'bind' => [$view_tag]];
+        $url_entry  = $view_type == 'tag' ? Tags::findFirst($tag_params) : Companies::findFirst($tag_params);
 
+        if ($url_entry) { 
+          $entry = $url_entry->toArray();
+          $entry['is_hide'] = $url_entry->getRelated('hidden', ['conditions' => 'users_id = ' . $user->id])->count() == 0 ? false : true;
         }
       }
       
-      if ($tag_r == 'company' && $url_tag) {
+      if ($view_type == 'company' && $url_entry) {
         $phql_company  = $phql;
-        $phql_company .= ' WHERE g.companies_id = ' . $url_tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql_company .= ' ORDER BY g.id DESC';
+        $phql_company .= ' WHERE g.companies_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+        $phql_company .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
 
         $games = $this->modelsManager->executeQuery($phql_company);
       }
 
-      if ($tag_r == 'tag' && $url_tag) {
+      if ($view_type == 'tag' && $url_entry) {
         $phql_tag = $phql;          
         $phql_tag .= ' LEFT JOIN Raffledo\Models\GamesTags AS gt ON gt.games_id = g.id';
-        $phql_tag .= ' WHERE gt.tags_id = ' . $url_tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql_tag .= ' ORDER BY g.id DESC';
+        $phql_tag .= ' WHERE gt.tags_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+        $phql_tag .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
 
         $games = $this->modelsManager->executeQuery($phql_tag);
       }
 
+      if ($view_type == 'all') {
+        // Get all except hidden 
+        $phql_all  = $phql;    
+        $phql_all .= ' WHERE hg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+        $phql_all .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
+
+        $games = $this->modelsManager->executeQuery($phql_all);
+      }
+
+
+      if ($view_type == 'search') {
+        // Get all except hidden by search query
+
+        $search_param = $this->persistent->search;
+
+        $phql_search  = $phql;    
+        $phql_search .= ' WHERE g.url LIKE "%' . $search_param . '%" OR g.title LIKE "%' . $search_param . '%" OR g.price LIKE "%' . $search_param . '%" OR g.suggested_solution LIKE "%' . $search_param . '%" AND hg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+        $phql_search .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
+
+        $entry = array('name' => 'Suche', 'description' => $search_param);
+
+        $games = $this->modelsManager->executeQuery($phql_search);
+      }
+
+
       $ng = [];
       foreach($games as $game) {
         $rg = isset($game->g) ? (array)$game : array('g' => (array)$game);
-        $rg['company']['name'] = isset($game->g) ? $game->g->company->name : $game->company->name;
-        $rg['company']['tag']  = isset($game->g) ? $game->g->company->tag : $game->company->tag;
-        $rg['company']['id']  = isset($game->g) ? $game->g->company->id : $game->company->id;
+        $rg['company'] = isset($game->g) ? $game->g->company : $game->company;
         $rg['tags'] = isset($game->g) ? $game->g->tags : $game->tags;
         $ng[] = $rg;
       }
 
-      $result['collections']['regular']['title'] = 'Aktuelle Gewinnspiele';
+      $result['collections']['regular']['entry'] = $entry;
       $result['collections']['regular']['games'] = $ng;   
 
     }
 
+    $result['view_type'] = $view_type;
 
     //return $response->send();
     return json_encode($result);   
@@ -379,9 +409,6 @@ class GamesController extends ControllerBase
     $user = $this->auth->getUser();
 
     if ($user && $game) {
-      /*$hide = new HiddenGames([
-        'games_id' => $game->id
-      ]);*/
       $view = ViewedGames::findFirst([
         'games_id = :games_id: AND users_id = :users_id:',
         'bind' => [
@@ -395,7 +422,6 @@ class GamesController extends ControllerBase
           'games_id' => $game->id
         ]);
         
-        //$user->hiddenGames = $hide;
         $user->viewedGames = $view;
         $user->save();   
       }

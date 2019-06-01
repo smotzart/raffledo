@@ -13,7 +13,8 @@
             {'title': 'Tags', 'controller': 'tags', 'icon': '<i class="fa fa-hashtag mr-2 text-warning"></i>'},
             {'title': 'Companies', 'controller': 'companies', 'icon': '<i class="fa fa-group mr-2 text-success"></i>'},
             {'title': 'New game', 'controller': 'new', 'icon': '<i class="fa fa-bullhorn mr-2 text-info"></i>'},
-            {'title': 'Reports', 'controller': 'reports', 'icon': '<i class="fa fa-bug mr-2 text-danger"></i>'}
+            {'title': 'Reports', 'controller': 'reports', 'icon': '<i class="fa fa-bug mr-2 text-danger"></i>'},
+            {'title': 'Settings', 'controller': 'settings', 'icon': '<i class="fa fa-cogs mr-2 text-secondary"></i>'}
           ] -%}
 
           {%- for item in menus %}

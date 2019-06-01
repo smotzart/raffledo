@@ -6,6 +6,7 @@ use Phalcon\Validation;
 use Phalcon\Validation\Validator\Email as EmailValidator;
 use Phalcon\Validation\Validator\Uniqueness;
 use Phalcon\Mvc\Model\Relation;
+use Raffledo\Models\Games;
 
 class Users extends \Phalcon\Mvc\Model
 {
@@ -35,6 +36,18 @@ class Users extends \Phalcon\Mvc\Model
     public $profiles_id;
 
     /**
+     *
+     * @var string
+     */
+    public $sort_ids;
+
+    /**
+     *
+     * @var string
+     */
+    public $sort_data;
+
+    /**
      * Before create the user assign a password
      */
     public function beforeValidationOnCreate()
@@ -49,6 +62,22 @@ class Users extends \Phalcon\Mvc\Model
                 ->getSecurity()
                 ->hash($tempPassword);
         }
+
+        $curdate = date('Y-m-d');
+        $this->sort_data = $curdate;
+
+        $games = Games::find([
+            'conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()',
+            'order' => 'RAND()'
+        ]);
+        $sort_ids = [];
+        foreach ($games as $game) {
+            $sort_ids[] = $game->id;
+        }
+        $sort_ids = implode(',', $sort_ids);
+
+        $this->sort_ids = $sort_ids;
+
     }
 
     /**
@@ -196,6 +225,32 @@ class Users extends \Phalcon\Mvc\Model
     public static function findFirst($parameters = null)
     {
         return parent::findFirst($parameters);
+    }
+
+    public function getSorting() {
+        $curdate = date('Y-m-d');
+
+        if ($this->sort_data == $curdate) {
+            return $this->sort_ids;
+        } else {
+  
+            $games = Games::find([
+                'conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()',
+                'order' => 'RAND()'
+            ]);
+            $sort_ids = [];
+            foreach ($games as $game) {
+                $sort_ids[] = $game->id;
+            }
+            $sort_ids = implode(',', $sort_ids);
+
+          
+            $this->sort_data = $curdate;
+            $this->sort_ids = $sort_ids;
+            $this->save();
+
+            return $sort_ids;
+        }
     }
 
 }

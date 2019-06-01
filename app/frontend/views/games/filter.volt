@@ -10,9 +10,5 @@
   </div>
 </div>
 {% for game in games %}
-  {% if angular is defined %}
-    {{ partial('partials/game-angular', ['game': game]) }}
-  {% else %}
-    {{ partial('partials/game-default', ['game': game]) }}
-  {% endif %}
+  {{ partial('partials/game-default', ['game': game]) }}
 {% endfor %}

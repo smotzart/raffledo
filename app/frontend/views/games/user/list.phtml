@@ -1,30 +1,13 @@
 <div ng-repeat="(key, collection) in data.collections" ng-cloak>
   <div ng-if="collection.games.length > 0 || (key == 'regular' && data.collections.regular.games.length == 0)">
-    <div class="box-header mb-5 d-flex align-items-center">
-      <div>
-        <h2 class="text-capitalize m-0" ng-cloak>
-          <span ng-if="!data.entry || key == 'favorite'">{{ collection.title }}</span>
-          <span ng-if="data.entry && key != 'favorite'">{{ data.entry.name }}</span>
-        </h2>
-        <p class="lead" ng-if="data.entry.description && key != 'favorite'">{{ data.entry.description }}</p>
-      </div>
-      <div class="ml-auto pl-50px" ng-if="data.entry">
-        <a href="/gewinnspiele" class="btn btn-outline-warning"><span class="px-2">&lsaquo;</span><span class="pr-2">Zurück zur Liste</span></a>
-      </div>
+    
+    <div class="box-header mb-5">
+      <h2 class="text-capitalize m-0">
+        <span>{{ collection.entry.name }}</span>
+      </h2>
     </div>
-    <div class="alert alert-danger text-source d-flex align-items-center" ng-show="data.entry && data.entry_hide" role="alert">
-      <div>
-        <b>Hinweis:</b> Du hast diesen Anbieter bereits ausgeschlossen und siehst daher keine Gewinnspiele auf deiner persönlichen Startseite.
-      </div>
-      <a href class="btn btn-outline-warning ml-5" ng-click="toggleTagView(data.entry.id, initName)">
-        <span ng-if="initName == 'company'">Anbieter wieder einblenden</span>
-        <span ng-if="initName == 'tag'">Tag wieder einblenden</span>
-      </a>
-    </div>
-    <div class="alert alert-success text-source" ng-show="showTagSuccess && !data.entry_hide" role="alert">
-      <b>Hinweis:</b> Anbieter wieder erfolgreich eingeblendet
-    </div>
-    <div ng-repeat="game in collection.games | orderBy: 'g.id'" class="box">
+
+    <div ng-repeat="game in collection.games" class="box">
       <div class="box-body">
         <div class="row no-gutters align-items-center">
           <div class="col-10 col-xl-8 box-title">
@@ -46,13 +29,10 @@
                 <i class="fas fa-ellipsis-v"></i>
               </a>
               <div class="dropdown-menu dropdown-menu-right">
-                <a href ng-if="initName != 'company' || (!data.entry_hide && initName == 'company')" ng-click="toggleTagView(game.company.id, 'company')" class="dropdown-item">Anbieter ausblenden</button>
-                
-                <a href ng-if="game.tags.length > 1" data-gameid="{{ game.g.id }}" ng-click="openModal(game)" class="dropdown-item" data-toggle="modal" data-target="#hideTagsModal">Tags/Preise ausschließen</a>
-                
+                <a href ng-click="toggleTagView(game.company.id, 'company')" class="dropdown-item">Anbieter ausblenden</button>
+                <a href ng-if="game.tags.length > 1" ng-click="openModal(game)" class="dropdown-item" data-toggle="modal" data-target="#hideTagsModal">Tags/Preise ausschließen</a>                
                 <a href ng-if="game.tags.length == 1" ng-click="toggleTagView(game.tags[0].id, 'tag')" class="dropdown-item">Tags/Preise ausschließen</button>
-
-                <a href data-gameid="{{ game.g.id }}" class="dropdown-item" data-toggle="modal" data-target="#reportGameModal">Gewinnspiel melden</a>
+                <a href ng-click="reportGame(game)" class="dropdown-item" data-toggle="modal" data-target="#reportGameModal">Gewinnspiel melden</a>
               </div>
             </div>              
           </div>
@@ -91,20 +71,19 @@
       <div class="box-footer d-flex flex-column align-items-md-center flex-md-row">
         <div class="box-btn order-md-1 ml-md-auto flex-wrap flex-md-nowrap">
           <div class="w-50 w-md-auto pr-1 pr-md-0 mr-md-2">
-            <a href ng-if="key == 'regular' && !game.save_id" ng-click="toggleSave(game)" class="btn btn-theme btn-block box-save-btn">
-              <span>Merken</span>
-            </a>
+            <a href ng-if="!game.save_id" ng-click="toFavCollection(game)" class="btn btn-theme btn-block box-save-btn">Merken</a>
           </div>              
           <div ng-if="!game.is_view" class="w-50 w-md-auto pl-1 pl-md-0 mr-md-2">
-            <a href ng-click="hideGame(game, key)" class="btn btn-outline-mute btn-block box-hide-btn">Ausblenden</a>
+            <a href ng-click="toHideCollection(game, key)" class="btn btn-outline-mute btn-block box-hide-btn">Ausblenden</a>
           </div>
-          <a ng-href="/win/{{ game.g.id }}" ng-click="showGame(game)" target="_blank" rel="noopener noreferrer" class="btn w-100 w-md-auto btn-outline-warning">Zum Gewinnspiel</a>
+          <a ng-href="/win/{{ game.g.id }}" ng-click="toViewCollection(game)" target="_blank" rel="noopener noreferrer" class="btn w-100 w-md-auto btn-outline-warning">Zum Gewinnspiel</a>
         </div>
         <div ng-if="game.tags.length > 0" class="box-tags order-md-0">
-          <a ng-repeat="tag in game.tags" ng-href="/{{ tag.tag }}-gewinnspiel" class="text-muted mr-md-4 d-inline-block"><i class="fas fa-tags fa-flip-horizontal fa-xs mr-2"></i>{{ tag.name }}</a>
+          <a ng-repeat="tag in game.tags" ng-href="/{{ tag.tag }}-gewinnspiel" class="text-muted mr-2 mr-md-4 d-inline-block"><i class="fas fa-tags fa-flip-horizontal fa-xs mr-2"></i>{{ tag.name }}</a>
         </div>
       </div>
     </div>
+    
     <div class="box" ng-if="key == 'regular' && data.collections.regular.games.length == 0">
       <div class="box-body text-center py-7">    
         <div class="row">
@@ -123,7 +102,7 @@
 <div class="modal fade" id="hideTagsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-body p-7">
+      <div class="modal-body p-4 p-md-7">
         <h3 class="text-theme">Tags/Preise ausschließen</h3>
         <p class="lead">Welche Tags wollen Sie ausschließen</p>
         <div class="mb-5" id="modal_tags_list">
@@ -132,8 +111,28 @@
             <label class="custom-control-label" for="customCheck{{ tag.id }}">{{ tag.name }}</label>
           </div>
         </div> 
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbruch</button>
-        <button type="submit" ng-click="sendModal()" data-dismiss="modal" class="btn btn-theme ml-3">Jetzt ausschließen</button>     
+        <button type="button" class="btn btn-secondary mr-3 mb-3" data-dismiss="modal">Abbruch</button>
+        <button type="submit" ng-click="sendModal()" data-dismiss="modal" class="btn btn-theme mb-3">Jetzt ausschließen</button>     
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="reportGameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body p-4 p-md-7">
+        <h3 class="text-theme">Gewinnspiel melden</h3>
+        <p class="lead">Etwas stimmt mit diesem Spiel nicht, dann teilen Sie uns mit was.</p>
+        <form action="games/report" method="post" accept-charset="utf-8">
+          <input type="hidden" name="games_id" id="reportGameId" value="{{ reportGameId }}" />
+          <div class="form-group">
+            <label for="report">Ihre Nachricht</label>
+            <textarea id="report" name="report" class="form-control" placeholder="Nachricht" rows="4" required="required"></textarea>
+          </div>         
+          <button type="button" class="btn btn-secondary mr-3 mb-3" data-dismiss="modal">Abbruch</button>
+          <button type="submit" class="btn btn-theme mb-3">Jetzt absenden</button>
+        </form>        
       </div>
     </div>
   </div>
