@@ -1,4 +1,4 @@
-<header id="header" class="header mb-5">
+<header id="header" class="header mb-5 fixed-top">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
       {{ link_to(null, 'class': 'navbar-brand', '<img src="/img/raffledo@1x.png" srcset="/img/raffledo@1x.png 1x, /img/raffledo.png 2x" alt="Raffledo">')}}
@@ -32,6 +32,6 @@
   </nav>  
 </header>
 
-<div class="container">
+<div class="container pt-50px">
   {{ content() }}
 </div>  

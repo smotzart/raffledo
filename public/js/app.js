@@ -72,6 +72,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
             },
   3000);
           }
+        } else {
+          console.log("tt");
+          return self.getData();
         }
       },
   function() {

@@ -46,12 +46,11 @@
                 <i class="fas fa-ellipsis-v"></i>
               </a>
               <div class="dropdown-menu dropdown-menu-right">
-                <a href ng-if="itemName != 'company' && !data.entry_hide" ng-click="toggleTagView(game.company.id, 'company')" class="dropdown-item">Anbieter ausblenden</button>
+                <a href ng-if="initName != 'company' || (!data.entry_hide && initName == 'company')" ng-click="toggleTagView(game.company.id, 'company')" class="dropdown-item">Anbieter ausblenden</button>
                 
                 <a href ng-if="game.tags.length > 1" data-gameid="{{ game.g.id }}" ng-click="openModal(game)" class="dropdown-item" data-toggle="modal" data-target="#hideTagsModal">Tags/Preise ausschließen</a>
-                <a href ng-if="initName != 'tag' && game.tags.length == 1" ng-click="hideTag(game)" class="dropdown-item">Tags/Preise ausschließen</button>
                 
-                <a href ng-if="initName == 'tag' && game.tags.length == 1" ng-click="toggleTagView(data.entry.id, initName)" class="dropdown-item">Tags/Preise ausschließen</button>
+                <a href ng-if="game.tags.length == 1" ng-click="toggleTagView(game.tags[0].id, 'tag')" class="dropdown-item">Tags/Preise ausschließen</button>
 
                 <a href data-gameid="{{ game.g.id }}" class="dropdown-item" data-toggle="modal" data-target="#reportGameModal">Gewinnspiel melden</a>
               </div>
