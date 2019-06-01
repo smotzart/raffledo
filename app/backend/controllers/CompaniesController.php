@@ -104,7 +104,9 @@ class CompaniesController extends ControllerBase
       }
 
       if (!$company->delete()) {
-        $this->flashSession->error($company->getMessages());
+        foreach ($company->getMessages() as $message) {
+          $this->flashSession->error($message);
+        } 
       } else {
         $this->flashSession->success("Tag was deleted");
       }
