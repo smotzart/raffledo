@@ -65,7 +65,7 @@ class Companies extends Model
             __NAMESPACE__ . '\Games',
             'companies_id',
             [
-                'alias' => 'games'
+                'alias' => 'games',
                 'foreignKey' => [
                     'message' => 'Company cannot be deleted because it\'s used on Games'
                 ]
