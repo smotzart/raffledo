@@ -94,5 +94,3 @@ $(function() {
     }
   });
 });
-
-//# sourceMappingURL=admin.js.map

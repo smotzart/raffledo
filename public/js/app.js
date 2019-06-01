@@ -196,5 +196,3 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
     });
   }
 ]);
-
-//# sourceMappingURL=app.js.map

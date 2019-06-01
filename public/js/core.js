@@ -143,5 +143,3 @@ else
   another_parent.append(cloneItem)
 .remove()
 */
-
-//# sourceMappingURL=core.js.map
