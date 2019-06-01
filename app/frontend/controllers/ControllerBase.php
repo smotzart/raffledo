@@ -12,6 +12,6 @@ class ControllerBase extends Controller
 {
   public function initialize()
   {
-    $this->view->logged_id = is_array($this->auth->getIdentity());
+    //$this->view->logged_id = is_array($this->auth->getIdentity());
   }
 }

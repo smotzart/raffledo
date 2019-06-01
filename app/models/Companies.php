@@ -73,6 +73,7 @@ class Companies extends Model
             __NAMESPACE__ . '\HiddenCompanies',
             'companies_id',
             [
+                'alias' => 'hidden',
                 'foreignKey' => [
                     'action' => Relation::ACTION_CASCADE
                 ]

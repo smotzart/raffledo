@@ -63,6 +63,7 @@ class Tags extends Model
             __NAMESPACE__ . '\HiddenTags',
             'tags_id',
             [
+                'alias' => 'hidden',
                 'foreignKey' => [
                     'action' => Relation::ACTION_CASCADE
                 ]

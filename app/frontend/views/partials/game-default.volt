@@ -8,10 +8,10 @@
         {% if game.type_register == 1 or game.type_sms == 1 or game.type_buy == 1 or game.type_internet == 1 or game.type_submission == 1 %}
           <div class="box-label">Gewinnspiel-Typ</div>
         {% endif %}
-        <div class="lh-0">
+        <div class="lh-0 d-flex">
           {% if (game.type_register == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Registrierung erforderlich" class="fi flaticon-user mr-2"></i>{% endif %}
           {% if (game.type_sms == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="SMS/Anruf erforderlich" class="fi flaticon-tablet mr-2"></i>{% endif %}
-          {% if (game.type_buy == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="fi flaticon-shield mr-2"></i>{% endif %}
+          {% if (game.type_buy == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="loh mr-2"></i>{% endif %}
           {% if (game.type_internet == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Online-Spiel" class="fi flaticon-gamepad mr-2"></i>{% endif %}
           {% if (game.type_submission == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Kreativ-Einsendung erforderlich" class="fi flaticon-idea mr-2"></i>{% endif %}
         </div>
@@ -34,12 +34,12 @@
       <div class="col-12 col-md-4 ml-auto">
         <p>
           <span class="box-label">Einsendeschluss</span>
-          {{ date('j. F Y', strtotime(game.deadline_date)) }}
+          {{ strftime('%d. %B %G', strtotime(game.deadline_date)) }}
         </p>
         {% if game.suggested_solution %}
           <p>
             <span class="box-label">Lösungsvorschlag</span>
-            {{ link_to('/', 'nur für User sichtbar', 'class': 'text-body' ) }}
+            {{ link_to('#register', 'nur für User sichtbar', 'class': 'text-body', 'data-scroll': 'true' ) }}
           </p>
         {% endif %}
       </div>
@@ -47,10 +47,10 @@
         {% if game.type_register == 1 or game.type_sms == 1 or game.type_buy == 1 or game.type_internet == 1 or game.type_submission == 1 %}
           <span class="box-label">Gewinnspiel-Typ</span>
         {% endif %}
-        <div>
+        <div class="d-flex">
           {% if (game.type_register == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Registrierung erforderlich" class="fi flaticon-user mr-2"></i>{% endif %}
           {% if (game.type_sms == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="SMS/Anruf erforderlich" class="fi flaticon-tablet mr-2"></i>{% endif %}
-          {% if (game.type_buy == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="fi flaticon-shield mr-2"></i>{% endif %}
+          {% if (game.type_buy == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="loh mr-2"></i>{% endif %}
           {% if (game.type_internet == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Online-Spiel" class="fi flaticon-gamepad mr-2"></i>{% endif %}
           {% if (game.type_submission == 1) %}<i data-toggle="tooltip" data-placement="bottom" title="Kreativ-Einsendung erforderlich" class="fi flaticon-idea mr-2"></i>{% endif %}
         </div>

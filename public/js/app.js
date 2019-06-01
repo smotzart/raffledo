@@ -6,10 +6,14 @@ Array.prototype.append = function(el) {
   return this;
 };
 
-angular.module('app', ['ngRoute', 'ngResource', 'checklist-model']).factory('APIGames', [
+angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'checklist-model']).factory('APIGames', [
   '$resource',
   function($resource) {
-    return $resource('games/get');
+    return $resource('games/get/:value/:tag',
+  {
+      value: '@value',
+      tag: '@tag'
+    });
   }
 ]).factory('APIControl', [
   '$resource',
@@ -17,29 +21,64 @@ angular.module('app', ['ngRoute', 'ngResource', 'checklist-model']).factory('API
     return $resource('games/control',
   {});
   }
-]).run(['$rootScope', '$route'].append(function(root, $route) {
-  return console.log("<-run->");
-})).controller('AppCtrl', [
+]).run(['$rootScope', '$route'].append(function(root, $route) {})).controller('AppCtrl', [
   '$scope',
   'APIGames',
   'APIControl',
   '$window',
+  '$timeout',
   function(self,
   APIGames,
   APIControl,
-  window) {
+  window,
+  $timeout) {
+    self.$watch('initValue',
+  function() {
+      return self.getData(self.initValue,
+  self.initName);
+    });
     self.data = {};
     self.modalTags = {};
     self.tags_id = [];
-    console.log(location.pathname);
-    APIGames.get({
-      "path": window.location.pathname
-    },
+    self.showTagSuccess = false;
+    self.getData = function(value,
+  tag) {
+      var params;
+      params = value && tag ? {
+        value: value,
+        tag: tag
+      } : {};
+      return APIGames.get(params,
   function(data) {
-      return self.data = data;
-    });
-    self.toggleSave = function(game,
-  key) {
+        return self.data = data;
+      });
+    };
+    self.toggleTagView = function(id,
+  tag) {
+      var control;
+      control = new APIControl({
+        actionType: 'toggleTagById',
+        tag_type: tag,
+        tag_id: id
+      });
+      return control.$save({},
+  function() {
+        if (tag === self.initName) {
+          self.data.entry_hide = !self.data.entry_hide;
+          if (!self.data.entry_hide) {
+            self.showTagSuccess = true;
+            return $timeout(function() {
+              return self.showTagSuccess = false;
+            },
+  3000);
+          }
+        }
+      },
+  function() {
+        return console.log('not process');
+      });
+    };
+    self.toggleSave = function(game) {
       var control;
       control = new APIControl({
         actionId: game.g.id,
@@ -49,10 +88,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'checklist-model']).factory('API
   function() {
         var item,
   position;
-        position = self.data.collections[key].games.indexOf(game);
-        item = self.data.collections[key].games.splice(position,
+        game.save_id = true;
+        if (!self.initValue) {
+          position = self.data.collections['regular'].games.indexOf(game);
+          item = self.data.collections['regular'].games.splice(position,
   1);
-        return self.data.collections[key === 'regular' ? 'favorite' : 'regular'].games.push(item[0]);
+          return self.data.collections['favorite'].games.push(item[0]);
+        }
       });
     };
     self.hideGame = function(game,
@@ -66,9 +108,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'checklist-model']).factory('API
   function() {
         var item,
   position;
-        position = self.data.collections[key].games.indexOf(game);
-        return item = self.data.collections[key].games.splice(position,
+        if (!self.initValue) {
+          position = self.data.collections[key].games.indexOf(game);
+          return item = self.data.collections[key].games.splice(position,
   1);
+        }
       });
     };
     self.showGame = function(game) {
@@ -85,10 +129,12 @@ angular.module('app', ['ngRoute', 'ngResource', 'checklist-model']).factory('API
       });
       return control.$save({},
   function() {
-        return APIGames.get({},
+        if (!self.initValue) {
+          return APIGames.get({},
   function(data) {
-          return self.data = data;
-        });
+            return self.data = data;
+          });
+        }
       });
     };
     self.hideTag = function(game) {
@@ -100,12 +146,14 @@ angular.module('app', ['ngRoute', 'ngResource', 'checklist-model']).factory('API
       });
       return control.$save({},
   function() {
-        return APIGames.get({
-          "path": window.location.pathname
-        },
+        if (!self.initValue) {
+          return APIGames.get({
+            "path": window.location.pathname
+          },
   function(data) {
-          return self.data = data;
-        });
+            return self.data = data;
+          });
+        }
       });
     };
     self.openModal = function(game) {
@@ -119,14 +167,30 @@ angular.module('app', ['ngRoute', 'ngResource', 'checklist-model']).factory('API
       });
       return control.$save({},
   function() {
-        return APIGames.get({
-          "path": window.location.pathname
-        },
+        if (!self.initValue) {
+          return APIGames.get({
+            "path": window.location.pathname
+          },
   function(data) {
-          return self.data = data;
-        });
+            return self.data = data;
+          });
+        }
       });
     };
+  }
+]).controller('TagCtrl', [
+  '$scope',
+  'APIGames',
+  'APIControl',
+  '$window',
+  function(self,
+  APIGames,
+  APIControl,
+  window) {
+    return self.$watch('tag_hide',
+  function() {
+      return console.log(self.tag_hide);
+    });
   }
 ]);
 

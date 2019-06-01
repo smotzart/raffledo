@@ -121,7 +121,7 @@ class Auth extends Component
         $remember->token = $token;
 
         if ($remember->save() != false) {
-            $expire = time() + 86400 * 8;
+            $expire = time() + 86400 * 90;
             $this->cookies->set('RMU', $user->id, $expire);
             $this->cookies->set('RMT', $token, $expire);
         }
@@ -164,7 +164,7 @@ class Auth extends Component
                 if ($remember) {
 
                     // Check if the cookie has not expired
-                    if ((time() - (86400 * 8)) < $remember->created_at) {
+                    if ((time() - (86400 * 90)) < $remember->created_at) {
 
                         // Register identity
                         $this->session->set('auth-identity', [
@@ -195,7 +195,26 @@ class Auth extends Component
      */
     public function getIdentity()
     {
-        return $this->session->get('auth-identity');
+        $identity = $this->session->get('auth-identity');
+        /*var_dump($identity);
+        echo "<br><br>123<br>";
+        exit();*/
+        if (isset($identity['id'])) {
+            $logins = SuccessLogins::count([
+                'users_id = ?0',
+                'bind' => [
+                    $identity['id']
+                ]
+            ]);
+
+            if ($logins > 0) {
+                return $identity;
+            } else {
+                return $this->remove();
+            }
+        }
+        
+        return false;
     }
 
     /**
@@ -226,6 +245,17 @@ class Auth extends Component
             }
             
             $this->cookies->get('RMT')->delete();
+
+            $user = SuccessLogins::find([
+                'conditions' => 'users_id = :userId:',
+                'bind'       => [
+                    'userId' => $userId
+                ]
+            ]);
+
+            if ($user) {
+                $user->delete();
+            }
         }
 
         $this->session->remove('auth-identity');
@@ -257,17 +287,32 @@ class Auth extends Component
      * @return \Raffledo\Models\Users
      * @throws Exception
      */
+    
+
     public function getUser()
     {
         $identity = $this->session->get('auth-identity');
         if (isset($identity['id'])) {
 
-            $user = Users::findFirstById($identity['id']);
-            if ($user == false) {
-                throw new Exception('The user does not exist');
+            $logins = SuccessLogins::count([
+                'conditions' => 'users_id = :userId:',
+                'bind'       => [
+                    'userId' => $identity['id']
+                ]
+            ]);
+
+            if ($logins > 0) {
+                $user = Users::findFirstById($identity['id']);
+                if ($user == false) {
+                    throw new Exception('The user does not exist');
+                }
+
+                return $user;
+            } else {
+                return $this->remove();
             }
 
-            return $user;
+            
         }
 
         return false;

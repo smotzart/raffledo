@@ -2,7 +2,7 @@
 
 namespace Raffledo\Models;
 
-class HiddenCompanies extends \Phalcon\Mvc\Model
+class Sorting extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -13,15 +13,23 @@ class HiddenCompanies extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var integer
+     * @var string
      */
-    public $companies_id;
+    public $sorting_ids;
 
     /**
      *
-     * @var integer
+     * @var string
      */
-    public $users_id;
+    public $date;
+
+    /**
+     * Before create
+    */
+    public function beforeValidationOnCreate()
+    {
+        $this->date = date('Y-m-d');
+    }
 
     /**
      * Initialize method for model.
@@ -29,25 +37,7 @@ class HiddenCompanies extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->setSchema("phalcon");
-        $this->setSource("hidden_companies");
-
-        $this->belongsTo(
-            'companies_id',
-            __NAMESPACE__ . '\Companies',
-            'id',
-            [
-                'alias' => 'company'
-            ]
-        );
-
-        $this->belongsTo(
-            'users_id',
-            __NAMESPACE__ . '\Users',
-            'id',
-            [
-                'alias' => 'user'
-            ]
-        );
+        $this->setSource("sorting");
     }
 
     /**
@@ -57,14 +47,14 @@ class HiddenCompanies extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'hidden_companies';
+        return 'sorting';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return HiddenCompanies[]|HiddenCompanies|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return Sorting[]|Sorting|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -75,7 +65,7 @@ class HiddenCompanies extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return HiddenCompanies|\Phalcon\Mvc\Model\ResultInterface
+     * @return Sorting|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {

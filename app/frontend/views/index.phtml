@@ -37,6 +37,7 @@
     $bodyClass = ((!$controllerName || in_array($controllerName, array('session'))) && !is_array($this->auth->getIdentity())) ? 'bg' : '';
   ?>
   <body class="d-flex justify-content-end flex-column <?php echo $bodyClass; ?>">
+    <div id="top"></div>
     <header id="header" class="fixed-top">
       <nav class="navbar navbar-expand-lg navbar-light bg-white pt-lg-6">
         <div class="container">
@@ -57,7 +58,11 @@
               <?= $this->tag->linkTo(['logout', 'Logout', 'class' => 'btn px-5 btn-outline-theme mr-lg-4']); ?>
             <?php else : ?>
               <div class="ml-auto mt-5 mt-lg-0">
-                <?= $this->tag->linkTo(['', 'Registrierung', 'class' => 'btn px-5 btn-outline-theme mr-lg-4']); ?>
+                <?php if ($controllerName == 'games') : ?>
+                  <?= $this->tag->linkTo(['#register', 'Registrierung', 'class' => 'btn px-5 btn-outline-theme mr-lg-4', 'data-scroll' => 'true']); //$this->router->getRewriteUri() . ?>
+                <?php else : ?>
+                  <?= $this->tag->linkTo(['#register', 'Registrierung', 'class' => 'btn px-5 btn-outline-theme mr-lg-4', 'data-scroll' => 'true']); ?>
+                <?php endif; ?>                
                 <?= $this->tag->linkTo(['login', 'Login', 'class' => 'btn px-5 btn-outline-theme']); ?>
               </div>
             <?php endif; ?>
@@ -65,7 +70,7 @@
         </div>
       </nav>
     </header><!-- /header -->
-    
+   
     <?php if ($controllerName != 'games') : ?>
       <main class="py-50px">
         <div class="container">
@@ -99,7 +104,11 @@
       $user = $this->auth->getUser();
     ?>
 
-    <footer class="bg-warning text-white py-7 footer-nav mt-auto">
+    <div class="position-relative mt-auto">
+      <a href="<?= $this->router->getRewriteUri(); ?>#top" class="btn btn-outline-theme btn-sm btn-top" data-scroll="true">Nach oben</a>
+    </div>
+
+    <footer class="bg-warning text-white py-7 footer-nav">      
       <div class="container">
         <?php if ($controllerName && $user) : ?>
         <div class="row mb-7">
@@ -142,7 +151,7 @@
         </div>
         <?php endif; ?>
         <div class="text-center">
-          Copyright 2019 &bull; BAWS Websolutions GmbH &bull; Alle Reechte vorbehalten <?php if (!$controllerName) : ?>&bull; <?= $this->tag->linkTo('impressum', 'Impressum'); ?> &bull; <?= $this->tag->linkTo('datenschutz', 'Datenschutz'); ?><?php endif; ?>
+          Copyright 2019 &bull; BAWS Websolutions GmbH &bull; Alle Reechte vorbehalten <?php if (!$controllerName || !$user) : ?>&bull; <?= $this->tag->linkTo('impressum', 'Impressum'); ?> &bull; <?= $this->tag->linkTo('datenschutz', 'Datenschutz'); ?><?php endif; ?>
         </div>
       </div>
     </footer>
@@ -150,8 +159,11 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <?php if ($controllerName == 'games') : ?>
+    <script src="js/jquery.smooth-scroll.min.js" type="text/javascript"></script>
+    <?php if ($controllerName == 'games' && $user) : ?>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-sanitize.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-resource.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-route.min.js"></script>
       <script src="js/angular-checklist.js"></script>  

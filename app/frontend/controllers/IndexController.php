@@ -19,7 +19,10 @@ class IndexController extends ControllerBase
      */
     public function initialize()
     {
-      parent::initialize();
+      //parent::initialize();
+      if ($this->auth->hasRememberMe()) {
+        return $this->auth->loginWithRememberMe();
+      }
     }
 
     public function indexAction()

@@ -5,7 +5,8 @@
         <div class="p-7">
           <h3 class="display-4 mb-5">Du möchtest gewinnen?</h3>
           <p>Dann bist du hier auf raffledo.de genau richtig, denn hier findest du täglich neue Gewinnspiele. Die Redaktion achtet darauf, dass seriöse und kostenlose Gewinnspiele aus Deutschland gelistet werden. Neben der Angabe der Preise, die es zu gewinnen gibt, wird auch ein Lösungsvorschlag angezeigt, damit du schnell und einfach beim Gewinnspiel teilnehmen kannst.</p>
-        
+          
+          <div id="register"></div>
           <h3 class="display-4 mb-5">Jetzt kostenlos anmelden!</h3>
           <div class="form-group">
             <label for="username">Benutzername</label>

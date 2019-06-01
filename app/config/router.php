@@ -69,23 +69,26 @@ $router->add("/gewinnspiele", [
   'action'     => 'index'
 ]);
 
-$router->add("/gewinnspiele-zeige-mir-alle-gewinnspiele-die-ich-noch-nicht-ausgeblendet-habe", [
+$router->add("/no-filter", [
   'module'     => 'frontend',
   'controller' => 'games',
-  'action'     => 'index'
+  'action'     => 'all'
 ]);
 
 
-$router->add("/{tag:[a-zA-Z0-9-]+}-gewinnspiel", [
+$router->add("/{tag_value:[a-zA-Z0-9-]+}-gewinnspiel", [
   'module'     => 'frontend',
   'controller' => 'games',
   'action'     => 'index',
+  'tag_name'   => 'tag'
+
 ]);
 
-$router->add("/{company:[a-zA-Z0-9-]+}-gewinnspiele", [
+$router->add("/{tag_value:[a-zA-Z0-9-]+}-gewinnspiele", [
   'module'     => 'frontend',
   'controller' => 'games',
   'action'     => 'index',
+  'tag_name'   => 'company'
 ]);
 
 $router->add("/neues", [

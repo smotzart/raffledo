@@ -68,6 +68,9 @@ class Module implements ModuleDefinitionInterface
 
             $compiler = $volt->getCompiler();
             $compiler->addFunction('strtotime', 'strtotime');
+            $compiler->addFunction('strftime', 'strftime');
+
+
 
             return $volt;
           },

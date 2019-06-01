@@ -23,10 +23,10 @@
           <div class="row align-items-center h-100">
             <div class="col-4"><?= $item->title ?></div>
             <div class="col-4"><?= $item->company->name ?></div>
-            <div class="col-4">
+            <div class="col-4 d-flex icons-set">
               <?php if (($item->type_register == 1)) { ?><i data-toggle="tooltip" data-placement="bottom" title="Registrierung erforderlich" class="fi flaticon-user"></i><?php } ?>
               <?php if (($item->type_sms == 1)) { ?><i data-toggle="tooltip" data-placement="bottom" title="SMS/Anruf erforderlich" class="fi flaticon-tablet"></i><?php } ?>
-              <?php if (($item->type_buy == 1)) { ?><i data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="fi flaticon-shield"></i><?php } ?>
+              <?php if (($item->type_buy == 1)) { ?><i data-toggle="tooltip" data-placement="bottom" title="Produktkauf erforderlich" class="loh"></i><?php } ?>
               <?php if (($item->type_internet == 1)) { ?><i data-toggle="tooltip" data-placement="bottom" title="Online-Spiel" class="fi flaticon-gamepad"></i><?php } ?>
               <?php if (($item->type_submission == 1)) { ?><i data-toggle="tooltip" data-placement="bottom" title="Kreativ-Einsendung erforderlich" class="fi flaticon-idea"></i><?php } ?>
             </div>          
