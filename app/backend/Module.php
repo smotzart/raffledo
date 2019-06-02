@@ -9,6 +9,7 @@ use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\ModuleDefinitionInterface;
 use Phalcon\Mvc\View\Engine\Php as PhpEngine;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
+use Phalcon\Flash\Session as FlashSession;
 
 class Module implements ModuleDefinitionInterface
 {
@@ -45,6 +46,17 @@ class Module implements ModuleDefinitionInterface
         return $dispatcher;
       }
     );
+
+    
+    $di->set('flashSession', function () {
+        return new FlashSession([
+            'error'   => 'alert alert-danger',
+            'success' => 'alert alert-success',
+            'notice'  => 'alert alert-info',
+            'warning' => 'alert alert-warning'
+        ]);
+    });
+
 
     // Registering the view component
     $di->set(

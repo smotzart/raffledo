@@ -1,5 +1,8 @@
 $(function() {
   $('[data-toggle="tooltip"]').tooltip();
+  $('.toast').toast({
+    delay: 50000
+  }).toast('show');
   $('.welcome').on('click', 'form', function(event) {
     return $('.welcome-footer').addClass('fade');
   });

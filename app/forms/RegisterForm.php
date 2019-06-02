@@ -23,7 +23,7 @@ class RegisterForm extends Form
 
     $username->addValidators([
       new PresenceOf([
-        'message' => 'The benutzername is required'
+        'message' => 'Benutzername is ein Pflichtfeld'
       ])
     ]);
     $this->add($username);
@@ -35,7 +35,7 @@ class RegisterForm extends Form
 
     $password->addValidators([
       new PresenceOf([
-        'message' => 'The Passwort is required'
+        'message' => 'Passwort ist ein Pflichtfeld'
       ]),
       new StringLength([
         'min' => 6,
@@ -51,7 +51,7 @@ class RegisterForm extends Form
 
     // Confirm Password
     $confirmPassword = new Password('confirmPassword', [
-      'placeholder' => 'Passwort wiederholen'
+      'placeholder' => 'Passwort wiederholen ist ein Pflichtfeld'
     ]);
 
     $confirmPassword->addValidators([

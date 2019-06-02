@@ -18,12 +18,15 @@
 
             <script type="text/ng-template" id="custom_template.html">
             
-            <div class="cg-notify-message d-flex notify-right" ng-click="$close()" ng-class="$classes">
-              <div class="notify-icon d-flex align-items-center justify-content-center">
+             <div class="notify">
+              <span class="notify-close" ng-click="closeBtn()" aria-hidden="true">&times;</span>
+              <div class="notify-icon">
                 <i class="fas fa-check"></i>
               </div>
-              <div ng-show="!$messageTemplate" ng-bind-html="$message"></div>
-              <div ng-show="$messageTemplate" class="cg-notify-message-template">
+              <div class="notify-body">
+                <div class="h6" ng-bind-html="title"></div>
+                <p ng-bind-html="message"></p>
+                <a href class="text-underline" ng-if="enableNotify" ng-click="disableNotify()">Nachricht nicht mehr anzeigen</a>
               </div>
             </div>
 
@@ -38,3 +41,14 @@
     </div>
   </div>
 </main>
+<!--
+<div class="cg-notify-message d-flex notify-right" ng-click="$close()" ng-class="$classes">
+  <div class="notify-icon d-flex align-items-center justify-content-center">
+    <i class="fas fa-check"></i>
+  </div>
+  <div ng-show="!$messageTemplate" ng-bind-html="$message"></div>
+  <div ng-show="$messageTemplate" class="cg-notify-message-template">
+  </div>
+</div>
+-->
+

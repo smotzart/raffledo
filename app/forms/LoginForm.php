@@ -22,7 +22,7 @@ class LoginForm extends Form
 
     $username->addValidators([
       new PresenceOf([
-        'message' => 'The benutzername is required'
+        'message' => 'Benutzername is ein Pflichtfeld'
       ])
     ]);
     $this->add($username);
@@ -33,7 +33,7 @@ class LoginForm extends Form
     ]);
     $password->addValidators([
       new PresenceOf([
-        'message' => 'The Passwort is required'
+        'message' => 'Passwort ist ein Pflichtfeld'
       ]),
     ]);
 

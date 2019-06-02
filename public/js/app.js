@@ -6,7 +6,7 @@ Array.prototype.append = function(el) {
   return this;
 };
 
-angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'checklist-model', 'cgNotify']).factory('APIGames', [
+angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'checklist-model', 'ui-notification']).factory('APIGames', [
   '$resource',
   function($resource) {
     return $resource('games/get');
@@ -36,13 +36,28 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       });
     }
   };
-}).run(['$rootScope', '$route'].append(function(root, $route) {})).controller('AppCtrl', [
+}).run(['$rootScope', '$route'].append(function(root, $route) {})).config([
+  'NotificationProvider',
+  function(noty) {
+    return noty.setOptions({
+      delay: 5000,
+      startTop: 120,
+      startRight: 15,
+      verticalSpacing: 20,
+      horizontalSpacing: 20,
+      positionX: 'right',
+      positionY: 'top',
+      closeOnClick: false,
+      templateUrl: 'custom_template.html'
+    });
+  }
+]).controller('AppCtrl', [
   '$scope',
   'APIGames',
   'APIControl',
   '$window',
   '$timeout',
-  'notify',
+  'Notification',
   function(self,
   APIGames,
   APIControl,
@@ -53,13 +68,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
     self.modalTags = {};
     self.tags_id = [];
     self.showTagSuccess = false;
-    notify.config({
-      position: 'right',
-      container: '#notify',
-      startTop: 120,
-      templateUrl: 'custom_template.html',
-      duration: 3000
-    });
+    self.enableNotify = true;
+    self.disableNotify = function() {
+      console.log("disable notifications");
+      return self.enableNotify = false;
+    };
     (self.getData = function() {
       return APIGames.get({},
   function(data) {
@@ -79,9 +92,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
         var item,
   position;
         notify({
-          messageTemplate: '<div class="mb-2"><b>Hinweis</b>Gewinnspiel wurde erfolgreich zu den Favoriten hinzugefügt</div>',
-          classes: 'theme'
-        });
+          title: 'Hinweis',
+          message: 'Gewinnspiel wurde erfolgreich zu den Favoriten hinzugefügt',
+          scope: self
+        },
+  'notify-theme');
         game.save_id = true;
         if (self.data.view_type === 'list') {
           position = self.data.collections['regular'].games.indexOf(game);
@@ -106,9 +121,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
         self.data.collections[key].games.splice(position,
   1);
         return notify({
-          messageTemplate: '<div class="mb-2"><b>Hinweis</b>' + game.g.title + ' was hidden!</div>',
-          classes: 'error'
-        });
+          title: 'Hinweis',
+          message: 'Gewinnspiel ' + game.g.title + ' hidden!',
+          scope: self
+        },
+  'notify-light');
       });
     };
     // view - mark as view that mean pre hide
@@ -129,9 +146,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       document.execCommand('copy');
       copyElement.remove();
       return notify({
-        messageTemplate: '<div class="mb-2"><b>Hinweis</b>Lösungsvorschlag wurde in die Zwischenablage kopiert!</div>',
-        classes: 'theme'
-      });
+        title: 'Hinweis',
+        message: 'Lösungsvorschlag wurde in die Zwischenablage kopiert!',
+        scope: self
+      },
+  'notify-theme');
     };
     // toggle - show/hide company or tag by id
     self.toggleTagView = function(id,
@@ -146,18 +165,22 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
   function() {
         if (self.data.view_type === 'list') {
           notify({
-            messageTemplate: '<div class="mb-2"><b>Hinweis</b>Tag/company hidden</div>',
-            classes: 'theme'
-          });
+            title: 'Hinweis',
+            message: 'Success hide from list',
+            scope: self
+          },
+  'notify-success');
           self.getData();
         }
         if (((self.data.view_type === tag && tag === 'company')) || ((self.data.view_type === tag && tag === 'tag'))) {
           self.data.collections.regular.entry.is_hide = !self.data.collections.regular.entry.is_hide;
           if (!self.data.collections.regular.entry.is_hide) {
             notify({
-              messageTemplate: '<div class="mb-2"><b>Hinweis</b>Tag/company show back</div>',
-              classes: 'theme'
-            });
+              title: 'Hinweis',
+              message: 'Return to list',
+              scope: self
+            },
+  'notify-success');
             self.showTagSuccess = true;
             return $timeout(function() {
               return self.showTagSuccess = false;
@@ -165,9 +188,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
   3000);
           } else {
             return notify({
-              messageTemplate: '<div class="mb-2"><b>Hinweis</b>Tag/company hide</div>',
-              classes: 'error'
-            });
+              title: 'Hinweis',
+              message: 'Success hide from list',
+              scope: self
+            },
+  'notify-success');
           }
         }
       });
@@ -187,8 +212,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       return control.$save({},
   function() {
         notify({
-          messageTemplate: '<div class="mb-2"><b>Hinweis</b>Tags was hidden</div>'
-        });
+          title: 'Hinweis',
+          message: 'Return to list',
+          scope: self
+        },
+  'notify-success');
         return self.getData();
       });
     };

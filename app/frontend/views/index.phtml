@@ -37,7 +37,32 @@
     $bodyClass = ((!$controllerName || in_array($controllerName, array('session'))) && !is_array($this->auth->getIdentity())) ? 'bg' : '';
   ?>
   <body class="d-flex justify-content-end flex-column <?php echo $bodyClass; ?>">
-    <div id="top"></div>
+    <div class="toast-wrap">
+    <?php
+      $messages = $this->flashSession->getMessages();
+      if ($messages) {
+        foreach ($messages as $type => $data) {
+          foreach ($data as $message) {
+            ?>
+            <div class="toast toast-danger" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex position-relative">
+                <span class="notify-close" data-dismiss="toast" aria-label="Close" aria-hidden="true">&times;</span>
+                <div class="notify-icon">
+                  <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="notify-body d-flex align-items-center">
+                  <p class="m-0"><?= $message; ?></p>
+                </div>
+              </div>
+            </div>
+            <?php           
+          }
+        }
+      }
+
+    ?>
+    </div>
+    
     <header id="header" class="fixed-top">
       <nav class="navbar navbar-expand-lg navbar-light bg-white pt-lg-6">
         <div class="container">
@@ -82,7 +107,7 @@
    
     <?php if ($controllerName != 'games') : ?>
       <main class="py-50px">
-        <div class="container">
+        <div class="container">         
     <?php endif; ?>
     <?= $this->getContent(); ?>
     <?php if ($controllerName != 'games') : ?>
@@ -169,7 +194,7 @@
       <script src="js/angular/angular-route.min.js"></script>
       <script src="js/angular/angular-locale_de-de.js"></script>      
       <script src="js/angular-checklist.js"></script>       
-      <script src="js/angular-notify.min.js"></script>  
+      <script src="js/angular-notify-2.min.js"></script>  
       <script src="js/app-min.js"></script>  
     <?php endif; ?>
     <script src="js/core-min.js"></script>

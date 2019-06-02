@@ -4939,20 +4939,16 @@ a.close.disabled {
   pointer-events: none; }
 
 .toast {
-  max-width: 350px;
+  max-width: 320px;
   overflow: hidden;
   font-size: 0.875rem;
-  background-color: rgba(255, 255, 255, 0.85);
-  background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  -webkit-box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+  font-family: "Source Sans Pro", sans-serif;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   opacity: 0;
-  border-radius: 0.25rem; }
+  border-radius: 0.1875rem; }
   .toast:not(:last-child) {
-    margin-bottom: 0.75rem; }
+    margin-bottom: 1rem; }
   .toast.showing {
     opacity: 1; }
   .toast.show {
@@ -4968,14 +4964,14 @@ a.close.disabled {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  padding: 0.25rem 0.75rem;
+  padding: 0 0;
   color: #9b9b9b;
   background-color: rgba(255, 255, 255, 0.85);
   background-clip: padding-box;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+  border-bottom: 0px solid rgba(0, 0, 0, 0.05); }
 
 .toast-body {
-  padding: 0.75rem; }
+  padding: 0; }
 
 .modal-open {
   overflow: hidden; }
@@ -9904,6 +9900,169 @@ a.text-mute:hover, a.text-mute:focus {
 .flaticon-tablet:before {
   content: ""; }
 
+/**
+ * angular-ui-notification - Angular.js service providing simple notifications using Bootstrap 3 styles with css transitions for animating
+ * @author Alex_Crack
+ * @version v0.3.6
+ * @link https://github.com/alexcrack/angular-ui-notification
+ * @license MIT
+ */
+.ui-notification,
+.notify {
+  position: fixed;
+  z-index: 9999;
+  width: 20rem;
+  -webkit-transition: all ease .5s;
+  transition: all ease .5s;
+  color: #fff;
+  border-radius: 0.1875rem;
+  font-size: 0.875rem;
+  font-family: "Source Sans Pro", sans-serif; }
+  .ui-notification.killed,
+  .notify.killed {
+    -webkit-transition: opacity ease 1s;
+    transition: opacity ease 1s;
+    opacity: 0; }
+
+.notify {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+  .notify .h6 {
+    font-size: 0.875rem;
+    font-weight: 600; }
+  .notify a {
+    color: inherit;
+    text-decoration: underline; }
+
+.notify-body {
+  line-height: 1.2;
+  padding: 0.625rem 3rem 0.625rem 0.75rem; }
+
+.notify-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  line-height: 1;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  opacity: 0.5;
+  cursor: pointer; }
+  .notify-close:hover, .notify-close:focus {
+    opacity: 1; }
+
+.notify-icon {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 1rem;
+  padding: 1rem;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px; }
+
+.notify-primary,
+.toast-primary {
+  background: #03527d;
+  color: #fff;
+  -webkit-box-shadow: 0 0.125rem 0 #011119;
+  box-shadow: 0 0.125rem 0 #011119; }
+  .notify-primary .notify-icon,
+  .toast-primary .notify-icon {
+    background: #011119; }
+
+.notify-secondary,
+.toast-secondary {
+  background: #757575;
+  color: #fff;
+  -webkit-box-shadow: 0 0.125rem 0 #424242;
+  box-shadow: 0 0.125rem 0 #424242; }
+  .notify-secondary .notify-icon,
+  .toast-secondary .notify-icon {
+    background: #424242; }
+
+.notify-success,
+.toast-success {
+  background: #aabe19;
+  color: #fff;
+  -webkit-box-shadow: 0 0.125rem 0 #59640d;
+  box-shadow: 0 0.125rem 0 #59640d; }
+  .notify-success .notify-icon,
+  .toast-success .notify-icon {
+    background: #59640d; }
+
+.notify-info,
+.toast-info {
+  background: #17a2b8;
+  color: #fff;
+  -webkit-box-shadow: 0 0.125rem 0 #0c525d;
+  box-shadow: 0 0.125rem 0 #0c525d; }
+  .notify-info .notify-icon,
+  .toast-info .notify-icon {
+    background: #0c525d; }
+
+.notify-warning,
+.toast-warning {
+  background: #e56f32;
+  color: #fff;
+  -webkit-box-shadow: 0 0.125rem 0 #9d4314;
+  box-shadow: 0 0.125rem 0 #9d4314; }
+  .notify-warning .notify-icon,
+  .toast-warning .notify-icon {
+    background: #9d4314; }
+
+.notify-danger,
+.toast-danger {
+  background: #df4e5d;
+  color: #fff;
+  -webkit-box-shadow: 0 0.125rem 0 #a91e2d;
+  box-shadow: 0 0.125rem 0 #a91e2d; }
+  .notify-danger .notify-icon,
+  .toast-danger .notify-icon {
+    background: #a91e2d; }
+
+.notify-light,
+.toast-light {
+  background: #f8f8f8;
+  color: #383838;
+  -webkit-box-shadow: 0 0.125rem 0 #c5c5c5;
+  box-shadow: 0 0.125rem 0 #c5c5c5; }
+  .notify-light .notify-icon,
+  .toast-light .notify-icon {
+    background: #c5c5c5; }
+
+.notify-dark,
+.toast-dark {
+  background: #532640;
+  color: #fff;
+  -webkit-box-shadow: 0 0.125rem 0 #0d060a;
+  box-shadow: 0 0.125rem 0 #0d060a; }
+  .notify-dark .notify-icon,
+  .toast-dark .notify-icon {
+    background: #0d060a; }
+
+.notify-theme,
+.toast-theme {
+  background: #a36188;
+  color: #fff;
+  -webkit-box-shadow: 0 0.125rem 0 #643a53;
+  box-shadow: 0 0.125rem 0 #643a53; }
+  .notify-theme .notify-icon,
+  .toast-theme .notify-icon {
+    background: #643a53; }
+
+.notify-mute,
+.toast-mute {
+  background: #9b9b9b;
+  color: #fff;
+  -webkit-box-shadow: 0 0.125rem 0 #686868;
+  box-shadow: 0 0.125rem 0 #686868; }
+  .notify-mute .notify-icon,
+  .toast-mute .notify-icon {
+    background: #686868; }
+
 body {
   min-height: 100vh;
   padding-top: 84px; }
@@ -9959,6 +10118,14 @@ body {
 
 .fa-check:before {
   content: "\f00c"; }
+
+.fa-exclamation-circle:before {
+  content: "\f06a"; }
+
+.toast-wrap {
+  position: absolute;
+  right: 20px;
+  top: 120px; }
 
 .btn-top {
   position: absolute;
