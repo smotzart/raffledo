@@ -171,8 +171,7 @@ class GamesController extends ControllerBase
         $nf = [];
         foreach($fav_games as $game) {
           $rf = (array)$game;
-          $rf['company']['name'] = $game->g->company->name;
-          $rf['company']['tag']  = $game->g->company->tag;
+          $rf['company'] = $game->g->company;
           $rf['tags'] = $game->g->tags;
           $nf[] = $rf;
         }
