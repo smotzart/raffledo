@@ -25,7 +25,18 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       id: '@id'
     });
   }
-]).run(['$rootScope', '$route'].append(function(root, $route) {})).controller('AppCtrl', [
+]).directive('tooltip', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      return element.hover(function() {
+        return element.tooltip('show');
+      }, function() {
+        return element.tooltip('hide');
+      });
+    }
+  };
+}).run(['$rootScope', '$route'].append(function(root, $route) {})).controller('AppCtrl', [
   '$scope',
   'APIGames',
   'APIControl',
@@ -144,19 +155,5 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
         return self.getData();
       });
     };
-  }
-]).controller('TagCtrl', [
-  '$scope',
-  'APIGames',
-  'APIControl',
-  '$window',
-  function(self,
-  APIGames,
-  APIControl,
-  window) {
-    return self.$watch('tag_hide',
-  function() {
-      return console.log(self.tag_hide);
-    });
   }
 ]);
