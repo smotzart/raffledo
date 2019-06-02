@@ -10157,14 +10157,6 @@ textarea {
   margin-bottom: 50px;
   font-size: 1rem;
   z-index: 1; }
-  @media (min-width: 768px) {
-    .welcome {
-      font-size: 1.375rem; }
-      .welcome label {
-        font-size: 1rem; } }
-  @media (min-width: 992px) {
-    .welcome label {
-      font-size: 1.125rem; } }
   .welcome a {
     color: #f8e71c;
     text-decoration: underline; }
@@ -10202,6 +10194,14 @@ textarea {
       color: rgba(255, 255, 255, 0.5); }
     .welcome .form-control::placeholder {
       color: rgba(255, 255, 255, 0.5); }
+  @media (min-width: 768px) {
+    .welcome {
+      font-size: 1.375rem; }
+      .welcome label {
+        font-size: 1rem; } }
+  @media (min-width: 992px) {
+    .welcome label {
+      font-size: 1.125rem; } }
 
 .btn-dark {
   border-color: #fff; }
