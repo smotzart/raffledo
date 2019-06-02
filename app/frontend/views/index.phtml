@@ -8,6 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/solid.min.css">
+    <link rel="stylesheet" href="css/notify.css">
     <link rel="stylesheet" href="css/style.css">
     <!-- FontAwesome -->
     <title>Raffledo</title>
@@ -76,6 +77,7 @@
           </div>
         </div>
       </nav>
+      <div id="notify" class="position-relative"></div>
     </header><!-- /header -->
    
     <?php if ($controllerName != 'games') : ?>
@@ -166,7 +168,8 @@
       <script src="js/angular/angular-resource.min.js"></script>
       <script src="js/angular/angular-route.min.js"></script>
       <script src="js/angular/angular-locale_de-de.js"></script>      
-      <script src="js/angular-checklist.js"></script>  
+      <script src="js/angular-checklist.js"></script>       
+      <script src="js/angular-notify.min.js"></script>  
       <script src="js/app-min.js"></script>  
     <?php endif; ?>
     <script src="js/core-min.js"></script>

@@ -6,7 +6,7 @@ Array.prototype.append = function(el) {
   return this;
 };
 
-angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'checklist-model']).factory('APIGames', [
+angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'checklist-model', 'cgNotify']).factory('APIGames', [
   '$resource',
   function($resource) {
     return $resource('games/get');
@@ -42,15 +42,24 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
   'APIControl',
   '$window',
   '$timeout',
+  'notify',
   function(self,
   APIGames,
   APIControl,
   window,
-  $timeout) {
+  $timeout,
+  notify) {
     self.data = {};
     self.modalTags = {};
     self.tags_id = [];
     self.showTagSuccess = false;
+    notify.config({
+      position: 'right',
+      container: '#notify',
+      startTop: 120,
+      templateUrl: 'custom_template.html',
+      duration: 3000
+    });
     (self.getData = function() {
       return APIGames.get({},
   function(data) {
@@ -69,6 +78,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
   function() {
         var item,
   position;
+        notify({
+          messageTemplate: '<div class="mb-2"><b>Hinweis</b>Gewinnspiel wurde erfolgreich zu den Favoriten hinzugefügt</div>',
+          classes: 'theme'
+        });
         game.save_id = true;
         if (self.data.view_type === 'list') {
           position = self.data.collections['regular'].games.indexOf(game);
@@ -90,8 +103,12 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
   function() {
         var position;
         position = self.data.collections[key].games.indexOf(game);
-        return self.data.collections[key].games.splice(position,
+        self.data.collections[key].games.splice(position,
   1);
+        return notify({
+          messageTemplate: '<div class="mb-2"><b>Hinweis</b>' + game.g.title + ' was hidden!</div>',
+          classes: 'error'
+        });
       });
     };
     // view - mark as view that mean pre hide
@@ -110,7 +127,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       sel.removeAllRanges();
       sel.addRange(range);
       document.execCommand('copy');
-      return copyElement.remove();
+      copyElement.remove();
+      return notify({
+        messageTemplate: '<div class="mb-2"><b>Hinweis</b>Lösungsvorschlag wurde in die Zwischenablage kopiert!</div>',
+        classes: 'theme'
+      });
     };
     // toggle - show/hide company or tag by id
     self.toggleTagView = function(id,
@@ -124,16 +145,29 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       return control.$save({},
   function() {
         if (self.data.view_type === 'list') {
+          notify({
+            messageTemplate: '<div class="mb-2"><b>Hinweis</b>Tag/company hidden</div>',
+            classes: 'theme'
+          });
           self.getData();
         }
         if (((self.data.view_type === tag && tag === 'company')) || ((self.data.view_type === tag && tag === 'tag'))) {
           self.data.collections.regular.entry.is_hide = !self.data.collections.regular.entry.is_hide;
           if (!self.data.collections.regular.entry.is_hide) {
+            notify({
+              messageTemplate: '<div class="mb-2"><b>Hinweis</b>Tag/company show back</div>',
+              classes: 'theme'
+            });
             self.showTagSuccess = true;
             return $timeout(function() {
               return self.showTagSuccess = false;
             },
   3000);
+          } else {
+            return notify({
+              messageTemplate: '<div class="mb-2"><b>Hinweis</b>Tag/company hide</div>',
+              classes: 'error'
+            });
           }
         }
       });
@@ -152,6 +186,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       });
       return control.$save({},
   function() {
+        notify({
+          messageTemplate: '<div class="mb-2"><b>Hinweis</b>Tags was hidden</div>'
+        });
         return self.getData();
       });
     };

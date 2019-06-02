@@ -9957,6 +9957,9 @@ body {
 .fa-search:before {
   content: "\f002"; }
 
+.fa-check:before {
+  content: "\f00c"; }
+
 .btn-top {
   position: absolute;
   right: 0;
@@ -10209,3 +10212,52 @@ textarea {
     border-color: #fff; }
   .btn-dark:not(:disabled):not(.disabled):active, .btn-dark:not(:disabled):not(.disabled).active {
     border-color: #fff; }
+
+.notify-right {
+  right: 1rem; }
+
+.notify-message {
+  position: fixed;
+  top: 0;
+  z-index: 9999;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  visibility: hidden; }
+
+.cg-notify-message {
+  background: #aabe19;
+  border-radius: 3px;
+  padding: 0;
+  width: 20rem;
+  color: #fff;
+  font-size: 0.875rem;
+  font-family: "Source Sans Pro", sans-serif;
+  -webkit-box-shadow: 0 0.125rem 0 #59640d;
+  box-shadow: 0 0.125rem 0 #59640d; }
+  .cg-notify-message a {
+    text-decoration: underline; }
+  .cg-notify-message .notify-icon {
+    font-size: 1rem;
+    padding: 0 15px;
+    background: #59640d;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px; }
+  .cg-notify-message.theme {
+    background: #a36188;
+    -webkit-box-shadow: 0 0.125rem 0 #682549;
+    box-shadow: 0 0.125rem 0 #682549; }
+    .cg-notify-message.theme .notify-icon {
+      background: #682549; }
+  .cg-notify-message.error {
+    background: #df4e5d;
+    -webkit-box-shadow: 0 0.125rem 0 #a91e2d;
+    box-shadow: 0 0.125rem 0 #a91e2d; }
+    .cg-notify-message.error .notify-icon {
+      background: #a91e2d; }
+
+.cg-notify-message-template {
+  line-height: 1.2;
+  padding: 0.625rem 3rem 0.625rem 0.75rem; }
+  .cg-notify-message-template b {
+    display: block;
+    margin: 0 0 5px; }

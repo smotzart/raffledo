@@ -15,6 +15,20 @@
         <div class="row">
           <div class="col-12" ng-app="app" ng-controller="AppCtrl">
             {{ content() }}         
+
+            <script type="text/ng-template" id="custom_template.html">
+            
+            <div class="cg-notify-message d-flex notify-right" ng-click="$close()" ng-class="$classes">
+              <div class="notify-icon d-flex align-items-center justify-content-center">
+                <i class="fas fa-check"></i>
+              </div>
+              <div ng-show="!$messageTemplate" ng-bind-html="$message"></div>
+              <div ng-show="$messageTemplate" class="cg-notify-message-template">
+              </div>
+            </div>
+
+            </script>
+
           </div>
         </div>    
         <div class="text-center mb-g">
