@@ -20,6 +20,12 @@ class Profiles extends \Phalcon\Mvc\Model
     public $name;
 
     /**
+     *
+     * @var string
+     */
+    public $role;
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
@@ -34,18 +40,6 @@ class Profiles extends \Phalcon\Mvc\Model
                 'alias' => 'users',
                 'foreignKey' => [
                     'message' => 'Profile cannot be deleted because it\'s used on Users'
-                ]
-            ]
-        );
-
-        $this->hasMany(
-            'id',
-            __NAMESPACE__ . '\Permissions',
-            'profiles_id',
-            [
-                'alias' => 'permissions',
-                'foreignKey' => [
-                    'action' => Relation::ACTION_CASCADE
                 ]
             ]
         );

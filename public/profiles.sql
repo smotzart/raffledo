@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Июн 02 2019 г., 01:55
+-- Время создания: Июн 02 2019 г., 09:28
 -- Версия сервера: 10.1.33-MariaDB
 -- Версия PHP: 7.2.6
 
@@ -25,31 +25,32 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `settings`
+-- Структура таблицы `profiles`
 --
 
-CREATE TABLE `settings` (
-  `id` int(10) NOT NULL,
-  `entry_amount` int(10) NOT NULL DEFAULT '10',
-  `deadline_time` time DEFAULT NULL,
-  `enter_time` time DEFAULT NULL
+CREATE TABLE `profiles` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `role` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Дамп данных таблицы `settings`
+-- Дамп данных таблицы `profiles`
 --
 
-INSERT INTO `settings` (`id`, `entry_amount`, `deadline_time`, `enter_time`) VALUES
-(1, 10, '23:07:00', '08:58:00');
+INSERT INTO `profiles` (`id`, `name`, `role`) VALUES
+(1, 'Administrators', 'admin'),
+(2, 'Users', 'user'),
+(3, 'Superadmin', 'super');
 
 --
 -- Индексы сохранённых таблиц
 --
 
 --
--- Индексы таблицы `settings`
+-- Индексы таблицы `profiles`
 --
-ALTER TABLE `settings`
+ALTER TABLE `profiles`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -57,10 +58,10 @@ ALTER TABLE `settings`
 --
 
 --
--- AUTO_INCREMENT для таблицы `settings`
+-- AUTO_INCREMENT для таблицы `profiles`
 --
-ALTER TABLE `settings`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `profiles`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

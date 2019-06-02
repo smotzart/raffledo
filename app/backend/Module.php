@@ -84,7 +84,6 @@ class Module implements ModuleDefinitionInterface
     $di->set('url', function() use ($di) {
       $url = new \Phalcon\Mvc\Url();
       $url->setBaseUri("/admin/");
-      // For frontend module.php:  $url->setBaseUri("/");
       return $url;
     });
 

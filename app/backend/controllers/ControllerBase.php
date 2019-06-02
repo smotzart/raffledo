@@ -18,10 +18,19 @@ class ControllerBase extends Controller
   {
    
     $user = $this->auth->getUser();
-    if (!$user || $user->profile->id != 1) {
+    $controllerName = $dispatcher->getControllerName();
+
+    if (!$user || $user->profile->role == 'user') {
       $url = "http://" . $_SERVER['HTTP_HOST'];  
       header('Location: ' . $url, true, 302);
       die();
     }
+
+    if ($controllerName == 'settings' && $user->profile->role != 'super') {
+      $this->flashSession->error("You don't have permissions to enter this page");
+      $this->response->redirect('');
+    }
+
+    return;
   }
 }
