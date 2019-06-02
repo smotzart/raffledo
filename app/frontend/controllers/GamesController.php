@@ -81,7 +81,7 @@ class GamesController extends ControllerBase
         $games_params  = ['conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()'];
 
         if ($sorting) {
-          $games_params['order'] = ' IF (FIELD (games.id, ' . $sorting->sorting_ids . ') = 0, 1, 0), FIELD (games.id, ' . $sorting->sorting_ids . '), RAND()';
+          $games_params['order'] = ' IF (FIELD (Raffledo\Models\Games.id, ' . $sorting->sorting_ids . ') = 0, 1, 0), FIELD (Raffledo\Models\Games.id, ' . $sorting->sorting_ids . '), RAND()';
         }
 
         if ($url_entry) { 
