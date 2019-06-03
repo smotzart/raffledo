@@ -23,7 +23,7 @@ class SessionController extends ControllerBase
       if (!$this->request->isPost()) {
         if ($this->auth->hasRememberMe()) {
           return $this->auth->loginWithRememberMe();
-        }
+        } 
       } else {
         if ($form->isValid($this->request->getPost()) == false) {
           foreach ($form->getMessages() as $message) {
@@ -35,14 +35,12 @@ class SessionController extends ControllerBase
             'password' => $this->request->getPost('password'),
             'remember' => 'yes'
           ]);
-
           return $this->response->redirect('gewinnspiele');
         }
       }
     } catch (AuthException $e) {
       $this->flashSession->error($e->getMessage());
     }
-
     $this->view->form = $form;
   }
 

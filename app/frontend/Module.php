@@ -107,10 +107,10 @@ class Module implements ModuleDefinitionInterface
 
     $di->set('flashSession', function () {
         return new FlashSession([
-            'error'   => 'notify notify-danger',
-            'success' => 'notify notify-success',
-            'notice'  => 'notify notify-info',
-            'warning' => 'notify notify-warning'
+            'error'   => 'alert alert-danger',
+            'success' => 'alert alert-success',
+            'notice'  => 'alert alert-info',
+            'warning' => 'alert alert-warning'
         ]);
     });
   }

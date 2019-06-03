@@ -10076,6 +10076,9 @@ body {
     position: sticky;
     top: 110px; } }
 
+.pre-wrap {
+  white-space: pre-wrap; }
+
 .fas {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;

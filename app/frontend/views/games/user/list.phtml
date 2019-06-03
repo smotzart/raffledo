@@ -124,15 +124,14 @@
       <div class="modal-body p-4 p-md-7">
         <h3 class="text-theme">Gewinnspiel melden</h3>
         <p class="lead">Etwas stimmt mit diesem Spiel nicht, dann teilen Sie uns mit was.</p>
-        <form action="games/report" method="post" accept-charset="utf-8">
-          <input type="hidden" name="games_id" id="reportGameId" value="{{ reportGameId }}" />
+        <div>
           <div class="form-group">
             <label for="report">Ihre Nachricht</label>
-            <textarea id="report" name="report" class="form-control" placeholder="Nachricht" rows="4" required="required"></textarea>
+            <textarea id="report" name="report" ng-model="reportText" class="form-control" placeholder="Nachricht" rows="4" required="required"></textarea>
           </div>         
           <button type="button" class="btn btn-secondary mr-3 mb-3" data-dismiss="modal">Abbruch</button>
-          <button type="submit" class="btn btn-theme mb-3">Jetzt absenden</button>
-        </form>        
+          <button type="button" class="btn btn-theme mb-3" ng-click="sendReport(reportGameId)" data-dismiss="modal">Jetzt absenden</button>          
+        </div>      
       </div>
     </div>
   </div>

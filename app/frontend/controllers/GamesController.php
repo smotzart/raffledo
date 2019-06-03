@@ -26,14 +26,12 @@ class GamesController extends ControllerBase
   public function initialize()
   {
     $user = $this->auth->getUser();
-
     if ($user) {
       $this->view->setTemplateBefore('angular-list');
     } else {
       $this->view->regform = new RegisterForm();
       $this->view->setTemplateBefore('default');
-    }    
-
+    }
   }
 
   
@@ -219,7 +217,7 @@ class GamesController extends ControllerBase
       if ($view_type == 'all') {
         // Get all except hidden 
         $phql_all  = $phql;    
-        $phql_all .= ' WHERE hg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+        $phql_all .= ' WHERE hg.id IS NULL AND vg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
         $phql_all .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
 
         $games = $this->modelsManager->executeQuery($phql_all);
@@ -231,8 +229,16 @@ class GamesController extends ControllerBase
 
         $search_param = $this->persistent->search;
 
-        $phql_search  = $phql;    
-        $phql_search .= ' WHERE g.url LIKE "%' . $search_param . '%" OR g.title LIKE "%' . $search_param . '%" OR g.price LIKE "%' . $search_param . '%" OR g.suggested_solution LIKE "%' . $search_param . '%" AND hg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
+        $phql_s  = 'SELECT g.*, hg.id as hide_id, sg.id as save_id, vg.id as is_view';
+        $phql_s .= ' FROM Raffledo\Models\Games AS g';
+        $phql_s .= ' LEFT JOIN Raffledo\Models\Companies AS c ON c.id = g.companies_id';
+        $phql_s .= ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id;
+        $phql_s .= ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id;
+        $phql_s .= ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id;
+        $phql_s .= ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id;  
+
+        $phql_search  = $phql_s;    
+        $phql_search .= ' WHERE c.tag LIKE "%' . $search_param . '%" OR c.name LIKE "%' . $search_param . '%" OR c.host LIKE "%' . $search_param . '%" OR g.url LIKE "%' . $search_param . '%" OR g.title LIKE "%' . $search_param . '%" OR g.price LIKE "%' . $search_param . '%" OR g.suggested_solution LIKE "%' . $search_param . '%" AND hg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
         $phql_search .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
 
         $entry = array('name' => 'Suche', 'description' => $search_param);
@@ -260,148 +266,149 @@ class GamesController extends ControllerBase
     return json_encode($result);   
   }
 
-  public function get2Action($type = null)
-  {
+
+  public function controlAction()
+  { 
     $this->view->disable();
+    $response = new \Phalcon\Http\Response();
     $user = $this->auth->getUser();
-    $url_path = $this->request->get('path');
 
-    $last = substr($url_path, -5);
-
-    $path = explode('gewinnspiele', $url_path);
-    if ($last == 'piele') {
-      if (count($path) == 2 && $path[0] == '/') {
-        $type = 'index';
-      } else {
-        $type = 'company';
-        $url_tag  = substr($path[0], 1, -1);      
-      }
-    } elseif ($last == 'spiel') {
-      $path = explode('gewinnspiel', $url_path);
-      $type = 'tag';
-      $url_tag = substr($path[0], 1, -1); 
-    } elseif (count($path) > 2) {
-      $type = 'all';
-    }
+    $result = [];
 
     if ($user) {
-      $hidden_games_by_tags = 'SELECT g.id as game_hide_by_tag FROM Raffledo\Models\Games AS g LEFT JOIN Raffledo\Models\GamesTags as gt ON gt.games_id = g.id LEFT JOIN Raffledo\Models\HiddenTags as ht on ht.tags_id = gt.tags_id AND ht.users_id = ' . $user->id .' WHERE ht.id IS NOT NULL GROUP BY g.id';
-      $hhh = $this->modelsManager->executeQuery($hidden_games_by_tags);
-      $not_in = [];
-      foreach ($hhh as $hh) {
-        $not_in[] = $hh->game_hide_by_tag;
-      }
-      $not_in = implode(',',$not_in);
+      if ($this->request->isPost()) {
+        $game = Games::findFirst($this->request->getPut('actionId', 'int'));
+        $type = $this->request->getPut('actionType', 'striptags');
 
-      $phql2 = 'SELECT g.*, g.id as g_id';
-      $phql2 .= $user ? ' , hg.id as hide_id, sg.id as save_id, vg.id as is_view' : '';
-      $phql2 .= ' FROM Raffledo\Models\Games AS g';
-      $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
-      $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
-      $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
-      $phql2 .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql2 .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NOT NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()' : ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-      $phql2 .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
-      $phql2 .= ' ORDER BY g.id DESC';
-      $phql2 .= $user ? '' : ' LIMIT 5';
+        if ($type == 'notify') {
+          $user->notify = $user->notify == 1 ? 0 : 1;
+          $user->save();
+          return;
+        }
 
-      $favs = $this->modelsManager->executeQuery($phql2);
+        if ($type == 'save') {
+          $proc_game = SavedGames::findFirst(['games_id = ' . $game->id . ' AND users_id = ' . $user->id]);
+          if ($proc_game) {
+            $proc_game->delete();
+            $result = [200, 'Hinweis', 'Back to regular list'];
+          } else {
+            $new = new SavedGames(['games_id' => $game->id, 'users_id' => $user->id]);
+            if (!$new->save()) {
+              $result = [400, 'error', "Can't move to favorite list"];
+            } else {
+              $result = [200, 'Hinweis', "Gewinnspiel wurde zu den Favoriten hinzugefügt"];
+            }
+          }       
+        }
 
-      $nf = [];
-      foreach($favs as $game) {
-        $rf = (array)$game;
-        $rf['company']['name'] = $game->g->company->name;
-        $rf['company']['tag'] = $game->g->company->tag;
-        $rf['tags'] = $game->g->tags;
-        $nf[] = $rf;
-      }
-      $result['user'] = $user->id;
-      $result['collections']['favorite']['title']  = 'Favoriten';
-      $result['collections']['favorite']['games']  = $nf;
+        if ($type == 'hide') {
+          $proc_game = HiddenGames::findFirst(['games_id = ' . $game->id . ' AND users_id = ' . $user->id]);
+          if ($proc_game) {
+            $proc_game->delete();
+            $result = [200, 'Hinweis', "Gewinnspiel wurde wieder ausgeblendet"];
+          } else {
+            $new = new HiddenGames(['games_id' => $game->id, 'users_id' => $user->id]);
+            if (!$new->save()) {              
+              $result = [400, 'error', "Can't hide game"];
+            } else {
+              $result = [200, 'Hinweis', "Gewinnspiel wurde ausgeblendet"];
+            }
+          }       
+        } 
 
-    }
+        if ($type == 'hideCompany') {
+          $entry = HiddenCompanies::findFirst(['companies_id = ' . $game->companies_id . ' AND users_id = ' . $user->id]);
+          if ($entry) {
+            $result = [400, 'error', "Company allready hidden"];
+          } else {
+            $new = new HiddenCompanies(['companies_id' => $game->companies_id, 'users_id' => $user->id]);
+            if (!$new->save()) {              
+              $result = [400, 'error', "Can't hide company"];
+            } else {
+              $result = [200, 'Hinweis', "Anbieter wurde ausgeblendet  "];  
 
-    if ($type == 'tag') {
-      $tag = Tags::findFirst(['tag = ?0', 'bind' => [$url_tag]]);
-      if ($tag) {   
-        $phql = 'SELECT g.*, g.id as g_id';
-        $phql .= $user ? ' , hg.id as hide_id, sg.id as save_id, vg.id as is_view' : '';
-        $phql .= ' FROM Raffledo\Models\Games AS g';
-        $phql .= ' LEFT JOIN Raffledo\Models\GamesTags AS gt ON gt.games_id = g.id';
-        $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
-        $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
-        $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
-        $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-        $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND gt.tags_id = ' . $tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()': ' WHERE gt.tags_id = ' . $tag->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
-        $phql .= ' ORDER BY g.id DESC';
-        $phql .= $user ? '' : ' LIMIT 5';
+            }
+          }
+        }
 
-        $games = $this->modelsManager->executeQuery($phql);
+        if ($type == 'toggleTagById') {
+          $tag_type = $this->request->getPut('tag_type', 'striptags');
+          $tag_id   = $this->request->getPut('tag_id', 'int');
+          if ($tag_type == 'company') {
+            $entry = HiddenCompanies::findFirst(['companies_id = ' . $tag_id . ' AND users_id = ' . $user->id]);
+            if ($entry) {
+              $entry->delete();
+              $result = [200, 'Hinweis', "Anbieter wurde wieder eingeblendet"];  
+            } else {
+              $new = new HiddenCompanies(['companies_id' => $tag_id, 'users_id' => $user->id]);
+              $new->save();
+              $result = [200, 'Hinweis', "Anbieter wurde ausgeblendet"];  
+            }
+          } elseif ($tag_type == 'tag') {
+            $entry = HiddenTags::findFirst(['tags_id = ' . $tag_id . ' AND users_id = ' . $user->id]);
+            if ($entry) {
+              $entry->delete();
+              $result = [200, 'Hinweis', "Tag wurde wieder eingeblendet"]; 
+            } else {
+              $new = new HiddenTags(['tags_id' => $tag_id, 'users_id' => $user->id]);
+              $new->save();
+              $result = [200, 'Hinweis', "Tag wurde ausgeblendet"]; 
+            }
+          }
+        }  
+
+        if ($type == 'hideTags') {
+          $proc_tags = $this->request->getPut('tags_id');
+          if (!is_array($proc_tags)) {
+            $proc_tags = explode(",", $proc_tags);
+          }
+
+          foreach ($proc_tags as $proc_tag) {
+            $entry = HiddenTags::findFirst(['tags_id = ' . $proc_tag . ' AND users_id = ' . $user->id]);
+            if ($entry) {
+              $result = [400, 'Hinweis', "Tag ".$entry->tag_entry->name." is allredy hidden for you"];
+            } else {
+              $new = new HiddenTags(['tags_id' => $proc_tag, 'users_id' => $user->id]);
+              if (!$new->save()) {              
+                $result = [400, 'error', "Can't hide tag"];
+              } else {                
+                $result = [200, 'Hinweis', "Tag wurde ausgeblendet"]; 
+              }
+            }
+          }      
+        } 
         
-        $result['search_name'] = $tag->name;
-        $result['search_description'] = $tag->description;
+        $response->setStatusCode($result[0]);
+        $response->setJsonContent(
+          [
+              "title" => $result[1],
+              "message" => $result[2]
+          ]
+        );
       }
-    }
-    if ($type == 'company') {
-      $company = Companies::findFirst(['tag = ?0', 'bind' => [$url_tag]]);
-      if ($company) {
-        $phql = 'SELECT g.*, g.id as g_id';
-        $phql .= $user ? ' , hg.id as hide_id, sg.id as save_id, vg.id as is_view' : '';
-        $phql .= ' FROM Raffledo\Models\Games AS g';
-        $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
-        $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
-        $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
-        $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-        $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND  g.companies_id = ' . $company->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()': ' WHERE g.companies_id = ' . $company->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
-        $phql .= ' ORDER BY g.id DESC';
-        $phql .= $user ? '' : ' LIMIT 5';
 
-        $games = $this->modelsManager->executeQuery($phql);
+    } else {
+      $response->setStatusCode(203, "Non register user");
+      $response->setContent("Only registered users have access to this functionality");
+    }    
 
-        $result['search_name'] = $company->name;
-      }
-    }
-    if ($type == 'all') {            
-      $phql = 'SELECT g.*, g.id as g_id';
-      $phql .= ' FROM Raffledo\Models\Games AS g';
-      $phql .= ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-      $phql .= $user ? '' : ' LIMIT 5';
-
-      $games = $this->modelsManager->executeQuery($phql);
-    }
-    if ($type == 'index') { 
-      $phql = 'SELECT g.*, g.id as g_id';
-      $phql .= $user ? ' , hg.id as hide_id, sg.id as save_id, vg.id as is_view' : '';
-      $phql .= ' FROM Raffledo\Models\Games AS g';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenCompanies AS hc ON hc.companies_id = g.companies_id AND hc.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\HiddenGames AS hg ON hg.games_id = g.id AND hg.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\SavedGames AS sg ON sg.games_id = g.id AND sg.users_id = ' . $user->id : '';
-      $phql .= $user ? ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id : '';      
-      $phql .= $user ? ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()' : ' WHERE g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-      $phql .= $user && strlen($not_in) > 0 ? ' AND g.id NOT IN ('.$not_in.')' : '';
-      $phql .= ' ORDER BY g.id DESC';
-      $phql .= $user ? '' : ' LIMIT 5';
-
-      $games = $this->modelsManager->executeQuery($phql);
-    }
-
-    $display_games = [];
-    foreach($games as $game) {
-      $rg = (array)$game;
-      $rg['company']['name'] = $game->g->company->name;
-      $rg['company']['tag'] = $game->g->company->tag;
-      $rg['tags'] = $game->g->tags;
-      $display_games[] = $rg;
-    }
-
-    $result['collections']['regular']['title'] = 'Aktuelle Gewinnspiele';
-    $result['collections']['regular']['games'] = $display_games;   
-      
-
-    echo json_encode($result);   
+    return $response;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   public function showAction($id) {
     $game = Games::findFirst($id);
@@ -430,154 +437,58 @@ class GamesController extends ControllerBase
     return $this->response->redirect($game->url, true, 302);
   }
 
-  public function controlAction()
-  { 
-    $response = new \Phalcon\Http\Response();
-    $this->view->disable();
-    $user = $this->auth->getUser();
-
-    if ($user) {
-      if ($this->request->isPost()) {
-        $game = Games::findFirst($this->request->getPut('actionId', 'int'));
-        $type = $this->request->getPut('actionType', 'striptags');
-
-        if ($type == 'save') {
-          $proc_game = SavedGames::findFirst(['games_id = ' . $game->id . ' AND users_id = ' . $user->id]);
-          if ($proc_game) {
-            $proc_game->delete();
-            $response->setStatusCode(200, "OK");
-          } else {
-            $new = new SavedGames(['games_id' => $game->id, 'users_id' => $user->id]);
-            if (!$new->save()) {
-              $response->setStatusCode(404, "Can't save");
-            } else {
-              $response->setStatusCode(200, "OK");
-            }
-          }       
-          return $response->send();
-        }
 
 
 
-        if ($type == 'hide') {
-          $proc_game = HiddenGames::findFirst(['games_id = ' . $game->id . ' AND users_id = ' . $user->id]);
-          if ($proc_game) {
-            $proc_game->delete();
-            $response->setStatusCode(200, "OK");
-          } else {
-            $new = new HiddenGames(['games_id' => $game->id, 'users_id' => $user->id]);
-            if (!$new->save()) {              
-              $response->setStatusCode(404, "Can't hide");
-            } else {
-              $response->setStatusCode(200, "OK");
-            }
-          }       
-          return $response->send();
-        } 
-
-        if ($type == 'hideCompany') {
-          $entry = HiddenCompanies::findFirst(['companies_id = ' . $game->companies_id . ' AND users_id = ' . $user->id]);
-          if ($entry) {
-            $response->setStatusCode(404, "Campany allready hidden");
-          } else {
-            $new = new HiddenCompanies(['companies_id' => $game->companies_id, 'users_id' => $user->id]);
-            if (!$new->save()) {              
-              $response->setStatusCode(404, "Can't hide company");
-            } else {
-              $response->setStatusCode(200, "OK");              
-            }
-          }
-          return $response->send();
-        }
-
-        if ($type == 'toggleTagById') {
-          $tag_type = $this->request->getPut('tag_type', 'striptags');
-          $tag_id   = $this->request->getPut('tag_id', 'int');
-          if ($tag_type == 'company') {
-            $entry = HiddenCompanies::findFirst(['companies_id = ' . $tag_id . ' AND users_id = ' . $user->id]);
-            if ($entry) {
-              $entry->delete();
-            } else {
-              $new = new HiddenCompanies(['companies_id' => $tag_id, 'users_id' => $user->id]);
-              $new->save();
-            }
-          } elseif ($tag_type == 'tag') {
-            $entry = HiddenTags::findFirst(['tags_id = ' . $tag_id . ' AND users_id = ' . $user->id]);
-            if ($entry) {
-              $entry->delete();
-            } else {
-              $new = new HiddenTags(['tags_id' => $tag_id, 'users_id' => $user->id]);
-              $new->save();
-            }
-          }
-          
-          $response->setStatusCode(200, "OK");              
-
-          return $response->send();
-        }  
-
-        if ($type == 'hideTags') {
-          $proc_tags = $this->request->getPut('tags_id');
-          if (!is_array($proc_tags)) {
-            $proc_tags = explode(",", $proc_tags);
-          }
 
 
-          foreach ($proc_tags as $proc_tag) {
-            $entry = HiddenTags::findFirst(['tags_id = ' . $proc_tag . ' AND users_id = ' . $user->id]);
-            if ($entry) {
-              $this->flashSession->error("Tag ".$entry->tag_entry->name." is allredy hidden for you");
-            } else {
-              $new = new HiddenTags(['tags_id' => $proc_tag, 'users_id' => $user->id]);
-              if (!$new->save()) {              
-                $this->flashSession->error("Can't hide tag");
-              } else {                
-                $response->setStatusCode(200, "OK");   
-                //$this->flashSession->success("Tag ".$entry->tag_entry->name." successfully hide for you");
-              }
-            }
-          }  
-          return $response->send();        
-        } 
-        
-        return $this->response->redirect('/gewinnspiele');        
-      }
 
-    } else {
-      $response->setStatusCode(404, "Only register user can do this action");
-    }
 
-    
 
-    return $response->send();
-  }
 
-  public function reportAction()
+
+
+  public function reportAction($id)
   {
+    $this->view->disable();
+    $response = new \Phalcon\Http\Response();
+    $game = Games::findFirst($id);
     $user = $this->auth->getUser();
-
-    if ($user) {
+    
+    if ($user && $game) {
 
       if ($this->request->isPost()) {
-        $game = Games::findFirst($this->request->getPost('games_id', 'int'));
         
         $report = new Reports([
           'users_id' => $user->id,
           'games_id' => $game->id,
-          'report'   => $this->request->getPost('report', 'striptags'),
+          'report'   => $this->request->getPut('text', 'striptags'),
         ]);
 
         if (!$report->save()) {
-          $this->flashSession->error($report->getMessages());
+          $response->setStatusCode(400);
+          $response->setJsonContent([
+            'title' => 'Error',
+            'message' => $report->getMessages()
+          ]); 
         } else {
-          $this->flashSession->success("Report was created successfully");
-          return $this->response->redirect('index');
+          $response->setStatusCode(200);
+          $response->setJsonContent([
+            'title' => 'Hinweis',
+            'message' => 'Report succesfully created'
+          ]); 
         }
       }
 
     } else {
-      $this->flashSession->error("Only register user can do this action");      
+      $response->setStatusCode(400);
+      $response->setJsonContent([
+        'title' => 'Error',
+        'message' => 'Error occured when create report'
+      ]); 
     }
+
+    return $response;
   }
 
 }

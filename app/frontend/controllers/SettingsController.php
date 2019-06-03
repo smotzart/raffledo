@@ -27,7 +27,7 @@ class SettingsController extends ControllerBase
 
     $user = $this->auth->getUser();
     if ($user) {
-
+      $this->view->notification = $user->notify;
       $this->view->saved      = $user->savedGames;
       $this->view->hidden     = $user->hiddenGames;
       $this->view->companies  = $user->hiddenCompany;
@@ -42,6 +42,10 @@ class SettingsController extends ControllerBase
     $user = $this->auth->getUser();
 
     switch ($type) {
+      case "notify":
+        $user->notify = 1;
+        $user->save();
+        break;
       case "save":
         $item = SavedGames::findFirst($value);
         break;
@@ -59,13 +63,18 @@ class SettingsController extends ControllerBase
         break;
     }
 
-    if (!$item) {
-      $this->flashSession->error("Can't find selected entry");
+    if ($type == 'notify') {
+      $this->flashSession->success("Notification messagse enable");
+
     } else {
-      if (!$item->delete()) {
-        $this->flashSession->error("Can't delete selected entry");
+      if (!$item) {
+        $this->flashSession->error("Can't find selected entry");
       } else {
-        $this->flashSession->success("Selected entry was successfully restore");
+        if (!$item->delete()) {
+          $this->flashSession->error("Can't delete selected entry");
+        } else {
+          $this->flashSession->success("Selected entry was successfully restore");
+        }
       }
     }
 

@@ -41,14 +41,4 @@
     </div>
   </div>
 </main>
-<!--
-<div class="cg-notify-message d-flex notify-right" ng-click="$close()" ng-class="$classes">
-  <div class="notify-icon d-flex align-items-center justify-content-center">
-    <i class="fas fa-check"></i>
-  </div>
-  <div ng-show="!$messageTemplate" ng-bind-html="$message"></div>
-  <div ng-show="$messageTemplate" class="cg-notify-message-template">
-  </div>
-</div>
--->
 

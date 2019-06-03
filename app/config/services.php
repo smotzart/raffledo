@@ -121,14 +121,14 @@ $di->setShared('session', function () {
 
 /**
  * Crypt service
- *//*
+ */
 $di->set('crypt', function () {
     $config = $this->getConfig();
 
     $crypt = new Crypt();
     $crypt->setKey($config->application->cryptSalt);
     return $crypt;
-});*/
+});
 
 /**
  * Custom authentication component

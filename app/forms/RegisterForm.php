@@ -39,10 +39,10 @@ class RegisterForm extends Form
       ]),
       new StringLength([
         'min' => 6,
-        'messageMinimum' => 'Passwort is too short. Minimum 6 characters'
+        'messageMinimum' => 'Das Passwort ist zu kurz. Es muss mindestens 6 Zeichen lang sein'
       ]),
       new Confirmation([
-        'message' => 'Password doesn\'t match confirmation',
+        'message' => 'Passwort und Wiederholung stimmen nicht überein',
         'with' => 'confirmPassword'
       ])
     ]);
@@ -56,7 +56,7 @@ class RegisterForm extends Form
 
     $confirmPassword->addValidators([
       new PresenceOf([
-        'message' => 'The Passwort wiederholen is required'
+        'message' => 'Passwortwiederholung ist Pflicht'
       ])
     ]);
 
@@ -71,7 +71,7 @@ class RegisterForm extends Form
 
     $terms->addValidator(new Identical([
       'value' => 'yes',
-      'message' => 'Terms and conditions must be accepted'
+      'message' => 'Sie müssen die Teilnahmebedingungen akzeptieren'
     ]));
 
     $this->add($terms);

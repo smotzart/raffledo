@@ -90,7 +90,7 @@ class Users extends \Phalcon\Mvc\Model
         $validator = new Validation();
 
         $validator->add('username', new Uniqueness([
-            "message" => "The username is already registered"
+            "message" => "Der Benutzername existiert bereits"
         ]));
 
         return $this->validate($validator);

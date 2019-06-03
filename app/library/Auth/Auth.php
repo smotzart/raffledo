@@ -173,10 +173,17 @@ class Auth extends Component
                             'profile' => $user->profile->name
                         ]);
 
-                        // Register the successful login
-                        $this->saveSuccessLogin($user);
 
-                        return $this->response->redirect('/');
+                        $controller =  $this->router->getControllerName();
+
+                        if ($controller == 'session') {
+                            // Register the successful login
+                            $this->saveSuccessLogin($user);
+
+                            return $this->response->redirect('/');
+                        }
+
+                        return;
                     }
                 }
             }
@@ -196,9 +203,6 @@ class Auth extends Component
     public function getIdentity()
     {
         $identity = $this->session->get('auth-identity');
-        /*var_dump($identity);
-        echo "<br><br>123<br>";
-        exit();*/
         if (isset($identity['id'])) {
             $logins = SuccessLogins::count([
                 'users_id = ?0',
@@ -293,7 +297,6 @@ class Auth extends Component
     {
         $identity = $this->session->get('auth-identity');
         if (isset($identity['id'])) {
-
             $logins = SuccessLogins::count([
                 'conditions' => 'users_id = :userId:',
                 'bind'       => [
@@ -311,8 +314,6 @@ class Auth extends Component
             } else {
                 return $this->remove();
             }
-
-            
         }
 
         return false;

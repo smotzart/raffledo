@@ -6,7 +6,15 @@ Array.prototype.append = function(el) {
   return this;
 };
 
-angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'checklist-model', 'ui-notification']).factory('APIGames', [
+angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'checklist-model', 'ui-notification']).factory('APIReport', [
+  '$resource',
+  function($resource) {
+    return $resource('games/report/:game_id',
+  {
+      game_id: '@game_id'
+    });
+  }
+]).factory('APIGames', [
   '$resource',
   function($resource) {
     return $resource('games/get');
@@ -58,20 +66,28 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
   '$window',
   '$timeout',
   'Notification',
+  'APIReport',
   function(self,
   APIGames,
   APIControl,
   window,
   $timeout,
-  notify) {
+  notify,
+  APIReport) {
     self.data = {};
     self.modalTags = {};
     self.tags_id = [];
     self.showTagSuccess = false;
     self.enableNotify = true;
     self.disableNotify = function() {
-      console.log("disable notifications");
-      return self.enableNotify = false;
+      var control;
+      control = new APIControl({
+        actionType: 'notify'
+      });
+      return control.$save({},
+  function() {
+        return self.enableNotify = false;
+      });
     };
     (self.getData = function() {
       return APIGames.get({},
@@ -88,21 +104,33 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
         actionType: 'save'
       });
       return control.$save({},
-  function() {
+  function(data) {
         var item,
   position;
-        notify({
-          title: 'Hinweis',
-          message: 'Gewinnspiel wurde erfolgreich zu den Favoriten hinzugefügt',
-          scope: self
-        },
+        if (self.enableNotify) {
+          notify({
+            title: data.title,
+            message: data.message,
+            scope: self
+          },
   'notify-theme');
+        }
         game.save_id = true;
         if (self.data.view_type === 'list') {
           position = self.data.collections['regular'].games.indexOf(game);
           item = self.data.collections['regular'].games.splice(position,
   1);
           return self.data.collections['favorite'].games.push(item[0]);
+        }
+      },
+  function(data) {
+        if (self.enableNotify) {
+          return notify({
+            title: data.data.title,
+            message: data.data.message,
+            scope: self
+          },
+  'notify-danger');
         }
       });
     };
@@ -115,17 +143,29 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
         actionType: 'hide'
       });
       return control.$save({},
-  function() {
+  function(data) {
         var position;
         position = self.data.collections[key].games.indexOf(game);
         self.data.collections[key].games.splice(position,
   1);
-        return notify({
-          title: 'Hinweis',
-          message: 'Gewinnspiel ' + game.g.title + ' hidden!',
-          scope: self
-        },
+        if (self.enableNotify) {
+          return notify({
+            title: data.title,
+            message: data.message,
+            scope: self
+          },
   'notify-light');
+        }
+      },
+  function(data) {
+        if (self.enableNotify) {
+          return notify({
+            title: data.data.title,
+            message: data.data.message,
+            scope: self
+          },
+  'notify-danger');
+        }
       });
     };
     // view - mark as view that mean pre hide
@@ -145,12 +185,15 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       sel.addRange(range);
       document.execCommand('copy');
       copyElement.remove();
-      return notify({
-        title: 'Hinweis',
-        message: 'Lösungsvorschlag wurde in die Zwischenablage kopiert!',
-        scope: self
-      },
+      if (self.enableNotify) {
+        return notify({
+          title: 'Hinweis',
+          message: 'Lösungsvorschlag wurde in die Zwischenablage kopiert!',
+          scope: self,
+          delay: 'no'
+        },
   'notify-theme');
+      }
     };
     // toggle - show/hide company or tag by id
     self.toggleTagView = function(id,
@@ -162,38 +205,27 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
         tag_type: tag
       });
       return control.$save({},
-  function() {
+  function(data) {
         if (self.data.view_type === 'list') {
-          notify({
-            title: 'Hinweis',
-            message: 'Success hide from list',
-            scope: self
-          },
-  'notify-success');
           self.getData();
         }
         if (((self.data.view_type === tag && tag === 'company')) || ((self.data.view_type === tag && tag === 'tag'))) {
           self.data.collections.regular.entry.is_hide = !self.data.collections.regular.entry.is_hide;
           if (!self.data.collections.regular.entry.is_hide) {
-            notify({
-              title: 'Hinweis',
-              message: 'Return to list',
-              scope: self
-            },
-  'notify-success');
             self.showTagSuccess = true;
-            return $timeout(function() {
+            $timeout(function() {
               return self.showTagSuccess = false;
             },
   3000);
-          } else {
-            return notify({
-              title: 'Hinweis',
-              message: 'Success hide from list',
-              scope: self
-            },
-  'notify-success');
           }
+        }
+        if (self.enableNotify) {
+          return notify({
+            title: data.title,
+            message: data.message,
+            scope: self
+          },
+  'notify-success');
         }
       });
     };
@@ -203,6 +235,35 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
     self.reportGame = function(game) {
       return self.reportGameId = game.g.id;
     };
+    self.sendReport = function() {
+      var report;
+      report = new APIReport({
+        text: self.reportText
+      });
+      return report.$save({
+        game_id: self.reportGameId
+      },
+  function(data) {
+        if (self.enableNotify) {
+          return notify({
+            title: data.title,
+            message: data.message,
+            scope: self
+          },
+  'notify-success');
+        }
+      },
+  function(data) {
+        if (self.enableNotify) {
+          return notify({
+            title: data.data.title,
+            message: data.data.message,
+            scope: self
+          },
+  'notify-danger');
+        }
+      });
+    };
     return self.sendModal = function() {
       var control;
       control = new APIControl({
@@ -211,12 +272,14 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       });
       return control.$save({},
   function() {
-        notify({
-          title: 'Hinweis',
-          message: 'Return to list',
-          scope: self
-        },
+        if (self.enableNotify) {
+          notify({
+            title: 'Hinweis',
+            message: 'Return to list',
+            scope: self
+          },
   'notify-success');
+        }
         return self.getData();
       });
     };

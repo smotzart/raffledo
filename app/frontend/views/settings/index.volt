@@ -7,6 +7,14 @@
   <div class="col-12 mb-5">
     {{ content() }}
   </div>
+
+  {% if notification == 0 %}
+    <div class="col-12 col-md-6 col-lg-5 mb-7">
+      <h4 class="text-theme mb-3">Notification</h4>
+      {{ link_to('einstellungen/undo/notify/enable', 'Enable notification messages') }}
+    </div>
+    <div class="w-100"></div>
+  {% endif %}
   
   {% if saved is defined %}
     {% for save in saved %}
