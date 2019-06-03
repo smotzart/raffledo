@@ -1,15 +1,19 @@
 <form method="post" autocomplete="off">
   <div class="d-flex align-items-center pb-2 border-bottom mb-4">
     <h2 class="m-0">{{ game.title }}</small></h2>  
-    <div class="ml-auto mr-2">
-      {{ link_to('games/', '<i class="fa fa-angle-left mr-2"></i>Back', 'class': 'btn btn-outline-info') }}
-    </div>
-    <div class="mr-2">
-      {{ link_to('games/delete/' ~ game.id, '<i class="fa fa-trash-o"></i>', 'class': 'btn btn-outline-danger') }}
-    </div>
-    <div>
-      <button type="submit" class="btn btn-outline-success"><i class="fa fa-save"></i></button>
-      <button type="submit" name="again" class="btn btn-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
+    <div class="d-flex ml-auto">
+      <div class="ml-auto mr-2">
+        {{ link_to('games/', '<i class="fa fa-angle-left mr-2"></i>Back', 'class': 'btn btn-outline-info') }}
+      </div>
+      <div class="mr-2">
+        {{ link_to('games/delete/' ~ game.id, '<i class="fa fa-trash-o"></i>', 'class': 'btn btn-outline-danger') }}
+      </div>
+      <div>
+        <button type="submit" class="btn btn-outline-success"><i class="fa fa-save"></i></button>
+      </div>
+      <div>        
+        <button type="submit" name="again" class="btn btn-success ml-2"><i class="fa fa-save mr-2"></i>Save and new</button>
+      </div>
     </div>
   </div>
 

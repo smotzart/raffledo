@@ -177,6 +177,8 @@ class GamesController extends ControllerBase
         'edit' => true,
         'tags' => $current_tags,
         'enter_date' => false,
+        'enter_time' => false,
+        'deadline_time' => false,
         'deadline_date' => false,
         'enter_dates' => $available_dates
       ]);
