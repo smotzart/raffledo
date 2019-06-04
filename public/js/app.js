@@ -107,6 +107,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
   function(data) {
         var item,
   position;
+        self.data.all_count = data.all_count;
         if (self.enableNotify) {
           notify({
             title: data.title,
@@ -145,9 +146,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       return control.$save({},
   function(data) {
         var position;
-        position = self.data.collections[key].games.indexOf(game);
-        self.data.collections[key].games.splice(position,
+        game.hide_id = true;
+        self.data.all_count = data.all_count;
+        if (self.data.view_type === 'list' || self.data.view_type === 'all') {
+          position = self.data.collections[key].games.indexOf(game);
+          self.data.collections[key].games.splice(position,
   1);
+        }
         if (self.enableNotify) {
           return notify({
             title: data.title,
@@ -206,6 +211,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       });
       return control.$save({},
   function(data) {
+        self.data.all_count = data.all_count;
         if (self.data.view_type === 'list') {
           self.getData();
         }

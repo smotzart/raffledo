@@ -4,7 +4,7 @@ $(function() {
     delay: 50000
   }).toast('show');
   $('.welcome').on('click', 'form', function(event) {
-    return $('.welcome-footer').addClass('fade');
+    return $('.welcome-footer').addClass('d-none');
   });
   $(document).ready(function() {
     if (window.location.hash) {
@@ -13,7 +13,7 @@ $(function() {
         offset: -120,
         afterScroll: function(opt) {
           if (opt.scrollTarget === '#register') {
-            return $('.welcome-footer').addClass('fade');
+            return $('.welcome-footer').addClass('d-none');
           }
         }
       });
@@ -25,7 +25,7 @@ $(function() {
     speed: 1000,
     afterScroll: function(opt) {
       if (opt.scrollTarget === '#register') {
-        return $('.welcome-footer').addClass('fade');
+        return $('.welcome-footer').addClass('d-none');
       }
     }
   });

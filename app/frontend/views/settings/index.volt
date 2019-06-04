@@ -1,5 +1,11 @@
-<div class="mb-5">
-  <h2 class="text-capitalize m-0">Einstellungen</h2>
+<div class="mb-5 d-flex align-items-center">
+  <div>
+    <h2 class="text-capitalize m-0">Einstellungen</h2>
+  </div>
+
+  <div class="ml-auto pl-50px">
+    <a href="{{ url('gewinnspiele') }}" class="btn btn-outline-warning"><span class="px-2">&lsaquo;</span><span class="pr-2">Zurück zur Liste</span></a>
+  </div>
 </div>
 {{ flashSession.output() }}
 

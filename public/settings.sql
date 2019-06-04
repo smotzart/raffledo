@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Июн 02 2019 г., 09:28
+-- Время создания: Июн 04 2019 г., 11:55
 -- Версия сервера: 10.1.33-MariaDB
 -- Версия PHP: 7.2.6
 
@@ -25,32 +25,34 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `profiles`
+-- Структура таблицы `settings`
 --
 
-CREATE TABLE `profiles` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `role` varchar(50) DEFAULT NULL
+CREATE TABLE `settings` (
+  `id` int(10) NOT NULL,
+  `entry_amount` int(10) NOT NULL DEFAULT '10',
+  `deadline_time` time DEFAULT NULL,
+  `enter_time` time DEFAULT NULL,
+  `google_tag` text,
+  `ads_regular` text,
+  `ads_register` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Дамп данных таблицы `profiles`
+-- Дамп данных таблицы `settings`
 --
 
-INSERT INTO `profiles` (`id`, `name`, `role`) VALUES
-(1, 'Administrators', 'admin'),
-(2, 'Users', 'user'),
-(3, 'Superadmin', 'super');
+INSERT INTO `settings` (`id`, `entry_amount`, `deadline_time`, `enter_time`, `google_tag`, `ads_regular`, `ads_register`) VALUES
+(1, 3, '23:59:00', '06:30:00', '<!-- Google tag -->', '<a href=\"#1\" class=\"d-block mx-auto mb-50px\"><img src=\"img/banner.png\" alt=\"MySEO\" class=\"img-fluid\"></a>', '<a href=\"#2\" class=\"d-block mx-auto mb-50px\"><img src=\"img/banner.png\" alt=\"MySEO\" class=\"img-fluid\"></a>');
 
 --
 -- Индексы сохранённых таблиц
 --
 
 --
--- Индексы таблицы `profiles`
+-- Индексы таблицы `settings`
 --
-ALTER TABLE `profiles`
+ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -58,10 +60,10 @@ ALTER TABLE `profiles`
 --
 
 --
--- AUTO_INCREMENT для таблицы `profiles`
+-- AUTO_INCREMENT для таблицы `settings`
 --
-ALTER TABLE `profiles`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `settings`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

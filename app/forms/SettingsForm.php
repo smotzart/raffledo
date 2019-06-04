@@ -4,6 +4,7 @@ namespace Raffledo\Forms;
 
 use Phalcon\Forms\Form;
 use Phalcon\Forms\Element\Text;
+use Phalcon\Forms\Element\TextArea;
 use Phalcon\Forms\Element\Date;
 use Phalcon\Forms\Element\Submit;
 use Phalcon\Validation\Validator\PresenceOf;
@@ -39,6 +40,27 @@ class SettingsForm extends Form
     $enter_time = new Time('enter_time');
     $enter_time->setDefault('23:59');
     $this->add($enter_time);
+
+    $google_tag = new TextArea('google_tag', [
+      'placeholder' => 'Google code',
+      'rows' => 7
+    ]);
+    $google_tag->addValidators([]);
+    $this->add($google_tag);
+
+    $ads_regular = new TextArea('ads_regular', [
+      'placeholder' => 'Banner for not registered user',
+      'rows' => 7
+    ]);
+    $ads_regular->addValidators([]);
+    $this->add($ads_regular);
+
+    $ads_register = new TextArea('ads_register', [
+      'placeholder' => 'Banner for registered user',
+      'rows' => 7
+    ]);
+    $ads_register->addValidators([]);
+    $this->add($ads_register);
 
     $this->add(new Submit('Save', [
       'class' => 'btn btn-outline-success'

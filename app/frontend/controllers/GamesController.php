@@ -16,6 +16,7 @@ use Raffledo\Models\HiddenCompanies;
 use Raffledo\Models\HiddenTags;
 use Raffledo\Models\Companies;
 use Raffledo\Models\Sorting;
+use Raffledo\Models\Settings;
 use Phalcon\Http\Response;
 
 use Phalcon\Mvc\View;
@@ -25,6 +26,7 @@ class GamesController extends ControllerBase
 
   public function initialize()
   {
+    parent::initialize();
     $user = $this->auth->getUser();
     if ($user) {
       $this->view->setTemplateBefore('angular-list');
@@ -37,8 +39,19 @@ class GamesController extends ControllerBase
   
   public function indexAction()
   {
-
+   /* var_dump($this->cookies->get('RMU')->getExpiration());
+    $new_expire = time() + 86400 * 92;
+    $this->cookies->get('RMU')->setExpiration($new_expire);
+    $this->cookies->send();
+    var_dump($this->cookies->get('RMU')->getExpiration());
+    exit();
+    $this->cookies->get('RMT')->setExpiration($new_expire);
+*/
     $user   = $this->auth->getUser();
+    $settings = Settings::findFirst();
+
+    $this->view->ads = $user ? $settings->ads_register : $settings->ads_regular;
+
     $games  = [];
 
     $view_type = $this->dispatcher->getParam('view_type') ? $this->dispatcher->getParam('view_type') : 'list';
@@ -109,7 +122,7 @@ class GamesController extends ControllerBase
           }
         } else {
           $games = Games::find([
-            'conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()', //id IN (' . $sorting->sorting_ids . ') AND 
+            'conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()',
             'order' => ' IF (FIELD (id, ' . $sorting->sorting_ids . ') = 0, 1, 0), FIELD (id, ' . $sorting->sorting_ids . '), RAND()',
             'limit' => 5
           ]);
@@ -260,12 +273,19 @@ class GamesController extends ControllerBase
 
     }
 
+    $all_count = $this->modelsManager->createBuilder()
+      ->from(['games' => 'Raffledo\Models\Games'])
+      ->leftJoin('Raffledo\Models\HiddenGames', 'hg.games_id = games.id', 'hg')
+      ->leftJoin('Raffledo\Models\ViewedGames', 'vg.games_id = games.id', 'vg')
+      ->where('hg.id IS NULL AND vg.id IS NULL AND games.enter_date <= CURDATE() AND games.deadline_date > CURDATE()')
+      ->getQuery()->execute()->count();
+
+    $result['all_count'] = $all_count;
     $result['view_type'] = $view_type;
 
     //return $response->send();
     return json_encode($result);   
   }
-
 
   public function controlAction()
   { 
@@ -377,12 +397,20 @@ class GamesController extends ControllerBase
             }
           }      
         } 
+
+        $all_count = $this->modelsManager->createBuilder()
+          ->from(['games' => 'Raffledo\Models\Games'])
+          ->leftJoin('Raffledo\Models\HiddenGames', 'hg.games_id = games.id', 'hg')
+          ->leftJoin('Raffledo\Models\ViewedGames', 'vg.games_id = games.id', 'vg')
+          ->where('hg.id IS NULL AND vg.id IS NULL AND games.enter_date <= CURDATE() AND games.deadline_date > CURDATE()')
+          ->getQuery()->execute()->count();
         
         $response->setStatusCode($result[0]);
         $response->setJsonContent(
           [
               "title" => $result[1],
-              "message" => $result[2]
+              "message" => $result[2],
+              "all_count" => $all_count
           ]
         );
       }
@@ -394,21 +422,6 @@ class GamesController extends ControllerBase
 
     return $response;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   public function showAction($id) {
     $game = Games::findFirst($id);
@@ -436,17 +449,6 @@ class GamesController extends ControllerBase
 
     return $this->response->redirect($game->url, true, 302);
   }
-
-
-
-
-
-
-
-
-
-
-
 
   public function reportAction($id)
   {

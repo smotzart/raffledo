@@ -30,18 +30,19 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="<?= $this->url->get('ms-icon-144x144.png'); ?>">
     <meta name="theme-color" content="#ffffff">
-
+    <?= isset($google) ? $google : ''; ?>
   </head>
   <?php
     $controllerName = $this->router->getControllerName();
     $bodyClass = ((!$controllerName || in_array($controllerName, array('session'))) && !is_array($this->auth->getIdentity())) ? 'bg' : '';
   ?>
   <body class="d-flex justify-content-end flex-column <?php echo $bodyClass; ?>">
-    <div class="toast-wrap">
+    
     <?php
       $messages = $this->flashSession->getMessages();
-      if ($messages) {
-        foreach ($messages as $type => $data) {
+      if ($messages) { ?>
+        <div class="toast-wrap">
+        <?php foreach ($messages as $type => $data) {
           foreach ($data as $message) {
             ?>
             <div class="toast toast-danger" role="alert" aria-live="assertive" aria-atomic="true">
@@ -57,11 +58,12 @@
             </div>
             <?php           
           }
-        }
+        } ?>
+      </div>
+      <?php
       }
 
     ?>
-    </div>
     
     <header id="header" class="fixed-top">
       <nav class="navbar navbar-expand-lg navbar-light bg-white pt-lg-6">
@@ -109,6 +111,7 @@
       <main class="py-50px">
         <div class="container">         
     <?php endif; ?>
+
     <?= $this->getContent(); ?>
     <?php if ($controllerName != 'games') : ?>
         </div>
@@ -127,7 +130,10 @@
 
       $tags_footer= $this->modelsManager->createBuilder()
         ->from(['tags' => 'Raffledo\Models\Tags'])
+        ->leftJoin('Raffledo\Models\GamesTags', 'gt.tags_id = tags.id', 'gt')
         ->where('tags.footer = 1')
+        ->having('count(gt.id) > 2')
+        ->groupBy('tags.id')
         ->limit(4)
         ->getQuery()->execute();
 

@@ -4,6 +4,7 @@ namespace Multiple\Frontend\Controllers;
 
 use Phalcon\Mvc\Controller;
 use Phalcon\Mvc\Dispatcher;
+use Raffledo\Models\Settings;
 
 use Raffledo\Models\Companies;
 
@@ -28,6 +29,10 @@ class ControllerBase extends Controller
 
   public function initialize()
   {    
+    if ($this->auth->getUser()) {
+      $setting = Settings::findFirst();
+      $this->view->google = $setting->google_tag;
+    }
   }
 
 }

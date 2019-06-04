@@ -173,6 +173,10 @@ class Auth extends Component
                             'profile' => $user->profile->name
                         ]);
 
+                        /*$new_expire = time() + 86400 * 90;
+                        $this->cookies->get('RMU')->setExpiration($new_expire);
+                        $this->cookies->get('RMT')->setExpiration($new_expire);*/
+
 
                         $controller =  $this->router->getControllerName();
 

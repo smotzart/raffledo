@@ -46,10 +46,10 @@
               <i class="fas fa-ellipsis-v"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-              <a href ng-click="toggleTagView(game.company.id, 'company')" class="dropdown-item">Anbieter ausblenden</button>
-              <a href ng-if="game.tags.length > 1"  ng-click="openModal(game)" class="dropdown-item" data-toggle="modal" data-target="#hideTagsModal">Tags/Preise ausschließen</a>           
-              <a href ng-if="!collection.entry.is_hide && game.tags.length == 1" ng-click="toggleTagView(collection.entry.id, 'tag')" class="dropdown-item">Tags/Preise ausschließen</button>
-              <a href ng-click="reportGame(game)" class="dropdown-item" data-toggle="modal" data-target="#reportGameModal">Gewinnspiel melden</a>
+              <a href ng-click="toggleTagView(game.company.id, 'company')" class="dropdown-item">Anbieter ausblenden</a>
+              <a href ng-if="game.tags.length > 1"  ng-click="openModal(game)" class="dropdown-item" data-toggle="modal" data-target="#hideTagsModal">Kategorie ausblenden</a>           
+              <a href ng-if="!collection.entry.is_hide && game.tags.length == 1" ng-click="toggleTagView(collection.entry.id, 'tag')" class="dropdown-item">Kategorie ausblenden</a>
+              <a href ng-click="reportGame(game)" class="dropdown-item" data-toggle="modal" data-target="#reportGameModal">Fehler melden</a>
             </div>
           </div>              
         </div>
@@ -62,7 +62,7 @@
             <a ng-href="/{{ game.company.tag }}-gewinnspiele" class="text-body">{{ game.company.name }}</a>
           </p>
           <p ng-if="game.g.price">
-            <span class="box-label"><span ng-if="game.g.price_info">Info</span><span ng-if="!game.g.price_info">Preis</span></span>
+            <span class="box-label"><span ng-if="game.g.price_info == 1">Info</span><span ng-if="game.g.price_info == 0">Preis</span></span>
             <span class="pre-wrap" ng-bind-html="game.g.price"></span>
           </p>
         </div>
@@ -87,10 +87,10 @@
     </div>
     <div class="box-footer d-flex flex-column align-items-md-center flex-md-row">
       <div class="box-btn order-md-1 ml-md-auto flex-wrap flex-md-nowrap">
-        <div class="w-50 w-md-auto pr-1 pr-md-0 mr-md-2">
+        <div class="w-50 w-md-auto pr-1 pr-md-0 mr-md-2" ng-if="!game.is_view && !game.hide_id">
           <a href ng-if="!game.save_id" ng-click="toFavCollection(game)" class="btn btn-theme btn-block box-save-btn">Merken</a>
         </div>              
-        <div ng-if="!game.is_view" class="w-50 w-md-auto pl-1 pl-md-0 mr-md-2">
+        <div ng-if="!game.is_view && !game.hide_id" class="w-50 w-md-auto pl-1 pl-md-0 mr-md-2">
           <a href ng-click="toHideCollection(game, key)" class="btn btn-outline-mute btn-block box-hide-btn">Ausblenden</a>
         </div>
         <a ng-href="/win/{{ game.g.id }}" ng-click="toViewCollection(game)" target="_blank" rel="noopener noreferrer" class="btn w-100 w-md-auto btn-outline-warning">Zum Gewinnspiel</a>
@@ -105,8 +105,7 @@
     <div class="box-body text-center py-7">    
       <div class="row">
         <div class="col-12 col-md-9 col-lg-8 mx-auto">
-          <div class="box-label mb-5">Filter aktiv</div>
-          <p class="mb-7">Du nutzt einen Filter, dadurch werden nicht alle <br class="d-none d-lg-block">Gewinnspiele angezeigt.</p>
+          <p class="mb-7">Du hast Gewinnspiele ausgeblendet,<br class="d-none d-lg-block">dadurch werden nicht alle angezeigt.</p>
           <a href="/no-filter" class="btn btn-block btn-theme">Weitere Gewinnspiele anzeigen</a>
         </div>
       </div>

@@ -5,9 +5,7 @@
         <div class="raff-sticky-ad">
           <div class="invisible h2 mb-5 d-none d-lg-block">AD</div>
           <div class="d-flex">
-            <a href class="d-block mx-auto mb-50px">
-              <img src="{{ url('img/banner.png') }}" alt="MySEO" class="img-fluid">
-            </a>
+            {{ ads }}
           </div>
         </div>
         <div></div>

@@ -30,6 +30,24 @@ class Settings extends \Phalcon\Mvc\Model
     public $enter_time;
 
     /**
+     *
+     * @var string
+     */
+    public $google_tag;
+
+    /**
+     *
+     * @var string
+     */
+    public $ads_regular;
+
+    /**
+     *
+     * @var string
+     */
+    public $ads_register;
+
+    /**
      * Initialize method for model.
      */
     public function initialize()

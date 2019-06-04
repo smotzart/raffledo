@@ -16,7 +16,7 @@ class SettingsController extends ControllerBase
   public function initialize()
   {
     $user = $this->auth->getUser();
-
+    parent::initialize();
     if (!$user) {
       return  $this->flash->error('Only registered users have access to this page!');
     }

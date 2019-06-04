@@ -9,6 +9,7 @@ use Phalcon\Filter;
 
 use Raffledo\Models\Companies;
 use Raffledo\Models\Users;
+use Raffledo\Models\Settings;
 
 
 class IndexController extends ControllerBase
@@ -19,10 +20,11 @@ class IndexController extends ControllerBase
      */
     public function initialize()
     {    
-      //parent::initialize();
+      parent::initialize();
       if ($this->auth->hasRememberMe()) {
         return $this->auth->loginWithRememberMe();
       }
+
     }
 
     public function indexAction()
