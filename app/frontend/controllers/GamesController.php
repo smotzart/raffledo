@@ -186,7 +186,7 @@ class GamesController extends ControllerBase
         $phql_games  = $phql;    
         $phql_games .= ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL AND vg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
         $phql_games .= !empty($not_in_games) ? ' AND g.id NOT IN (' . $not_in_games . ')' : '';
-        $phql_games .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
+        $phql_games .= !empty($user_sort) ? ' ORDER BY g.enter_date, IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . ')' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
         //$phql_games .= ' ORDER BY g.id DESC';
 
 
@@ -206,7 +206,7 @@ class GamesController extends ControllerBase
       if ($view_type == 'company' && $url_entry) {
         $phql_company  = $phql;
         $phql_company .= ' WHERE hg.id IS NULL AND vg.id IS NULL AND g.companies_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
-        $phql_company .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
+        $phql_company .= !empty($user_sort) ? ' ORDER BY g.enter_date, IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . ')' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
 
         $games = $this->modelsManager->executeQuery($phql_company);
       }
@@ -215,7 +215,7 @@ class GamesController extends ControllerBase
         $phql_tag = $phql;          
         $phql_tag .= ' LEFT JOIN Raffledo\Models\GamesTags AS gt ON gt.games_id = g.id';
         $phql_tag .= ' WHERE hg.id IS NULL AND vg.id IS NULL AND gt.tags_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
-        $phql_tag .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
+        $phql_tag .= !empty($user_sort) ? ' ORDER BY g.enter_date, IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . ')' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
 
         $games = $this->modelsManager->executeQuery($phql_tag);
       }
@@ -224,7 +224,7 @@ class GamesController extends ControllerBase
         // Get all except hidden 
         $phql_all  = $phql;    
         $phql_all .= ' WHERE hg.id IS NULL AND vg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
-        $phql_all .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
+        $phql_all .= !empty($user_sort) ? ' ORDER BY g.enter_date, IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . ')' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
 
         $games = $this->modelsManager->executeQuery($phql_all);
       }
@@ -245,7 +245,7 @@ class GamesController extends ControllerBase
 
         $phql_search  = $phql_s;    
         $phql_search .= ' WHERE c.tag LIKE "%' . $search_param . '%" OR c.name LIKE "%' . $search_param . '%" OR c.host LIKE "%' . $search_param . '%" OR g.url LIKE "%' . $search_param . '%" OR g.title LIKE "%' . $search_param . '%" OR g.price LIKE "%' . $search_param . '%" OR g.suggested_solution LIKE "%' . $search_param . '%" AND hg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
-        $phql_search .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
+        $phql_search .= !empty($user_sort) ? ' ORDER BY g.enter_date, IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . ')' : ' ORDER BY g.deadline_date, g.suggested_solution DESC';
 
         $entry = array('name' => 'Suche', 'description' => $search_param);
 
