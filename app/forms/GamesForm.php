@@ -177,11 +177,6 @@ class GamesForm extends Form
     $suggested_solution = new Text('suggested_solution', [
       'placeholder' => 'Lösungsvorschlag'
     ]);
-    $suggested_solution->addValidators([
-      new PresenceOf([
-        'message' => 'The Lösungsvorschlag is required'
-      ])
-    ]);
     $this->add($suggested_solution);
 
     // Einsendeschluss
