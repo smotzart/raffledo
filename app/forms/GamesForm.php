@@ -182,10 +182,12 @@ class GamesForm extends Form
     // Einsendeschluss
     $deadline_date = new Date('deadline_date', [
       'placeholder' => 'Einsendeschluss'
+    ]); 
+    $deadline_date->addValidators([
+      new PresenceOf([
+        'message' => 'The Einsendeschluss is required'
+      ])
     ]);
-    if ($options['deadline_date']) {
-      $deadline_date->setDefault($options['deadline_date']);  
-    }    
     $this->add($deadline_date);    
 
     $deadline_time = new Time('deadline_time');

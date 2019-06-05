@@ -25,8 +25,7 @@ $(function() {
     } else {
       return $('#new_game').addClass('d-none').find('input').attr('disabled', 'disabled');
     }
-  });
-  $('#companies_id').change();
+  }).change();
   $('#url_change .form-control').on('change', function(event) {
     var input;
     input = $(this);
@@ -40,15 +39,15 @@ $(function() {
       }
       return $.get("/admin/games/search", {
         'search': input.val()
-      }, function(data2) {
+      }, function(data) {
         var i, insert_data, insert_item, item, len, ref;
-        if (data2.length > 0) {
+        if (data.exist_game) {
           return input.addClass('is-invalid text-danger');
         } else {
           input.removeClass('is-invalid text-danger');
-          if (data.company && data.games.length > 0) {
+          if (data.same_game.length > 0) {
             insert_data = $('<div class="list-group list-group-flush"></div>');
-            ref = data.games;
+            ref = data.same_game;
             for (i = 0, len = ref.length; i < len; i++) {
               item = ref[i];
               insert_item = $('<div class="list-group-item">' + item.title + '<small class="d-block text-truncate">' + item.url + '</small></div>');
@@ -60,24 +59,7 @@ $(function() {
             return $('.open-exist').addClass('d-none');
           }
         }
-      
-      //$('#existUrl').modal('show')
       }, 'json');
-    /*
-    if data.length > 0
-      insert_data = $('<div class="list-group list-group-flush"></div>')
-      for item in data
-        insert_item = $('<a href="#" data-company="' + item.id + '" class="list-group-item list-group-item-action">' + item.name + '</a>')
-        insert_item.on 'click', (e) ->
-          e.preventDefault()
-          company_id = $(this).data('company')
-          $('#companies_id').val(company_id).change()
-          $('#existUrl').modal('hide')
-        insert_data.append(insert_item)
-
-      $('#existUrl .modal-body').html(insert_data)
-      $('#existUrl').modal('show')
-    */
     }, 'json');
   });
   tagsname = new Bloodhound({

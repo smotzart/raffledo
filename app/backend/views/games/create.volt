@@ -15,6 +15,7 @@
   <div class="form-group" id="url_change">
     <label for="url">URL</label>
     {{ form.render("url", ['class': 'form-control']) }}
+    <small class="form-text text-muted mb-1">For better search and compare URL should contain scheme. For example: <b>http://</b></small>
     <div class="invalid-feedback">Gewinnspiel bereits vorhanden!</div>
     <a href class="form-text text-warning d-none open-exist" data-toggle="modal" data-target="#existUrl">Gewinnspiele bereits vorhanden</a>
 

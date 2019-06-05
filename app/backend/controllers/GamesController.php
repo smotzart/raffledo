@@ -26,8 +26,6 @@ class GamesController extends ControllerBase
     {
       $settings   = Settings::findFirst();
 
-
-
       $enter_date = date('Y-m-d');
       $date_games = Games::count(['conditions' => 'enter_date = "' . $enter_date . '"']);
 
@@ -35,7 +33,6 @@ class GamesController extends ControllerBase
         $enter_date = date('Y-m-d', strtotime('+1 days'));
         $date_games = Games::count(['conditions' => 'enter_date = "' . $enter_date . '"']);
       }
-      $deadline_date = date('Y-m-d', strtotime($enter_date . ' +7 days'));
 
       $phql     = 'SELECT g.enter_date as date, count(g.id) as amount FROM Raffledo\Models\Games AS g GROUP BY g.enter_date';  // WHERE g.enter_date >= CURDATE()
       $current  = $this->modelsManager->executeQuery($phql);
@@ -58,7 +55,6 @@ class GamesController extends ControllerBase
       $form = new GamesForm(null, [
         'enter_date' => $enter_date,
         'enter_time' => $settings->enter_time,
-        'deadline_date' => $deadline_date,
         'deadline_time' => $settings->deadline_time,
         'enter_dates' => $available_dates,
         'tags' => '',
@@ -72,7 +68,7 @@ class GamesController extends ControllerBase
           }            
         } else {
           $game = new Games([
-            'url' => $this->request->getPost('url', 'striptags'),
+            'url' => $this->request->getPost('url', ['striptags', 'trim']),
             'title' => $this->request->getPost('title', 'striptags'),
             'price' => $this->request->getPost('price'),
             'price_info' => $this->request->getPost('price_info') ? 1 : 0,
@@ -83,8 +79,8 @@ class GamesController extends ControllerBase
             'type_submission' => $this->request->getPost('type_submission') ? 1 : 0,
             'suggested_solution' => $this->request->getPost('suggested_solution', 'striptags'),
             'enter_date' => $this->request->getPost('enter_date'),
-            'deadline_date' => $this->request->getPost('deadline_date'),
             'enter_time' => $this->request->getPost('enter_time'),
+            'deadline_date' => $this->request->getPost('deadline_date'),
             'deadline_time' => $this->request->getPost('deadline_time')
           ]);
 
@@ -129,13 +125,8 @@ class GamesController extends ControllerBase
           if (!$game->save()) {
             $this->flash->error($game->getMessages());
           } else {
-            $this->flashSession->success("Game was created successfully");     
-            $again = $this->request->getPost('again');
-            if (isset($again)) {
-              return $this->response->redirect('games/create');
-            } else {
-              return $this->response->redirect('games');
-            }
+            $this->flashSession->success("Game was created successfully"); 
+            return $this->request->getPost('again') !== null ? $this->response->redirect('games/create') : $this->response->redirect('games');
           }
         }
       }
@@ -168,7 +159,6 @@ class GamesController extends ControllerBase
         $loop_date    = date('Y-m-d', strtotime($start_date . ' +' . $i . ' days'));
         $loop_amount  = isset($existing_dates[$loop_date]) ? (int) $existing_dates[$loop_date] : 0; 
         $loop_display = date('D, d.m.Y', strtotime($loop_date)) . ' - (' . $loop_amount . ') ';
-
         $available_dates[$loop_date] = $loop_display;
       }
 
@@ -179,7 +169,6 @@ class GamesController extends ControllerBase
         'enter_date' => false,
         'enter_time' => false,
         'deadline_time' => false,
-        'deadline_date' => false,
         'enter_dates' => $available_dates
       ]);
 
@@ -203,11 +192,10 @@ class GamesController extends ControllerBase
             'type_submission' => $this->request->getPost('type_submission') ? 1 : 0,
             'suggested_solution' => $this->request->getPost('suggested_solution', 'striptags'),
             'enter_date' => $this->request->getPost('enter_date'),
-            'deadline_date' => $this->request->getPost('deadline_date'),
             'enter_time' => $this->request->getPost('enter_time'),
+            'deadline_date' => $this->request->getPost('deadline_date'),
             'deadline_time' => $this->request->getPost('deadline_time')
           ]);      
-
 
           $game->getGamesTags()->delete();
           
@@ -242,12 +230,7 @@ class GamesController extends ControllerBase
             $this->flash->error($game->getMessages());
           } else {   
             $this->flashSession->success("Game was updated successfully");
-            $again = $this->request->getPost('again');
-            if (isset($again)) {
-              return $this->response->redirect('games/create');
-            } else {
-              return $this->response->redirect('games');
-            }
+            return $this->request->getPost('again') !== null ? $this->response->redirect('games/create') : $this->response->redirect('games');
           }          
         }
       }
@@ -283,14 +266,28 @@ class GamesController extends ControllerBase
       $this->view->disable();
 
       $filter = new Filter();
-      $search = trim($filter->sanitize($_GET['search'], ['striptags', 'trim']));
+      $search = $filter->sanitize($_GET['search'], ['striptags', 'trim']);
+      $search_url = parse_url($search, PHP_URL_HOST);
 
-      $games = Games::find([
-        "conditions" => "url = '" . $search . "' AND deadline_date > CURDATE()",
+      $exist_game = Games::findFirst([
+        "conditions" => "url = '" . $search . "' AND deadline_date >= CURDATE()",
         "limit" => 1
       ]);
 
-      return $this->response->setContent(json_encode($games));
+      $result = [
+        'exist_game' => $exist_game
+      ]; 
+
+      $search_url = $search_url ? $search_url : $search;
+
+      if ($search_url) {
+        $same_game = Games::find([
+          "conditions" => "url LIKE '%" . $search_url . "%' AND deadline_date >= CURDATE()"
+        ]);
+        $result['same_game'] = $same_game;
+      }     
+
+      return $this->response->setJsonContent($result);
     }
 }
 

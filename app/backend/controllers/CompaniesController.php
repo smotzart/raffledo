@@ -148,10 +148,8 @@ class CompaniesController extends ControllerBase
       }
 
       $result['company'] = $company;
-      $result['games'] = $company->games;
 
-
-      return $this->response->setContent(json_encode($result));
+      return $this->response->setJsonContent($result);
     }
 }
 
