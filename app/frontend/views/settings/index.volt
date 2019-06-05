@@ -14,14 +14,35 @@
     {{ content() }}
   </div>
 
-  {% if notification == 0 %}
-    <div class="col-12 col-md-6 col-lg-5 mb-7">
-      <h4 class="text-theme mb-3">Notification</h4>
-      {{ link_to('einstellungen/undo/notify/enable', 'Enable notification messages') }}
-    </div>
-    <div class="w-100"></div>
-  {% endif %}
-  
+  <div class="col-12">
+    <form action="einstellungen/user" method="post" accept-charset="utf-8">
+      <div class="row">
+        <div class="col mb-7">
+          <h4 class="text-theme mb-3">Sorting</h4>
+          <div class="row">
+            <div class="col">
+              {{ form.render("sort_type", ['class': 'form-control form-control-sm']) }}
+            </div>
+            <div class="col">
+              {{ form.render("Save") }}              
+            </div>
+          </div>
+        </div>
+        <div class="col mb-7">
+          <h4 class="text-theme mb-3">Notification</h4>
+          <div class="row">
+            <div class="col">
+              {{ form.render("notify", ['class': 'form-control form-control-sm']) }}
+            </div>
+            <div class="col">
+              {{ form.render("Save") }}              
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
   {% if saved is defined %}
     {% for save in saved %}
       {% if loop.first %}
@@ -30,7 +51,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">{{ save.games.title }} {{ link_to('einstellungen/undo/save/' ~ save.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ save.games.title }} {{ link_to('einstellungen/undo/save/' ~ save.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
         {% if loop.last %}
             </ul>
           </div>
@@ -48,7 +69,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">{{ hide.games.title }} {{ link_to('einstellungen/undo/hide/' ~ hide.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ hide.games.title }} {{ link_to('einstellungen/undo/hide/' ~ hide.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
         {% if loop.last %}
             </ul>
           </div>
@@ -66,7 +87,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">{{ company.company.name }} {{ link_to('einstellungen/undo/company/' ~ company.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ company.company.name }} {{ link_to('einstellungen/undo/company/' ~ company.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
         {% if loop.last %}
             </ul>
           </div>
@@ -84,7 +105,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">{{ item.tag_entry.name }} {{ link_to('einstellungen/undo/tag/' ~ item.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ item.tag_entry.name }} {{ link_to('einstellungen/undo/tag/' ~ item.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
         {% if loop.last %}
             </ul>
           </div>
@@ -102,7 +123,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">{{ item.game.title }} {{ link_to('einstellungen/undo/view/' ~ item.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ item.game.title }} {{ link_to('einstellungen/undo/view/' ~ item.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
         {% if loop.last %}
             </ul>
           </div>

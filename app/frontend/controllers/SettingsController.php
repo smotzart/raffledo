@@ -9,6 +9,7 @@ use Raffledo\Models\HiddenGames;
 use Raffledo\Models\HiddenTags;
 use Raffledo\Models\ViewedGames;
 use Raffledo\Models\SavedGames;
+use Raffledo\Forms\UserSettingsForm;
 
 
 class SettingsController extends ControllerBase
@@ -24,8 +25,15 @@ class SettingsController extends ControllerBase
   
   public function indexAction()
   {
-
     $user = $this->auth->getUser();
+    
+    $form = new UserSettingsForm(null, [
+      'sort_type' => $user->sort_type,
+      'notify' => $user->notify
+    ]);
+
+    $this->view->form = $form; 
+
     if ($user) {
       $this->view->notification = $user->notify;
       $this->view->saved      = $user->savedGames;
@@ -83,4 +91,20 @@ class SettingsController extends ControllerBase
     ]);
   }
   
+  public function userAction()
+  {
+    if ($this->request->isPost()) {
+      $user = $this->auth->getUser();
+      $user->assign([
+        'sort_type' => $this->request->getPost('sort_type', ['striptags', 'int']),
+        'notify' => $this->request->getPost('notify', ['striptags', 'int'])
+      ]);
+      if ($user->save()) {
+        $this->flashSession->success("Einstellungen updated");
+      }
+    }
+    return $this->dispatcher->forward([
+      'action' => 'index'
+    ]);
+  }
 }

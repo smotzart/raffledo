@@ -10431,3 +10431,6 @@ textarea {
   .cg-notify-message-template b {
     display: block;
     margin: 0 0 5px; }
+
+.btn-sm, .btn-group-sm > .btn {
+  border-width: 1px; }

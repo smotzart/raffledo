@@ -48,6 +48,12 @@ class Users extends \Phalcon\Mvc\Model
     public $sort_data;
 
     /**
+     *
+     * @var integer
+     */
+    public $sort_type;
+
+    /**
      * Before create the user assign a password
      */
     public function beforeValidationOnCreate()
