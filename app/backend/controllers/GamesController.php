@@ -283,7 +283,7 @@ class GamesController extends ControllerBase
       $this->view->disable();
 
       $filter = new Filter();
-      $search = trim($filter->sanitize($_GET['search'], 'striptags'));
+      $search = trim($filter->sanitize($_GET['search'], ['striptags', 'trim']));
 
       $games = Games::find([
         "conditions" => "url = '" . $search . "' AND deadline_date > CURDATE()",

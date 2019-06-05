@@ -120,7 +120,7 @@ class CompaniesController extends ControllerBase
       $this->view->disable();
 
       $filter = new Filter();
-      $search = $filter->sanitize($_GET['search'], 'striptags');
+      $search = $filter->sanitize($_GET['search'], ['striptags', 'trim']);
 
       $search_url = parse_url($search);
       $search_url = isset($search_url['host']) ? $search_url['host'] : $search_url['path'];
