@@ -142,7 +142,7 @@
 
     <footer class="bg-warning text-white py-7 footer-nav mt-auto">      
       <div class="container">
-        <?php if ($controllerName && $user) : ?>
+        <?php if ($controllerName) : ?>
         <div class="row mb-7">
           <div class="col-12 col-md-3">
             <h5 class="mb-4">Top Preise</h5>
@@ -183,7 +183,7 @@
         </div>
         <?php endif; ?>
         <div class="text-center">
-          Copyright 2019 &bull; BAWS Websolutions GmbH &bull; Alle Reechte vorbehalten <?php if (!$controllerName || !$user) : ?>&bull; <?= $this->tag->linkTo('impressum', 'Impressum'); ?> &bull; <?= $this->tag->linkTo('datenschutz', 'Datenschutz'); ?><?php endif; ?>
+          Copyright 2019 &bull; BAWS Websolutions GmbH &bull; Alle Reechte vorbehalten <?php if (!$controllerName) : ?>&bull; <?= $this->tag->linkTo('impressum', 'Impressum'); ?> &bull; <?= $this->tag->linkTo('datenschutz', 'Datenschutz'); ?><?php endif; ?>
         </div>
       </div>
     </footer>

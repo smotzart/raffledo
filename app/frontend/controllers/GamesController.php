@@ -40,13 +40,13 @@ class GamesController extends ControllerBase
   public function indexAction()
   {
    /* var_dump($this->cookies->get('RMU')->getExpiration());
-    $new_expire = time() + 86400 * 92;
-    $this->cookies->get('RMU')->setExpiration($new_expire);
-    $this->cookies->send();
-    var_dump($this->cookies->get('RMU')->getExpiration());
-    exit();
-    $this->cookies->get('RMT')->setExpiration($new_expire);
-*/
+      $new_expire = time() + 86400 * 92;
+      $this->cookies->get('RMU')->setExpiration($new_expire);
+      $this->cookies->send();
+      var_dump($this->cookies->get('RMU')->getExpiration());
+      exit();
+      $this->cookies->get('RMT')->setExpiration($new_expire);
+    */
     $user   = $this->auth->getUser();
     $settings = Settings::findFirst();
 
@@ -89,7 +89,7 @@ class GamesController extends ControllerBase
 
         $tag_params    = ['tag = ?0', 'bind' => [$view_tag]];
         $url_entry     = $view_type == 'tag' ? Tags::findFirst($tag_params) : Companies::findFirst($tag_params);
-        $games_params  = ['conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()'];
+        $games_params  = ['conditions' => 'enter_date <= CURDATE() AND deadline_date >= CURDATE()'];
 
         if ($sorting) {
           $games_params['order'] = ' IF (FIELD (Raffledo\Models\Games.id, ' . $sorting->sorting_ids . ') = 0, 1, 0), FIELD (Raffledo\Models\Games.id, ' . $sorting->sorting_ids . '), RAND()';
@@ -105,7 +105,7 @@ class GamesController extends ControllerBase
       } elseif (in_array($view_type, ['list', 'all'])) {  
         if (!$sorting) {
           $games = Games::find([
-            'conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()',
+            'conditions' => 'enter_date <= CURDATE() AND deadline_date >= CURDATE()',
             'limit' => 5, 
             'order' => 'RAND()'
           ]);
@@ -122,7 +122,7 @@ class GamesController extends ControllerBase
           }
         } else {
           $games = Games::find([
-            'conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()',
+            'conditions' => 'enter_date <= CURDATE() AND deadline_date >= CURDATE()',
             'order' => ' IF (FIELD (id, ' . $sorting->sorting_ids . ') = 0, 1, 0), FIELD (id, ' . $sorting->sorting_ids . '), RAND()',
             'limit' => 5
           ]);
@@ -173,8 +173,8 @@ class GamesController extends ControllerBase
 
         // Get favorites games if list view
         $phql_fav  = $phql;    
-        $phql_fav .= ' WHERE hg.id IS NULL AND hc.id IS NULL AND vg.id IS NULL AND sg.id IS NOT NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql_fav .= strlen($not_in_games) > 0 ? ' AND g.id NOT IN (' . $not_in_games . ')' : '';
+        $phql_fav .= ' WHERE hg.id IS NULL AND hc.id IS NULL AND vg.id IS NULL AND sg.id IS NOT NULL AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
+        $phql_fav .= !empty($not_in_games) ? ' AND g.id NOT IN (' . $not_in_games . ')' : '';
         $phql_fav .= ' ORDER BY sg.id DESC';
 
         $fav_games = $this->modelsManager->executeQuery($phql_fav);
@@ -191,9 +191,9 @@ class GamesController extends ControllerBase
 
         // Get regular games if list view
         $phql_games  = $phql;    
-        $phql_games .= ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL AND vg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql_games .= strlen($not_in_games) > 0 ? ' AND g.id NOT IN (' . $not_in_games . ')' : '';
-        $phql_games .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
+        $phql_games .= ' WHERE hg.id IS NULL AND hc.id IS NULL AND sg.id IS NULL AND vg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
+        $phql_games .= !empty($not_in_games) ? ' AND g.id NOT IN (' . $not_in_games . ')' : '';
+        $phql_games .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : 'RAND()';
         //$phql_games .= ' ORDER BY g.id DESC';
 
 
@@ -212,8 +212,8 @@ class GamesController extends ControllerBase
       
       if ($view_type == 'company' && $url_entry) {
         $phql_company  = $phql;
-        $phql_company .= ' WHERE g.companies_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql_company .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
+        $phql_company .= ' WHERE g.companies_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
+        $phql_company .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : 'RAND()';
 
         $games = $this->modelsManager->executeQuery($phql_company);
       }
@@ -221,8 +221,8 @@ class GamesController extends ControllerBase
       if ($view_type == 'tag' && $url_entry) {
         $phql_tag = $phql;          
         $phql_tag .= ' LEFT JOIN Raffledo\Models\GamesTags AS gt ON gt.games_id = g.id';
-        $phql_tag .= ' WHERE gt.tags_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql_tag .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
+        $phql_tag .= ' WHERE gt.tags_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
+        $phql_tag .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : 'RAND()';
 
         $games = $this->modelsManager->executeQuery($phql_tag);
       }
@@ -230,8 +230,8 @@ class GamesController extends ControllerBase
       if ($view_type == 'all') {
         // Get all except hidden 
         $phql_all  = $phql;    
-        $phql_all .= ' WHERE hg.id IS NULL AND vg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql_all .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
+        $phql_all .= ' WHERE hg.id IS NULL AND vg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
+        $phql_all .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : 'RAND()';
 
         $games = $this->modelsManager->executeQuery($phql_all);
       }
@@ -251,8 +251,8 @@ class GamesController extends ControllerBase
         $phql_s .= ' LEFT JOIN Raffledo\Models\ViewedGames AS vg ON vg.games_id = g.id AND vg.users_id = ' . $user->id;  
 
         $phql_search  = $phql_s;    
-        $phql_search .= ' WHERE c.tag LIKE "%' . $search_param . '%" OR c.name LIKE "%' . $search_param . '%" OR c.host LIKE "%' . $search_param . '%" OR g.url LIKE "%' . $search_param . '%" OR g.title LIKE "%' . $search_param . '%" OR g.price LIKE "%' . $search_param . '%" OR g.suggested_solution LIKE "%' . $search_param . '%" AND hg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date > CURDATE()';
-        $phql_search .= ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()';
+        $phql_search .= ' WHERE c.tag LIKE "%' . $search_param . '%" OR c.name LIKE "%' . $search_param . '%" OR c.host LIKE "%' . $search_param . '%" OR g.url LIKE "%' . $search_param . '%" OR g.title LIKE "%' . $search_param . '%" OR g.price LIKE "%' . $search_param . '%" OR g.suggested_solution LIKE "%' . $search_param . '%" AND hg.id IS NULL AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
+        $phql_search .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : 'RAND()';
 
         $entry = array('name' => 'Suche', 'description' => $search_param);
 
@@ -277,7 +277,7 @@ class GamesController extends ControllerBase
       ->from(['games' => 'Raffledo\Models\Games'])
       ->leftJoin('Raffledo\Models\HiddenGames', 'hg.games_id = games.id', 'hg')
       ->leftJoin('Raffledo\Models\ViewedGames', 'vg.games_id = games.id', 'vg')
-      ->where('hg.id IS NULL AND vg.id IS NULL AND games.enter_date <= CURDATE() AND games.deadline_date > CURDATE()')
+      ->where('hg.id IS NULL AND vg.id IS NULL AND games.enter_date <= CURDATE() AND games.deadline_date >= CURDATE()')
       ->getQuery()->execute()->count();
 
     $result['all_count'] = $all_count;
@@ -402,7 +402,7 @@ class GamesController extends ControllerBase
           ->from(['games' => 'Raffledo\Models\Games'])
           ->leftJoin('Raffledo\Models\HiddenGames', 'hg.games_id = games.id', 'hg')
           ->leftJoin('Raffledo\Models\ViewedGames', 'vg.games_id = games.id', 'vg')
-          ->where('hg.id IS NULL AND vg.id IS NULL AND games.enter_date <= CURDATE() AND games.deadline_date > CURDATE()')
+          ->where('hg.id IS NULL AND vg.id IS NULL AND games.enter_date <= CURDATE() AND games.deadline_date >= CURDATE()')
           ->getQuery()->execute()->count();
         
         $response->setStatusCode($result[0]);

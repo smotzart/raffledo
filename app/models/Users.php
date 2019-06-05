@@ -235,7 +235,7 @@ class Users extends \Phalcon\Mvc\Model
         } else {
   
             $games = Games::find([
-                'conditions' => 'enter_date <= CURDATE() AND deadline_date > CURDATE()',
+                'conditions' => 'enter_date <= CURDATE() AND deadline_date >= CURDATE()',
                 'order' => 'RAND()'
             ]);
             $sort_ids = [];
