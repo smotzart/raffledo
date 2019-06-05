@@ -33,8 +33,10 @@ $(function() {
     return $.get("/admin/companies/search", {
       'search': input.val()
     }, function(data) {
-      if (data.company) {
-        $('#companies_id').val(data.company.id).change();
+      $('#companies_id').val(data.company ? data.company.id : 'new').change();
+      if (data.new) {
+        $('#c_host').val(data.new.host);
+        $('#c_tag').val(data.new.tag);
       }
       return $.get("/admin/games/search", {
         'search': input.val()
@@ -54,6 +56,8 @@ $(function() {
             }
             $('#existUrl .modal-body').html(insert_data);
             return $('.open-exist').removeClass('d-none');
+          } else {
+            return $('.open-exist').addClass('d-none');
           }
         }
       

@@ -129,6 +129,23 @@ class CompaniesController extends ControllerBase
         "conditions" => "host LIKE '%" . $search_url . "%'"
       ]);
 
+      if (!$company) {
+        $host = parse_url($search, PHP_URL_HOST);
+        if ($host) {
+          $tag  = explode('.', $host);
+          $tag  = count($tag) > 1 ? $tag[count($tag) - 2] : $search;  
+        } else {
+          $tag = $search;
+        }
+        
+        $result['new'] = array(
+          'name' => '',
+          'host' => $host,
+          'tag'  => $tag
+        );
+
+      }
+
       $result['company'] = $company;
       $result['games'] = $company->games;
 
