@@ -131,6 +131,7 @@ class CompaniesController extends ControllerBase
 
       if (!$company) {
         $host = parse_url($search, PHP_URL_HOST);
+        $scheme = parse_url($search, PHP_URL_SCHEME);
         if ($host) {
           $tag  = explode('.', $host);
           $tag  = count($tag) > 1 ? $tag[count($tag) - 2] : $search;  
@@ -140,7 +141,7 @@ class CompaniesController extends ControllerBase
         
         $result['new'] = array(
           'name' => '',
-          'host' => $host,
+          'host' => $scheme ? $scheme . '://' . $host : $host,
           'tag'  => $tag
         );
 
