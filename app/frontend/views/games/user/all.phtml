@@ -74,7 +74,7 @@
     </div>
     <div class="box-footer d-flex flex-column align-items-md-center flex-md-row">
       <div class="box-btn order-md-1 ml-md-auto flex-wrap flex-md-nowrap">
-        <div class="w-50 w-md-auto pr-1 pr-md-0 mr-md-2">
+        <div class="w-50 w-md-auto pr-1 pr-md-0 mr-md-2" ng-if="!game.is_view && !game.hide_id">
           <a href ng-if="!game.save_id" ng-click="toFavCollection(game)" class="btn btn-theme btn-block box-save-btn">Merken</a>
         </div>
         <div ng-if="!game.is_view" class="w-50 w-md-auto pl-1 pl-md-0 mr-md-2">

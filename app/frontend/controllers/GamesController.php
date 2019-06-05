@@ -212,7 +212,7 @@ class GamesController extends ControllerBase
       
       if ($view_type == 'company' && $url_entry) {
         $phql_company  = $phql;
-        $phql_company .= ' WHERE g.companies_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
+        $phql_company .= ' WHERE hg.id IS NULL AND vg.id IS NULL AND g.companies_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
         $phql_company .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : 'RAND()';
 
         $games = $this->modelsManager->executeQuery($phql_company);
@@ -221,7 +221,7 @@ class GamesController extends ControllerBase
       if ($view_type == 'tag' && $url_entry) {
         $phql_tag = $phql;          
         $phql_tag .= ' LEFT JOIN Raffledo\Models\GamesTags AS gt ON gt.games_id = g.id';
-        $phql_tag .= ' WHERE gt.tags_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
+        $phql_tag .= ' WHERE hg.id IS NULL AND vg.id IS NULL AND gt.tags_id = ' . $url_entry->id . ' AND g.enter_date <= CURDATE() AND g.deadline_date >= CURDATE()';
         $phql_tag .= !empty($user_sort) ? ' ORDER BY IF (FIELD (g.id, ' . $user_sort . ') = 0, 1, 0), FIELD (g.id, ' . $user_sort . '), RAND()' : 'RAND()';
 
         $games = $this->modelsManager->executeQuery($phql_tag);
@@ -282,6 +282,7 @@ class GamesController extends ControllerBase
 
     $result['all_count'] = $all_count;
     $result['view_type'] = $view_type;
+    $result['notify']    = $user->notify == 1 ? true : false;
 
     //return $response->send();
     return json_encode($result);   
@@ -408,9 +409,9 @@ class GamesController extends ControllerBase
         $response->setStatusCode($result[0]);
         $response->setJsonContent(
           [
-              "title" => $result[1],
-              "message" => $result[2],
-              "all_count" => $all_count
+            "title" => $result[1],
+            "message" => $result[2],
+            "all_count" => $all_count
           ]
         );
       }

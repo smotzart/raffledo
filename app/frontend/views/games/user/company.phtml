@@ -90,7 +90,7 @@
         <div class="w-50 w-md-auto pr-1 pr-md-0 mr-md-2" ng-if="!game.is_view && !game.hide_id">
           <a href ng-if="!game.save_id" ng-click="toFavCollection(game)" class="btn btn-theme btn-block box-save-btn">Merken</a>
         </div>
-        <div ng-if="!game.is_view && !game.hide_id" class="w-50 w-md-auto pl-1 pl-md-0 mr-md-2">
+        <div ng-if="!game.is_view" class="w-50 w-md-auto pl-1 pl-md-0 mr-md-2">
           <a href ng-click="toHideCollection(game, key)" class="btn btn-outline-mute btn-block box-hide-btn">Ausblenden</a>
         </div>
         <a ng-href="/win/{{ game.g.id }}" ng-click="toViewCollection(game)" target="_blank" rel="noopener noreferrer" class="btn w-100 w-md-auto btn-outline-warning">Zum Gewinnspiel</a>

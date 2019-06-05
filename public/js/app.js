@@ -6,6 +6,8 @@ Array.prototype.append = function(el) {
   return this;
 };
 
+angular.module('ui-notification');
+
 angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'checklist-model', 'ui-notification']).factory('APIReport', [
   '$resource',
   function($resource) {
@@ -33,18 +35,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       id: '@id'
     });
   }
-]).directive('tooltip', function() {
-  return {
-    restrict: 'A',
-    link: function(scope, element, attrs) {
-      return element.hover(function() {
-        return element.tooltip('show');
-      }, function() {
-        return element.tooltip('hide');
-      });
-    }
-  };
-}).run(['$rootScope', '$route'].append(function(root, $route) {})).config([
+]).config([
   'NotificationProvider',
   function(noty) {
     return noty.setOptions({
@@ -59,7 +50,18 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       templateUrl: 'custom_template.html'
     });
   }
-]).controller('AppCtrl', [
+]).directive('tooltip', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      return element.hover(function() {
+        return element.tooltip('show');
+      }, function() {
+        return element.tooltip('hide');
+      });
+    }
+  };
+}).run(['$rootScope', '$route'].append(function(root, $route) {})).controller('AppCtrl', [
   '$scope',
   'APIGames',
   'APIControl',
@@ -92,7 +94,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
     (self.getData = function() {
       return APIGames.get({},
   function(data) {
-        return self.data = data;
+        self.data = data;
+        return self.enableNotify = data.notify;
       });
     })();
     // fav - show only in list page
@@ -146,13 +149,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       return control.$save({},
   function(data) {
         var position;
-        game.hide_id = true;
         self.data.all_count = data.all_count;
-        if (self.data.view_type === 'list' || self.data.view_type === 'all') {
-          position = self.data.collections[key].games.indexOf(game);
-          self.data.collections[key].games.splice(position,
+        position = self.data.collections[key].games.indexOf(game);
+        self.data.collections[key].games.splice(position,
   1);
-        }
         if (self.enableNotify) {
           return notify({
             title: data.title,
