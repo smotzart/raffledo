@@ -16,6 +16,8 @@
     <label for="url">URL</label>
     {{ form.render("url", ['class': 'form-control']) }}
     <div class="invalid-feedback">Gewinnspiel bereits vorhanden!</div>
+    <a href class="form-text text-warning d-none open-exist" data-toggle="modal" data-target="#existUrl">Gewinnspiele bereits vorhanden</a>
+
   </div>
   <div class="form-group">
     <label for="companies_id">Anbieter</label>
@@ -129,14 +131,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content rounded-0">   
       <div class="modal-header">
-        <h5 class="modal-title">Existing companies</h5>
+        <h5 class="modal-title">Existing games</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>  
       <div class="modal-body p-0"></div>
       <div class="modal-footer">
-        <small class="text-muted mr-auto">Choose from existing companies or close <br> to be able to create a new one.</small>
         <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>

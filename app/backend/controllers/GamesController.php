@@ -132,7 +132,7 @@ class GamesController extends ControllerBase
             $this->flashSession->success("Game was created successfully");     
             $again = $this->request->getPost('again');
             if (isset($again)) {
-              $form->clear();
+              return $this->response->redirect('games/create');
             } else {
               return $this->response->redirect('games');
             }

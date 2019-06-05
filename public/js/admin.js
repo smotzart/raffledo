@@ -33,21 +33,31 @@ $(function() {
     return $.get("/admin/companies/search", {
       'search': input.val()
     }, function(data) {
-      var i, item, len;
-      if (data.length === 1) {
-        for (i = 0, len = data.length; i < len; i++) {
-          item = data[i];
-          $('#companies_id').val(item.id).change();
-        }
+      if (data.company) {
+        $('#companies_id').val(data.company.id).change();
       }
       return $.get("/admin/games/search", {
         'search': input.val()
-      }, function(data) {
-        if (data.length > 0) {
+      }, function(data2) {
+        var i, insert_data, insert_item, item, len, ref;
+        if (data2.length > 0) {
           return input.addClass('is-invalid text-danger');
         } else {
-          return input.removeClass('is-invalid text-danger');
+          input.removeClass('is-invalid text-danger');
+          if (data.company && data.games.length > 0) {
+            insert_data = $('<div class="list-group list-group-flush"></div>');
+            ref = data.games;
+            for (i = 0, len = ref.length; i < len; i++) {
+              item = ref[i];
+              insert_item = $('<div class="list-group-item">' + item.title + '<small class="d-block text-truncate">' + item.url + '</small></div>');
+              insert_data.append(insert_item);
+            }
+            $('#existUrl .modal-body').html(insert_data);
+            return $('.open-exist').removeClass('d-none');
+          }
         }
+      
+      //$('#existUrl').modal('show')
       }, 'json');
     /*
     if data.length > 0

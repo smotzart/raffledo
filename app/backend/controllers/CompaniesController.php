@@ -125,11 +125,15 @@ class CompaniesController extends ControllerBase
       $search_url = parse_url($search);
       $search_url = isset($search_url['host']) ? $search_url['host'] : $search_url['path'];
 
-      $companies = Companies::find([
+      $company = Companies::findFirst([
         "conditions" => "host LIKE '%" . $search_url . "%'"
       ]);
 
-      return $this->response->setContent(json_encode($companies));
+      $result['company'] = $company;
+      $result['games'] = $company->games;
+
+
+      return $this->response->setContent(json_encode($result));
     }
 }
 
