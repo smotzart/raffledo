@@ -51,7 +51,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ save.games.title }} {{ link_to('einstellungen/undo/save/' ~ save.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ save.games.title }} {{ link_to('einstellungen/undo/save/' ~ save.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}</li>
         {% if loop.last %}
             </ul>
           </div>
@@ -69,7 +69,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ hide.games.title }} {{ link_to('einstellungen/undo/hide/' ~ hide.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ hide.games.title }} {{ link_to('einstellungen/undo/hide/' ~ hide.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}</li>
         {% if loop.last %}
             </ul>
           </div>
@@ -79,6 +79,55 @@
     {% endfor %}
   {% endif %}
   
+  {% if types is defined %}
+    {% for type in types %}
+      {% if loop.first %}
+        <div class="col-12 col-md-6 col-lg-5 mb-7">
+          <h4 class="text-theme mb-3">Hidden types</h4>
+          <div>
+            <ul class="list-group list-group-flush">      
+        {% endif %}
+
+          {% if type.type == 'type_register' %}
+            <li class="list-group-item d-flex justify-content-between align-items-center pl-0">
+              <i class="fi flaticon-user mr-2"></i><span>Registrierung erforderlich</span>
+              {{ link_to('einstellungen/undo/type/' ~ type.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+            </li>
+          {% endif %}    
+          {% if type.type == 'type_sms' %}
+            <li class="list-group-item d-flex justify-content-between align-items-center pl-0">
+              <i class="fi flaticon-tablet mr-2"></i><span>SMS/Anruf erforderlich</span>
+              {{ link_to('einstellungen/undo/type/' ~ type.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+            </li>
+          {% endif %}    
+          {% if type.type == 'type_buy' %}
+            <li class="list-group-item d-flex justify-content-between align-items-center pl-0">
+              <i class="loh mr-2"></i><span>Produktkauf erforderlich</span>
+              {{ link_to('einstellungen/undo/type/' ~ type.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+            </li>
+          {% endif %}    
+          {% if type.type == 'type_internet' %}
+            <li class="list-group-item d-flex justify-content-between align-items-center pl-0">
+              <i class="fi flaticon-gamepad mr-2"></i><span>Online-Spiel</span>
+              {{ link_to('einstellungen/undo/type/' ~ type.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+            </li>
+          {% endif %}    
+          {% if type.type == 'type_submission' %}
+            <li class="list-group-item d-flex justify-content-between align-items-center pl-0">
+              <i class="fi flaticon-idea mr-2"></i><span>Kreativ-Einsendung erforderlich</span>
+              {{ link_to('einstellungen/undo/type/' ~ type.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+            </li>
+          {% endif %}
+
+        {% if loop.last %}
+            </ul>
+          </div>
+        </div>
+        <div class="w-100"></div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
   {% if companies is defined %}
     {% for company in companies %}
       {% if loop.first %}
@@ -87,7 +136,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ company.company.name }} {{ link_to('einstellungen/undo/company/' ~ company.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ company.company.name }} {{ link_to('einstellungen/undo/company/' ~ company.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}</li>
         {% if loop.last %}
             </ul>
           </div>
@@ -105,7 +154,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ item.tag_entry.name }} {{ link_to('einstellungen/undo/tag/' ~ item.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ item.tag_entry.name }} {{ link_to('einstellungen/undo/tag/' ~ item.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}</li>
         {% if loop.last %}
             </ul>
           </div>
@@ -123,7 +172,7 @@
           <div>
             <ul class="list-group list-group-flush">      
         {% endif %}
-          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ item.game.title }} {{ link_to('einstellungen/undo/view/' ~ item.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}
+          <li class="list-group-item d-flex justify-content-between align-items-center pl-0">{{ item.game.title }} {{ link_to('einstellungen/undo/view/' ~ item.id, 'Undo', 'class': 'btn btn-sm btn-outline-secondary') }}</li>
         {% if loop.last %}
             </ul>
           </div>

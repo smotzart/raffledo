@@ -7,6 +7,7 @@ use Phalcon\Mvc\Controller;
 use Raffledo\Models\HiddenCompanies;
 use Raffledo\Models\HiddenGames;
 use Raffledo\Models\HiddenTags;
+use Raffledo\Models\HiddenTypes;
 use Raffledo\Models\ViewedGames;
 use Raffledo\Models\SavedGames;
 use Raffledo\Forms\UserSettingsForm;
@@ -38,6 +39,7 @@ class SettingsController extends ControllerBase
       $this->view->notification = $user->notify;
       $this->view->saved      = $user->savedGames;
       $this->view->hidden     = $user->hiddenGames;
+      $this->view->types      = $user->hiddenTypes;
       $this->view->companies  = $user->hiddenCompany;
       $this->view->tags       = $user->hiddenTags;
       $this->view->viewed     = $user->viewedGames;
@@ -68,6 +70,9 @@ class SettingsController extends ControllerBase
         break;
       case "view":
         $item = ViewedGames::findFirst($value);
+        break;
+      case "type":
+        $item = HiddenTypes::findFirst($value);
         break;
     }
 

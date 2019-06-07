@@ -47,8 +47,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right">
               <a href ng-if="!collection.entry.is_hide" ng-click="toggleTagView(collection.entry.id, 'company')" class="dropdown-item">Anbieter ausblenden</a>
-              <a href ng-if="game.tags.length > 1"  ng-click="openModal(game)" class="dropdown-item" data-toggle="modal" data-target="#hideTagsModal">Kategorie ausblenden</a>           
-              <a href ng-if="game.tags.length == 1" ng-click="toggleTagView(game.tags[0].id, 'tag')" class="dropdown-item">Kategorie ausblenden</a>
+              <a href ng-if="checkCat(game)" ng-click="openModal(game)" class="dropdown-item" data-toggle="modal" data-target="#hideTagsModal">Kategorie ausblenden</a>
               <a href ng-click="reportGame(game)" class="dropdown-item" data-toggle="modal" data-target="#reportGameModal">Fehler melden</a>
             </div>
           </div>              
@@ -108,46 +107,6 @@
           <p class="mb-7">Du hast Gewinnspiele ausgeblendet,<br class="d-none d-lg-block">dadurch werden nicht alle angezeigt.</p>
           <a href="/no-filter" class="btn btn-block btn-theme">Weitere Gewinnspiele anzeigen</a>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade" id="hideTagsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body p-4 p-md-7">
-        <h3 class="text-theme">Kategorie ausblenden</h3>
-        <p class="lead">Welche Tags wollen Sie ausschließen</p>
-        <div class="mb-5" id="modal_tags_list">
-          <div class="custom-control custom-checkbox" ng-repeat="tag in modalTags">
-            <input type="checkbox" class="custom-control-input" name="tags_id[]" checklist-model="tags_id" checklist-value="tag.id" id="customCheck{{ tag.id }}">
-            <label class="custom-control-label" for="customCheck{{ tag.id }}">{{ tag.name }}</label>
-          </div>
-        </div> 
-        <button type="button" class="btn btn-secondary mr-3 mb-3" data-dismiss="modal">Abbruch</button>
-        <button type="submit" ng-click="sendModal()" data-dismiss="modal" class="btn btn-theme mb-3">Jetzt ausschließen</button>     
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade" id="reportGameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body p-4 p-md-7">
-        <h3 class="text-theme">Fehler melden</h3>
-        <p class="lead">Etwas stimmt mit diesem Spiel nicht, dann teilen Sie uns mit was.</p>
-        <div>
-          <div class="form-group">
-            <label for="report">Ihre Nachricht</label>
-            <textarea id="report" name="report" ng-model="reportText" class="form-control" placeholder="Nachricht" rows="4" required="required"></textarea>
-          </div>         
-          <button type="button" class="btn btn-secondary mr-3 mb-3" data-dismiss="modal">Abbruch</button>
-          <button type="button" class="btn btn-theme mb-3" ng-click="sendReport(reportGameId)" data-dismiss="modal">Jetzt absenden</button>          
-        </div>      
       </div>
     </div>
   </div>

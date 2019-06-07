@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Июн 04 2019 г., 11:55
+-- Время создания: Июн 07 2019 г., 11:43
 -- Версия сервера: 10.1.33-MariaDB
 -- Версия PHP: 7.2.6
 
@@ -25,34 +25,23 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `settings`
+-- Структура таблицы `hidden_types`
 --
 
-CREATE TABLE `settings` (
-  `id` int(10) NOT NULL,
-  `entry_amount` int(10) NOT NULL DEFAULT '10',
-  `deadline_time` time DEFAULT NULL,
-  `enter_time` time DEFAULT NULL,
-  `google_tag` text,
-  `ads_regular` text,
-  `ads_register` text
+CREATE TABLE `hidden_types` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `users_id` int(10) NOT NULL,
+  `type` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `settings`
---
-
-INSERT INTO `settings` (`id`, `entry_amount`, `deadline_time`, `enter_time`, `google_tag`, `ads_regular`, `ads_register`) VALUES
-(1, 3, '23:59:00', '06:30:00', '<!-- Google tag -->', '<a href=\"#1\" class=\"d-block mx-auto mb-50px\"><img src=\"img/banner.png\" alt=\"MySEO\" class=\"img-fluid\"></a>', '<a href=\"#2\" class=\"d-block mx-auto mb-50px\"><img src=\"img/banner.png\" alt=\"MySEO\" class=\"img-fluid\"></a>');
 
 --
 -- Индексы сохранённых таблиц
 --
 
 --
--- Индексы таблицы `settings`
+-- Индексы таблицы `hidden_types`
 --
-ALTER TABLE `settings`
+ALTER TABLE `hidden_types`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -60,10 +49,10 @@ ALTER TABLE `settings`
 --
 
 --
--- AUTO_INCREMENT для таблицы `settings`
+-- AUTO_INCREMENT для таблицы `hidden_types`
 --
-ALTER TABLE `settings`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `hidden_types`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

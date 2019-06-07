@@ -170,6 +170,19 @@ class Users extends \Phalcon\Mvc\Model
 
         $this->hasMany(
             'id',
+            __NAMESPACE__ . '\HiddenTypes',
+            'users_id',
+            [
+                'alias' => 'hiddenTypes',
+                'foreignKey' => [
+                    'action' => Relation::ACTION_CASCADE
+                ]
+            ]
+        );
+
+
+        $this->hasMany(
+            'id',
             __NAMESPACE__ . '\ViewedGames',
             'users_id',
             [
@@ -257,6 +270,15 @@ class Users extends \Phalcon\Mvc\Model
 
             return $sort_ids;
         }
+    }
+
+    public function getHiddenTypes() {
+        $types = $this->hiddenTypes;
+        $query = '';
+        foreach ($types as $type) {
+            $query .= ' AND g.' . $type->type . ' = 0';
+        }
+        return $query;
     }
 
 }

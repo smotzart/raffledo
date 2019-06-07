@@ -76,8 +76,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
   $timeout,
   notify,
   APIReport) {
-    self.data = {};
-    self.modalTags = {};
+    self.data = null;
+    self.modalGame = null;
+    self.types_id = [];
     self.tags_id = [];
     self.showTagSuccess = false;
     self.enableNotify = true;
@@ -236,7 +237,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
       });
     };
     self.openModal = function(game) {
-      return self.modalTags = game.tags;
+      console.log(self);
+      return self.modalGame = game;
     };
     self.reportGame = function(game) {
       return self.reportGameId = game.g.id;
@@ -270,24 +272,28 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngAnimate', 'ngSanitize', 'chec
         }
       });
     };
-    return self.sendModal = function() {
+    self.sendModal = function() {
       var control;
       control = new APIControl({
         actionType: 'hideTags',
-        tags_id: self.tags_id
+        tags_id: self.tags_id,
+        types_id: self.types_id
       });
       return control.$save({},
-  function() {
+  function(data) {
         if (self.enableNotify) {
           notify({
-            title: 'Hinweis',
-            message: 'Return to list',
+            title: data.title,
+            message: data.message,
             scope: self
           },
   'notify-success');
         }
         return self.getData();
       });
+    };
+    return self.checkCat = function(game) {
+      return game.tags.length > 0 || game.g.type_register === 1 || game.g.type_sms === 1 || game.g.type_buy === 1 || game.g.type_internet === 1 || game.g.type_submission === 1;
     };
   }
 ]);
