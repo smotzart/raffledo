@@ -1,0 +1,45 @@
+# install nginx
+
+sudo apt-get install nginx
+
+# systemctl stop nginx
+# systemctl start nginx
+# systemctl status nginx
+
+
+# certbot
+
+sudo apt-get update
+sudo apt-get install software-properties-common
+sudo add-apt-repository universe
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install certbot python-certbot-nginx 
+
+
+
+
+# mysql
+# root pass UF6XuonP
+
+sudo apt-get update
+sudo apt-get install mysql-server
+mysql_secure_installation
+
+
+# php
+
+sudo apt-get install php7.0 php7.0-fpm php7.0-mysql
+# for locale
+sudo apt-get install php7.0-intl
+
+# phalcon
+
+curl -s https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh | sudo bash
+sudo apt-get install php7.0-phalcon
+
+# phalcon dev tools
+
+git clone git://github.com/phalcon/phalcon-devtools.git
+cd phalcon-devtools/
+. ./phalcon.sh

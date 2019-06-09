@@ -35,18 +35,39 @@ class Module implements ModuleDefinitionInterface
   public function registerServices(DiInterface $di)
   {
 
-      // Registering a dispatcher
+
+    // Registering a dispatcher
     $di->set(
       'dispatcher',
-      function () {
+      function () use ($di) {
         $dispatcher = new Dispatcher();
 
         $dispatcher->setDefaultNamespace('Multiple\Backend\Controllers');
 
+        $evManager = $di->getShared('eventsManager');
+
+        $evManager->attach(
+            "dispatch:beforeException",
+            function($event, $dispatcher, $exception)
+            {
+                switch ($exception->getCode()) {
+                    case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                    case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                        $dispatcher->forward(
+                            array(
+                                'controller' => 'games',
+                                'action'     => 'index',
+                            )
+                        );
+                        return false;
+                }
+            }
+        );
+        $dispatcher->setEventsManager($evManager);
+
         return $dispatcher;
       }
     );
-
     
     $di->set('flashSession', function () {
         return new FlashSession([

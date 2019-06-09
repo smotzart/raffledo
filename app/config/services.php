@@ -12,7 +12,6 @@ use Phalcon\Flash\Direct as Flash;
 use Phalcon\Logger\Adapter\File as FileLogger;
 use Phalcon\Logger\Formatter\Line as FormatterLine;
 use Raffledo\Auth\Auth;
-use Raffledo\Acl\Acl;
 use Phalcon\Http\Response\Cookies;
 
 /**
@@ -33,36 +32,6 @@ $di->setShared('url', function () {
 
     return $url;
 });
-
-/**
- * Setting up the view component
- *//*
-$di->setShared('view', function () {
-    $config = $this->getConfig();
-
-    $view = new View();
-    $view->setDI($this);
-    $view->setViewsDir($config->application->viewsDir);
-
-    $view->registerEngines([
-        '.volt' => function ($view) {
-            $config = $this->getConfig();
-
-            $volt = new VoltEngine($view, $this);
-
-            $volt->setOptions([
-                'compiledPath' => $config->application->cacheDir,
-                'compiledSeparator' => '_'
-            ]);
-
-            return $volt;
-        },
-        '.phtml' => PhpEngine::class
-
-    ]);
-
-    return $view;
-});*/
 
 /**
  * Database connection is created based in the parameters defined in the configuration file
@@ -135,28 +104,6 @@ $di->set('crypt', function () {
  */
 $di->set('auth', function () {
     return new Auth();
-});
-
-/**
- * Setup the private resources, if any, for performance optimization of the ACL.  
- */
-$di->setShared('AclResources', function() {
-    $pr = [];
-    if (is_readable(APP_PATH . '/config/privateResources.php')) {
-        $pr = include APP_PATH . '/config/privateResources.php';
-    }
-    return $pr;
-});
-
-/**
- * Access Control List
- * Reads privateResource as an array from the config object.
- */
-$di->set('acl', function () {
-    $acl = new Acl();
-    $pr = $this->getShared('AclResources')->privateResources->toArray();
-    $acl->addPrivateResources($pr);
-    return $acl;
 });
 
 /**

@@ -26,12 +26,6 @@ class GamesTags extends \Phalcon\Mvc\Model
     public $tags_id;
 
     /**
-     *
-     * @var string
-     */
-    public $created_at;
-
-    /**
      * Initialize method for model.
      */
     public function initialize()
@@ -49,17 +43,6 @@ class GamesTags extends \Phalcon\Mvc\Model
             'tags_id',
             __NAMESPACE__ . '\Tags',
             'id'
-        );
-
-        $this->addBehavior(
-            new Timestampable(
-                [
-                    'beforeCreate' => [
-                        'field'  => 'created_at',
-                        'format' => 'Y-m-d H:i:s',
-                    ]
-                ]
-            )
         );
     }
 
