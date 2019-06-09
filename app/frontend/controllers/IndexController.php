@@ -49,7 +49,7 @@ class IndexController extends ControllerBase
             'username' => $this->request->getPost('username', 'striptags'),
             'email' => $this->request->getPost('email'),
             'password' => $this->security->hash($this->request->getPost('password')),
-            'profiles_id' => 2
+            'profiles_id' => 5
           ]);
 
           if (!$user->save()) {

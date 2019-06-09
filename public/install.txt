@@ -15,6 +15,8 @@ sudo add-apt-repository universe
 sudo add-apt-repository ppa:certbot/certbot
 sudo apt-get update
 sudo apt-get install certbot python-certbot-nginx 
+sudo certbot --nginx certonly
+sudo certbot renew --dry-run
 
 # git
 sudo apt-get update
@@ -42,6 +44,7 @@ SOURCE /var/www/raffledo/public/phalcon_prod.sql;
 sudo apt-get install php7.0 php7.0-fpm php7.0-mysql
 # for locale
 sudo apt-get install php7.0-intl
+sudo apt-get install php7.0-mbstring
 
 # phalcon
 
@@ -65,3 +68,5 @@ mv config.local.php config.php
 cd /etc/nginx/sites-available
 touch raffledo.de
 vi raffledo.de
+
+# VL8sFcSu
