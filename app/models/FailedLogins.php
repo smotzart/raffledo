@@ -34,7 +34,7 @@ class FailedLogins extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->setSchema("phalcon");
+        $this->setSchema("raffledo");
         $this->setSource("failed_logins");
         
         $this->belongsTo('users_id', 'Users', 'id', [

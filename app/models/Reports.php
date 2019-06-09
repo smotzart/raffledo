@@ -34,7 +34,7 @@ class Reports extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->setSchema("phalcon");
+        $this->setSchema("raffledo");
         $this->setSource("reports");
         $this->belongsTo(
             'games_id',

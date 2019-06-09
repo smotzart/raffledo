@@ -136,7 +136,7 @@ class Games extends Model
      */
     public function initialize()
     {
-        $this->setSchema("phalcon");
+        $this->setSchema("raffledo");
         $this->setSource("games");
 
         $this->belongsTo(

@@ -28,7 +28,7 @@ class HiddenCompanies extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->setSchema("phalcon");
+        $this->setSchema("raffledo");
         $this->setSource("hidden_companies");
 
         $this->belongsTo(

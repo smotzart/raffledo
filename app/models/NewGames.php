@@ -40,7 +40,7 @@ class NewGames extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->setSchema("phalcon");
+        $this->setSchema("raffledo");
         $this->setSource("new_games");
     }
 

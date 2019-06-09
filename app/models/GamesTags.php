@@ -30,7 +30,7 @@ class GamesTags extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->setSchema("phalcon");
+        $this->setSchema("raffledo");
         $this->setSource("games_tags");
 
         $this->belongsTo(

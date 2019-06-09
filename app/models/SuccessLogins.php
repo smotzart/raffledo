@@ -28,7 +28,7 @@ class SuccessLogins extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->setSchema("phalcon");
+        $this->setSchema("raffledo");
         $this->setSource("success_logins");
 
         $this->belongsTo('users_id', __NAMESPACE__ . '\Users', 'id', [

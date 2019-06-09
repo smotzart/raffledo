@@ -16,16 +16,26 @@ sudo add-apt-repository ppa:certbot/certbot
 sudo apt-get update
 sudo apt-get install certbot python-certbot-nginx 
 
-
-
+# git
+sudo apt-get update
+sudo apt-get install git-core
+git config --global user.name "Bernhard" 
+git config --global user.email "angeler@baws.at"
 
 # mysql
-# root pass UF6XuonP
+# root pass UF6XuonP 2h6GugaJ
 
 sudo apt-get update
 sudo apt-get install mysql-server
 mysql_secure_installation
 
+mysql -u root -p
+CREATE USER 'raffledo'@'localhost' IDENTIFIED BY '2h6GugaJ'; 
+GRANT ALL PRIVILEGES ON * . * TO 'raffledo'@'localhost';
+FLUSH PRIVILEGES;
+CREATE DATABASE raffledo;
+USE raffledo;
+SOURCE /var/www/raffledo/public/phalcon_prod.sql; 
 
 # php
 
@@ -43,3 +53,15 @@ sudo apt-get install php7.0-phalcon
 git clone git://github.com/phalcon/phalcon-devtools.git
 cd phalcon-devtools/
 . ./phalcon.sh
+
+
+cd /var/www
+git clone https://github.com/fetzcc/raffledo.git
+cd raffledo/app/config
+vi config.local.php
+# change db data
+mv config.local.php config.php
+
+cd /etc/nginx/sites-available
+touch raffledo.de
+vi raffledo.de
