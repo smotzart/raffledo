@@ -11,7 +11,10 @@
     <link rel="stylesheet" href="css/notify.css">
     <link rel="stylesheet" href="css/style.css">
     <!-- FontAwesome -->
-    <title>Raffledo</title>
+    <?php echo $this->tag->getTitle(); ?>
+    <?php if (isset($description)) : ?>
+      <meta name="description" content="<?= $description; ?>">
+    <?php endif; ?>
 
     <link rel="apple-touch-icon" sizes="57x57" href="<?= $this->url->get('apple-icon-57x57.png'); ?>">
     <link rel="apple-touch-icon" sizes="60x60" href="<?= $this->url->get('apple-icon-60x60.png'); ?>">

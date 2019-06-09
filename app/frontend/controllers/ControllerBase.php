@@ -29,10 +29,12 @@ class ControllerBase extends Controller
 
   public function initialize()
   {    
+    $settings = Settings::findFirst();
     if ($this->auth->getUser()) {
-      $setting = Settings::findFirst();
-      $this->view->google = $setting->google_tag;
+      $this->view->google = $settings->google_tag;
     }
+    $this->tag->setTitle($settings->title);
+    $this->view->description = $settings->description;
   }
 
 }

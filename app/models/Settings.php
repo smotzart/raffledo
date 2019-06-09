@@ -48,6 +48,53 @@ class Settings extends \Phalcon\Mvc\Model
     public $ads_register;
 
     /**
+     *
+     * @var string
+     */
+    public $title;
+
+    /**
+     *
+     * @var string
+     */
+    public $description;
+
+    /**
+     *
+     * @var string
+     */
+    public $title_game;
+
+    /**
+     *
+     * @var string
+     */
+    public $description_game;
+
+    /**
+     *
+     * @var string
+     */
+    public $title_tag;
+
+    /**
+     *
+     * @var string
+     */
+    public $description_tag;
+
+    /**
+     *
+     * @var string
+     */
+    public $title_company;
+
+    /**
+     *
+     * @var string
+     */
+    public $description_company;
+    /**
      * Initialize method for model.
      */
     public function initialize()

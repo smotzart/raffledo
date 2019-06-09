@@ -53,6 +53,34 @@ class GamesController extends ControllerBase
     $this->persistent->view_type = $view_type;
     $this->persistent->view_tag  = $view_tag;
     
+    switch ($view_type) {
+      case "list":
+        $descr    = $settings->description_game;
+        $this->tag->setTitle($settings->title_game);
+        $this->view->description = $descr;
+        break;
+      case "all":
+        $this->tag->setTitle($settings->title_game);
+        break;
+      case "company":
+        $title    = $settings->title_company;
+        $descr    = $settings->description_company;
+        $company  = Companies::findFirst(['tag = ?0', 'bind' => [$view_tag]]);
+        $this->tag->setTitle(str_replace('%company%', $company->name, $title));
+        $this->view->description = str_replace('%company%', $company->name, $descr);
+        break;
+      case "tag":
+        $title    = $settings->title_tag;
+        $descr    = $settings->description_tag;
+        $tag      = Tags::findFirst(['tag = ?0', 'bind' => [$view_tag]]);
+        $this->tag->setTitle(str_replace('%tag%', $tag->name, $title));
+        $this->view->description = str_replace('%tag%', $tag->name, $descr);
+        break;
+      case "search":
+        $this->tag->setTitle($settings->title_game);
+        break;
+    }
+
     if ($user) {
       if ($this->request->isPost()) {
         $this->persistent->search = $this->request->getPost('search', 'striptags');
@@ -120,7 +148,6 @@ class GamesController extends ControllerBase
             'limit' => 5
           ]);
         }       
-        
         $this->view->pick('games/default');
 
       }

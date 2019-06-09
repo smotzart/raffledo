@@ -62,6 +62,56 @@ class SettingsForm extends Form
     $ads_register->addValidators([]);
     $this->add($ads_register);
 
+
+
+    $title = new Text('title', [
+      'placeholder' => 'Title'
+    ]);
+    $this->add($title);
+
+    $title_game = new Text('title_game', [
+      'placeholder' => 'Title'
+    ]);
+    $this->add($title_game);
+
+    $title_tag = new Text('title_tag', [
+      'placeholder' => 'Title'
+    ]);
+    $this->add($title_tag);
+
+    $title_company = new Text('title_company', [
+      'placeholder' => 'Title'
+    ]);
+    $this->add($title_company);
+
+    $description = new TextArea('description', [
+      'placeholder' => 'Description',
+      'rows' => 4
+    ]);
+    $description->addValidators([]);
+    $this->add($description);
+
+    $description_game = new TextArea('description_game', [
+      'placeholder' => 'Description',
+      'rows' => 4
+    ]);
+    $description_game->addValidators([]);
+    $this->add($description_game);
+
+    $description_tag = new TextArea('description_tag', [
+      'placeholder' => 'Description',
+      'rows' => 4
+    ]);
+    $description_tag->addValidators([]);
+    $this->add($description_tag);
+
+    $description_company = new TextArea('description_company', [
+      'placeholder' => 'Description',
+      'rows' => 4
+    ]);
+    $description_company->addValidators([]);
+    $this->add($description_company);
+
     $this->add(new Submit('Save', [
       'class' => 'btn btn-outline-success'
     ]));

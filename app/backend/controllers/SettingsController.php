@@ -36,9 +36,20 @@ class SettingsController extends ControllerBase
           }            
         } else {
           $setting->assign([
-            'entry_amount'  => $this->request->getPost('entry_amount', 'striptags'),
-            'deadline_time' => $this->request->getPost('deadline_time', 'striptags'),
-            'enter_time'    => $this->request->getPost('enter_time', 'striptags')
+            'entry_amount'        => $this->request->getPost('entry_amount', 'striptags'),
+            'deadline_time'       => $this->request->getPost('deadline_time', 'striptags'),
+            'enter_time'          => $this->request->getPost('enter_time', 'striptags'),
+            'google_tag'          => $this->request->getPost('google_tag'),
+            'ads_regular'         => $this->request->getPost('ads_regular'),
+            'ads_register'        => $this->request->getPost('ads_register'),
+            'title'               => $this->request->getPost('title', 'striptags'),
+            'description'         => $this->request->getPost('description', 'striptags'),
+            'title_game'          => $this->request->getPost('title_game', 'striptags'),
+            'description_game'    => $this->request->getPost('description_game', 'striptags'),
+            'title_tag'           => $this->request->getPost('title_tag', 'striptags'),
+            'description_tag'     => $this->request->getPost('description_tag', 'striptags'),
+            'title_company'       => $this->request->getPost('title_company', 'striptags'),
+            'description_company' => $this->request->getPost('description_company', 'striptags')
           ]);
 
           if (!$setting->save()) {
