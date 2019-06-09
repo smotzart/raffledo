@@ -180,8 +180,10 @@
             <ul class="list-unstyled">
               <li><?= $this->tag->linkTo('impressum', 'Impressum'); ?></li>
               <li><?= $this->tag->linkTo('datenschutz', 'Datenschutz'); ?></li>
-              <li><?= $this->tag->linkTo('neues', 'Neues Gewinnspiel melden'); ?></li>
-              <li><?= $this->tag->linkTo('einstellungen', 'Einstellungen'); ?></li> 
+              <?php if ($user) : ?>
+                <li><?= $this->tag->linkTo('neues', 'Neues Gewinnspiel melden'); ?></li>
+                <li><?= $this->tag->linkTo('einstellungen', 'Einstellungen'); ?></li> 
+              <?php endif; ?>
             </ul>
           </div>
         </div>
