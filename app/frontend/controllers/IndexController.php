@@ -6,100 +6,95 @@ use Raffledo\Forms\RegisterForm;
 use Raffledo\Forms\LoginForm;
 use Raffledo\Auth\Exception as AuthException;
 use Phalcon\Filter;
-
 use Raffledo\Models\Companies;
 use Raffledo\Models\Users;
 
 
 class IndexController extends ControllerBase
 {
+  public function initialize()
+  {    
+    parent::initialize();
+    if ($this->auth->hasRememberMe()) {
+      return $this->auth->loginWithRememberMe();
+    }
+  }
 
-    /**
-     * Default action. Set the public layout (layouts/public.volt)
-     */
-    public function initialize()
-    {    
-      parent::initialize();
-      if ($this->auth->hasRememberMe()) {
-        return $this->auth->loginWithRememberMe();
-      }
+  public function indexAction()
+  {
+
+    if (is_array($this->auth->getIdentity())) {
+      return $this->response->redirect('gewinnspiele');
     }
 
-    public function indexAction()
-    {
+    $this->view->setVar('logged_in', is_array($this->auth->getIdentity()));
 
-      if (is_array($this->auth->getIdentity())) {
-        return $this->response->redirect('gewinnspiele');
-      }
+    $form = new RegisterForm();
 
-      $this->view->setVar('logged_in', is_array($this->auth->getIdentity()));
+    if ($this->request->isPost()) {
 
-      $form = new RegisterForm();
+      if ($form->isValid($this->request->getPost()) == false) {
 
-      if ($this->request->isPost()) {
+        foreach ($form->getMessages() as $message) {
+          $this->flashSession->error($message);
+        }
+      } else {       
 
-        if ($form->isValid($this->request->getPost()) == false) {
+        $user = new Users([
+          'username' => $this->request->getPost('username', 'striptags'),
+          'email' => $this->request->getPost('email'),
+          'password' => $this->security->hash($this->request->getPost('password')),
+          'profiles_id' => 5
+        ]);
 
-          foreach ($form->getMessages() as $message) {
+        if (!$user->save()) {
+          foreach ($user->getMessages() as $message) {
             $this->flashSession->error($message);
           }
-        } else {       
-
-          $user = new Users([
-            'username' => $this->request->getPost('username', 'striptags'),
-            'email' => $this->request->getPost('email'),
-            'password' => $this->security->hash($this->request->getPost('password')),
-            'profiles_id' => 5
+        } else {
+          $this->auth->check([
+            'username' => $user->username,
+            'password' => $this->request->getPost('password'),
+            'remember' => 'yes'
           ]);
 
-          if (!$user->save()) {
-            foreach ($user->getMessages() as $message) {
-              $this->flashSession->error($message);
-            }
-          } else {
-            $this->auth->check([
-              'username' => $user->username,
-              'password' => $this->request->getPost('password'),
-              'remember' => 'yes'
-            ]);
-
-            return $this->response->redirect('gewinnspiele');
-          }
-         
+          return $this->response->redirect('gewinnspiele');
         }
+       
       }
-
-      $this->view->form = $form;
-
     }
 
-    public function tagsAction()     
-    {      
-      $filter = new Filter();
-      $game_id = $filter->sanitize($_GET['games_id'], 'striptags');
+    $this->view->form = $form;
 
-      $phql = 'SELECT t.* FROM Raffledo\Models\Tags AS t INNER JOIN Raffledo\Models\GamesTags AS gt ON gt.tags_id = t.id WHERE gt.games_id= :game_id:';
-      $tags = $this->modelsManager->executeQuery($phql, [
-        'game_id' => $game_id
-      ]);
+  }
 
-      $data = [];
+  public function tagsAction()     
+  {      
+    $filter = new Filter();
+    $game_id = $filter->sanitize($_GET['games_id'], 'striptags');
 
-      foreach ($tags as $tag) {
-        $data[] = [
-          'id'   => $tag->id,
-          'name' => $tag->name,
-        ];
-      }
+    $phql = 'SELECT t.* FROM Raffledo\Models\Tags AS t INNER JOIN Raffledo\Models\GamesTags AS gt ON gt.tags_id = t.id WHERE gt.games_id= :game_id:';
+    $tags = $this->modelsManager->executeQuery($phql, [
+      'game_id' => $game_id
+    ]);
 
-      $this->view->disable();
+    $data = [];
 
-      echo json_encode($data);
+    foreach ($tags as $tag) {
+      $data[] = [
+        'id'   => $tag->id,
+        'name' => $tag->name,
+      ];
     }
 
-    public function route404Action()
-    {
-      
-    }
+    $this->view->disable();
+
+    echo json_encode($data);
+  }
+
+  public function route404Action()
+  {
+    
+  }
 }
 

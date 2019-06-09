@@ -9,10 +9,6 @@ use Phalcon\Mvc\Controller;
 class NewController extends ControllerBase
 {
 
-
-  /**
-   * Default action. Set the public layout (layouts/public.volt)
-   */
   public function initialize()
   {    
     parent::initialize();

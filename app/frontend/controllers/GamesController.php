@@ -4,12 +4,10 @@ namespace Multiple\Frontend\Controllers;
 
 use Raffledo\Forms\GamesForm;
 use Raffledo\Forms\RegisterForm;
-
 use Raffledo\Models\Games;
 use Raffledo\Models\SavedGames;
 use Raffledo\Models\HiddenGames;
 use Raffledo\Models\ViewedGames;
-
 use Raffledo\Models\Tags;
 use Raffledo\Models\Reports;
 use Raffledo\Models\HiddenCompanies;
@@ -19,7 +17,6 @@ use Raffledo\Models\Companies;
 use Raffledo\Models\Sorting;
 use Raffledo\Models\Settings;
 use Phalcon\Http\Response;
-
 use Phalcon\Mvc\View;
 
 class GamesController extends ControllerBase

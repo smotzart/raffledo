@@ -3,7 +3,6 @@
 namespace Multiple\Frontend\Controllers;
 
 use Phalcon\Mvc\Controller;
-
 use Raffledo\Models\HiddenCompanies;
 use Raffledo\Models\HiddenGames;
 use Raffledo\Models\HiddenTags;

@@ -8,10 +8,6 @@ use Raffledo\Auth\Exception as AuthException;
 class SessionController extends ControllerBase
 {
 
-
-  /**
-   * Default action. Set the public layout (layouts/public.volt)
-   */
   public function initialize()
   {    
     parent::initialize();
@@ -19,6 +15,7 @@ class SessionController extends ControllerBase
 
   public function indexAction()
   {
+    
   }
 
   public function loginAction()
