@@ -1,87 +1,229 @@
-# Project Title
+# RAFFLEDO
 
-One Paragraph of project description goes here
+Raffledo develop on Phalcon PHP framework (https://phalconphp.com/en/)
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your server.
 
-### Prerequisites
+### Enviroments
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
+* Ubuntu 16.04
+* NGINX
+* PHP 7.0 and above
+* MySQL
+* Git
+* Certbot
+* Phalcon
+* Phalcon Dev Tools
 
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
+#### NGINX
 
 ```
-Give the example
+sudo apt-get install nginx
 ```
 
-And repeat
+#### PHP
 
 ```
-until finished
+sudo apt-get install php7.0 php7.0-fpm php7.0-mysql php7.0-intl php7.0-mbstring
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+#### Git
 
 ```
-Give an example
+sudo apt-get update
+sudo apt-get install git-core
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
+Set git config information
+```
+git config --global user.name "username" 
+git config --global user.email "email@example.com"
 
 ```
-Give an example
+
+#### MySQL
+
+```
+sudo apt-get update
+sudo apt-get install mysql-server
+mysql_secure_installation
+```
+
+#### Phalcon
+
+```
+curl -s https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh | sudo bash
+sudo apt-get install php7.0-phalcon
+```
+
+Dev Tools
+```
+git clone git://github.com/phalcon/phalcon-devtools.git
+cd phalcon-devtools/
+. ./phalcon.sh
+```
+
+#### Certbot
+
+```
+sudo apt-get update
+sudo apt-get install software-properties-common
+sudo add-apt-repository universe
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install certbot python-certbot-nginx 
 ```
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+Clone source files from repository
+```
+cd /var/www
+git clone https://github.com/fetzcc/raffledo.git
+```
 
-## Built With
+Create databse, user and import from file. Change password to your own.
+```
+mysql -u root -p
+CREATE USER 'raffledo'@'localhost' IDENTIFIED BY 'password'; 
+GRANT ALL PRIVILEGES ON * . * TO 'raffledo'@'localhost';
+FLUSH PRIVILEGES;
+CREATE DATABASE raffledo;
+USE raffledo;
+SOURCE /var/www/raffledo/public/phalcon_prod.sql; 
+```
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+Change application config file
+```
+cd /var/www/raffledo/app/config
+```
+Edit config.local.php and rename to config.php
 
-## Contributing
+### NGINX
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Create new block for NGINX
+```
+cd /etc/nginx/sites-available
+touch raffledo.de
+```
+Put content below and save
+```
+server {
+    # Port 80 will require Nginx to be started with root permissions
+    # Depending on how you install Nginx to use port 80 you will need
+    # to start the server with `sudo` ports about 1000 do not require
+    # root privileges
+    # listen      80;
 
-## Versioning
+    listen        80;
+    server_name   raffledo.de www.raffledo.de;
+    rewrite ^(.*) https://www.raffledo.de permanent;
+}
+server {
+    listen 443 ssl;
+    server_name raffledo.de;
+    ssl_certificate        /etc/letsencrypt/live/raffledo.de/fullchain.pem;
+    ssl_certificate_key    /etc/letsencrypt/live/raffledo.de/privkey.pem;
+    rewrite ^(.*) https://www.raffledo.de permanent;
+}
+server {
+    listen 443 http2;
+    server_name www.raffledo.de;
+    ssl on;
+    ssl_session_timeout  5m;
+    ssl_protocols  SSLv2 SSLv3 TLSv1;
+    ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+    ssl_prefer_server_ciphers   on;
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+    # These locations depend on where you store your certs
+    ssl_certificate        /etc/letsencrypt/live/raffledo.de/fullchain.pem;
+    ssl_certificate_key    /etc/letsencrypt/live/raffledo.de/privkey.pem;
+    ##########################
+
+    # This is the folder that index.php is in
+    root /var/www/raffledo/public;
+    index index.php index.html index.htm; 
+
+    charset utf-8;
+    client_max_body_size 100M;
+    fastcgi_read_timeout 1800;
+
+    # Represents the root of the domain
+    # http://localhost:8000/[index.php]
+    location / {
+        # Matches URLS `$_GET['_url']`
+        try_files $uri $uri/ /index.php?_url=$uri&$args;
+    }
+
+    # When the HTTP request does not match the above
+    # and the file ends in .php
+    location ~ [^/]\.php(/|$) {
+        # try_files $uri =404;
+
+        # Ubuntu and PHP7.0-fpm in socket mode
+        # This path is dependent on the version of PHP install
+        fastcgi_pass  unix:/var/run/php/php7.0-fpm.sock;
+
+
+        # Alternatively you use PHP-FPM in TCP mode (Required on Windows)
+        # You will need to configure FPM to listen on a standard port
+        # https://www.nginx.com/resources/wiki/start/topics/examples/phpfastcgionwindows/
+        # fastcgi_pass  127.0.0.1:9000;
+
+        fastcgi_index /index.php;
+
+        include fastcgi_params;
+        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+        if (!-f $document_root$fastcgi_script_name) {
+            return 404;
+             }
+
+        fastcgi_param PATH_INFO       $fastcgi_path_info;
+        # fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+        # and set php.ini cgi.fix_pathinfo=0
+
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+        expires       max;
+        log_not_found off;
+        access_log    off;
+    }
+}   
+```
+Create symlink to enable blocks
+```
+sudo ln -s /etc/nginx/sites-available/raffledo.de /etc/nginx/sites-enabled/ 
+```
+
+### Generate SSL certificate
+
+```
+sudo certbot --nginx certonly
+```
+
+Force renew
+```
+sudo certbot renew --dry-run
+```
+
+Restart NGINX
+```
+sudo service nginx restart
+```
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Serhii Kotsar**
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
